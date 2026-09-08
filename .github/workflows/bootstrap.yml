@@ -1,0 +1,27 @@
+name: Bootstrap toolchain
+on:
+  push:
+    paths: ['.github/workflows/bootstrap.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  toolchain:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prepare reproducible browser editor toolchain
+        run: |
+          mkdir -p /tmp/scada-toolchain
+          cd /tmp/scada-toolchain
+          npm init -y
+          npm install --save-exact codemirror@6 @codemirror/state@6 @codemirror/view@6 @codemirror/commands@6 @codemirror/language@6 @codemirror/lang-javascript@6 @codemirror/autocomplete@6 @codemirror/lint@6 esbuild@0.25.5 typescript@5.9.3 @playwright/test@1.55.1
+          tar -czf /tmp/scada-toolchain.tgz package.json package-lock.json node_modules
+      - uses: actions/upload-artifact@v4
+        with:
+          name: scada-toolchain
+          path: /tmp/scada-toolchain.tgz
+          retention-days: 2
