@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#142730" />
+  <meta name="description" content="SCADA playground: TypeScript DSL, живые мнемосхемы и двустороннее редактирование. Один .ts файл — весь проект." />
+  <title>SCADA — playground</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./app.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="SCADA playground"><svg viewBox="0 0 28 28" aria-hidden="true"><path d="M3 20V7h9v14h13V7h-9" fill="none" stroke="currentColor" stroke-width="2.3"/><circle cx="3" cy="20" r="3" fill="currentColor"/><circle cx="25" cy="7" r="3" fill="currentColor"/></svg><strong>scada</strong><span>playground</span></a>
+      <div class="project"><span class="project-dot"></span><select id="examples" aria-label="Пример проекта"></select></div>
+      <nav class="actions" aria-label="Файл">
+        <button id="import" title="Открыть файл .ts">Открыть</button>
+        <button id="save" title="Скачать исходный .ts · Ctrl / ⌘ S">↓ <span>.ts</span></button>
+        <button id="export" title="Экспорт автономной анимированной HTML-схемы">↓ <span>HTML</span></button>
+        <button id="share" class="primary" title="Скопировать ссылку с кодом проекта">Поделиться</button>
+        <button id="help" class="help" title="DSL и управление">?</button>
+      </nav>
+    </header>
+    <div class="mobile-tabs" role="tablist" aria-label="Панели"><button data-tab="code">Код</button><button data-tab="canvas" aria-selected="true">Схема</button><button data-tab="inspect">Свойства</button></div>
+    <main class="workspace" data-tab="canvas">
+      <section class="code-panel" aria-label="Исходный TypeScript">
+        <div class="panel-head"><div class="file-tab"><span class="ts-mark">TS</span> scene.ts <span id="save-dot" title="Сохранено в этом браузере"></span></div><div class="panel-tools"><button id="undo" title="Отменить · Ctrl / ⌘ Z">↶</button><button id="redo" title="Повторить · Ctrl / ⌘ Shift Z">↷</button><button id="format" title="Форматировать TypeScript">{ }</button></div></div>
+        <div id="editor"></div>
+        <div class="code-foot"><span id="source-status">TypeScript</span><span>UTF-8</span></div>
+      </section>
+      <div id="splitter" role="separator" tabindex="0" aria-label="Ширина редактора" aria-orientation="vertical"></div>
+      <section class="canvas-panel" aria-label="Живая схема">
+        <div class="panel-head"><div class="preview-title"><span id="live-dot"></span><span id="preview-state">Предпросмотр</span></div><div class="panel-tools"><button id="toggle-code" title="Показать / скрыть код">&lt;/&gt;</button><button id="toggle-inspector" title="Показать / скрыть свойства">Свойства</button><button id="pause" title="Пауза анимации" aria-pressed="false">Ⅱ</button></div></div>
+        <div class="canvas-toolbar"><div class="add-wrap"><button id="add" class="add-button">+ Элемент</button><div id="palette" hidden></div></div><span class="toolbar-separator"></span><button id="connect-mode" title="Выходной порт → входной порт">Соединить</button><span class="toolbar-spacer"></span><button id="zoom-out" aria-label="Отдалить">−</button><button id="fit" title="Вписать схему · F">Вписать</button><button id="zoom-in" aria-label="Приблизить">+</button></div>
+        <div id="canvas"><svg id="scene" xmlns="http://www.w3.org/2000/svg"></svg><div id="empty-state" hidden>Начните с оборудования<span>Добавьте элемент или откройте пример.</span></div><div id="error-banner" role="status" hidden>В коде ошибка. Показана последняя корректная схема.</div><div id="hint">Перетаскивайте элементы. Нажмите на объект, чтобы изменить свойства.</div></div>
+        <div class="runtime"><div class="readout"><span>Расход · демо</span><strong id="flow-readout">—</strong><small>м³/ч</small></div><div class="trend-wrap"><div class="trend-caption"><span>История расхода</span><span>60 с</span></div><svg id="trend" viewBox="0 0 400 56" preserveAspectRatio="none" aria-label="Расход за последние 60 секунд"></svg></div></div>
+      </section>
+      <aside class="inspector" aria-label="Свойства элемента"><div class="panel-head"><span>Свойства</span><button id="deselect" title="Снять выделение">×</button></div><div id="inspector-body"></div><div class="inspector-bottom"><span class="source-icon">TS</span><p>Изменения записываются<br>в <b>scene.ts</b></p></div></aside>
+    </main>
+    <footer class="statusbar"><button id="diagnostics-button"><span id="diagnostic-dot"></span><span id="diagnostic-count">Проверка</span></button><span id="counts"></span><span class="status-spacer"></span><span class="demo-note">Демонстрационная модель · не управление оборудованием</span><a href="https://github.com/Pom4H/scada" target="_blank" rel="noopener noreferrer">GitHub ↗</a></footer>
+    <div id="diagnostics" hidden></div><div id="toast" role="status" aria-live="polite"></div>
+    <input type="file" id="file" accept=".ts,text/plain" hidden />
+    <dialog id="guide"><div class="guide-head"><h2>SCADA playground</h2><button id="guide-close" aria-label="Закрыть справку">×</button></div><div class="guide-body"><h3>Один проект — один TypeScript файл</h3><p>Редактор читает декларации DSL. Перетаскивание, свойства и соединения изменяют исходный текст через TypeScript AST. Комментарии и остальной код сохраняются. Ctrl / ⌘ Z отменяет действия в коде и на схеме.</p><pre>const p = pump("P-101", { x: 300, y: 280, rpm: 1500 });
+const v = valve("V-101", { x: 700, y: 80, opening: 76 });
+const line = connect(p.outlet, v.inlet);
+tap(line, pressure("PT-101", { value: 5.8 }));</pre><h3>Мышь и клавиатура</h3><p>Перетащите оборудование для перемещения. Выберите его для изменения состояния. Выходной порт → входной порт создаёт связь. Прибор добавляется на выбранную трубу. Колесо — масштаб; фон или Space + перетаскивание — панорама; F — вписать; Delete — удалить выделенное. Перемещение стрелками: 10 единиц, Shift + стрелка: 1.</p><h3>Вычисляемые координаты</h3><p><code>x: GRID * 3</code> читается, но заблокировано для мыши: редактор не заменяет формулу числом. Для визуального редактирования используйте числовой литерал. Разрешены const, арифметика + − * /, импорты функций DSL, connect и tap. Произвольный JavaScript, циклы, сеть и DOM не выполняются.</p><h3>Модель расхода</h3><p>Для полного последовательного контура с одним насосом: Q = 12 × rpm / 1500 × произведение открытий клапанов. Закрытый клапан, пустой резервуар и trip насоса обнуляют расход. Stale / bad дают неизвестное значение. Незавершённые линии не имитируют течение. Давление и температура задаются независимо — это не расчёт гидравлики и теплопередачи.</p><h3>Хранение</h3><p>Автосохранение хранит только исходный TS в этом браузере. Кнопка ↓ .ts сохраняет файл на диск; ↓ HTML создаёт автономную анимированную схему. Общая ссылка содержит код в URL-фрагменте. Не добавляйте в него пароли и реальные секреты оборудования. Сервера проектов и управления PLC здесь нет.</p></div></dialog>
+  </div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
