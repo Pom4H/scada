@@ -11,18 +11,22 @@ const rotor = () => page.locator('[data-node="P-101"] [data-part="rotor"]').getA
 const water = () => page.locator('[data-flow]').first().getAttribute('stroke-dashoffset');
 try {
   let status = 0;
+  const expectedRevision = process.env.GITHUB_SHA;
   for (let attempt = 0; attempt < 6; attempt++) {
-    const response = await page.goto(url, { waitUntil: 'networkidle', timeout: 60000 });
-    status = response?.status() || 0; if (status === 200) break;
+    const response = await page.goto(expectedRevision ? `${url}?revision=${expectedRevision}` : url, { waitUntil: 'networkidle', timeout: 60000 });
+    status = response?.status() || 0;
+    const revision = await page.locator('meta[name="scada-revision"]').getAttribute('content').catch(() => null);
+    if (status === 200 && (!expectedRevision || revision === expectedRevision)) break;
     await page.waitForTimeout(5000);
   }
   assert.equal(status, 200, 'Published HTML returns HTTP 200');
+  if (expectedRevision) assert.equal(await page.locator('meta[name="scada-revision"]').getAttribute('content'), expectedRevision, 'Published revision matches this workflow');
   await page.waitForFunction(() => !!window.__scada);
   assert.equal((await api()).error, null);
   assert.equal(await page.locator('[data-node]').count(), 8);
   const original = (await api()).source;
   const a = await rotor(), w = await water(); await page.waitForTimeout(300);
-  assert.notEqual(await rotor(), a); assert.notEqual(await water(), w);
+  await page.waitForFunction(([a, w]) => document.querySelector('[data-part="rotor"]').getAttribute('transform') !== a && document.querySelector('[data-flow]').getAttribute('stroke-dashoffset') !== w, [a, w]);
   const hit = await page.locator('[data-node="P-101"] .node-hit').boundingBox();
   const x = hit.x + hit.width * .7, y = hit.y + hit.height * .65;
   await page.mouse.move(x, y); await page.mouse.down(); await page.mouse.move(x + 35, y + 25, { steps: 8 }); await page.mouse.up();
@@ -36,12 +40,12 @@ try {
   await page.screenshot({ path: 'live-check/valve-closed.png' });
   await page.locator('#field-opening').fill('76'); await page.locator('#field-opening').press('Tab');
   await page.waitForTimeout(300); await page.screenshot({ path: 'live-check/desktop.png' });
-  await page.setViewportSize({ width: 390, height: 844 }); await page.locator('[data-tab="canvas"]').click();
+  await page.setViewportSize({ width: 390, height: 844 }); await page.locator('button[data-tab="canvas"]').click();
   await page.screenshot({ path: 'live-check/mobile.png' });
-  await page.locator('[data-tab="inspect"]').click();
+  await page.locator('button[data-tab="inspect"]').click();
   await page.screenshot({ path: 'live-check/mobile-inspector.png' });
   assert.deepEqual(errors, []);
-  const result = { url, status, passed: true, checks: ['HTML and assets', 'eight equipment elements', 'rotor animation', 'water animation', 'drag updates TypeScript', 'one undo restores source', 'closed valve stops flow', 'closed valve does not stop powered rotor', 'responsive panels', 'no page errors'] };
+  const result = { url, status, revision: expectedRevision, passed: true, checks: ['HTML and assets', 'eight equipment elements', 'rotor animation', 'water animation', 'drag updates TypeScript', 'one undo restores source', 'closed valve stops flow', 'closed valve does not stop powered rotor', 'responsive panels', 'no page errors'] };
   await writeFile('live-check/result.json', JSON.stringify(result, null, 2)); console.log(JSON.stringify(result, null, 2));
 } catch (error) {
   await page.screenshot({ path: 'live-check/failure.png' }).catch(() => {}); throw error;

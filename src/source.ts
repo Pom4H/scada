@@ -1,4 +1,4 @@
-import ts from 'typescript';
+import ts from '@typescript/typescript6';
 import { catalog, defaults, type Scene, type Equipment, type Endpoint, type Link, type Value, type Kind } from './core';
 
 export interface Span { from: number; to: number }

@@ -18,6 +18,10 @@ export class SceneView {
   selected: string | null = null; paused = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   flows = new Map<string, number | null>(); notes: string[] = [];
   private layers: SVGGElement; private updates: ((dt: number) => void)[] = [];
+  // Disposable render cache only. The TypeScript document remains authoritative.
+  private geometryKey = '';
+  private renderedNodes = new Map<string, Equipment>();
+  private roots = new Map<string, { root: SVGGElement; status: SVGTextElement }>();
   private visual = new Map<string, Record<string, number>>(); private phases = new Map<string, number>();
   private last = 0; private raf = 0; private uid = `scada-${++serial}`;
   camera = { x: 0, y: 0, width: 1500, height: 620 };
@@ -31,7 +35,7 @@ export class SceneView {
     }
     this.layers = el(svg, 'g', { 'data-scene': '' });
     const frame = (time: number) => {
-      const dt = Math.min(.05, this.last ? (time - this.last) / 1000 : 0); this.last = time;
+      const dt = Math.min(.25, this.last ? (time - this.last) / 1000 : 0); this.last = time;
       for (const update of this.updates) update(dt);
       this.onFrame?.(); this.raf = requestAnimationFrame(frame);
     };
@@ -42,6 +46,7 @@ export class SceneView {
   private value(n: Equipment, key: string, dt: number): number {
     let values = this.visual.get(n.id); if (!values) { values = {}; this.visual.set(n.id, values); }
     const target = Number(n.props[key]); const old = values[key] ?? target;
+    if (n.props.quality !== 'good') return old;
     values[key] = Math.abs(target - old) < .03 || this.paused ? target : old + (target - old) * (1 - Math.exp(-dt * 10));
     return values[key];
   }
@@ -55,28 +60,45 @@ export class SceneView {
   zoom(factor: number) { const c = this.camera; const width = Math.max(220, Math.min(12000, c.width * factor)), height = width / c.width * c.height; this.setCamera({ x: c.x + (c.width - width) / 2, y: c.y + (c.height - height) / 2, width, height }); }
   select(id: string | null) { this.selected = id; this.layers.querySelectorAll('[data-node], [data-edge]').forEach(n => n.classList.toggle('selected', id !== null && (n.getAttribute('data-node') === id || n.getAttribute('data-edge') === id))); }
   render(scene: Scene) {
-    this.scene = scene; this.updates = [];
+    this.scene = scene;
+    const sim = simulate(scene); this.flows = sim.flows; this.notes = sim.notes;
+    // Parameters/quality do not change routing. Keep DOM nodes and animation
+    // closures alive; refresh only the derived props they read on the next frame.
+    const key = JSON.stringify([
+      scene.nodes.map(n => [n.id, n.kind, n.tap, n.props.x, n.props.y, n.props.at, n.props.offset]),
+      scene.links,
+    ]);
+    if (key === this.geometryKey) {
+      for (const n of scene.nodes) this.renderedNodes.get(n.id)!.props = { ...n.props };
+      this.syncStatuses();
+      for (const update of this.updates) update(0);
+      return;
+    }
+    this.geometryKey = key; this.updates = []; this.roots.clear();
+    this.renderedNodes = new Map(scene.nodes.map(n => [n.id, { ...n, props: { ...n.props } }]));
+    // Remove animation state for deleted items as well as rendered values.
+    const phaseKeys = new Set([...scene.links.map(l => l.id), ...scene.nodes.map(n => `${n.id}:rotor`)]);
+    for (const id of this.phases.keys()) if (!phaseKeys.has(id)) this.phases.delete(id);
     for (const id of this.visual.keys()) if (!scene.nodes.some(n => n.id === id)) this.visual.delete(id);
     const geometry = layout(scene); this.routes = geometry.routes; this.warnings = geometry.warnings;
-    const sim = simulate(scene); this.flows = sim.flows; this.notes = sim.notes;
     this.layers.replaceChildren(); const pipes = el(this.layers, 'g'), devices = el(this.layers, 'g'), instruments = el(this.layers, 'g');
     for (const edge of scene.links) {
       const route = this.routes.get(edge.id)!;
       const g = el(pipes, 'g', { 'data-edge': edge.id, class: `edge${route.valid ? '' : ' invalid'}`, tabindex: 0, role: 'button', 'aria-label': `Труба ${edge.from.node} → ${edge.to.node}` });
       el(g, 'path', { d: route.path, ...pipeAttrs, stroke: '#7d9aa6', 'stroke-width': 26 });
       el(g, 'path', { d: route.path, ...pipeAttrs, stroke: '#d5e4e9', 'stroke-width': 22 });
-      el(g, 'path', { d: route.path, ...pipeAttrs, stroke: route.valid ? '#08a7c5' : '#ca6661', 'stroke-width': 18, 'data-water': edge.id });
+      const water = el(g, 'path', { d: route.path, ...pipeAttrs, stroke: route.valid ? '#08a7c5' : '#ca6661', 'stroke-width': 18, 'data-water': edge.id });
       const flow = el(g, 'path', { d: route.path, ...pipeAttrs, stroke: '#a0eef4', 'stroke-width': 12, 'stroke-dasharray': '36 30', 'data-flow': edge.id });
       const hit = el(g, 'g', { class: 'edge-hit' });
       for (let i = 1; i < route.points.length; i++) {
         const a = route.points[i - 1], b = route.points[i];
         el(hit, 'rect', { x: Math.min(a.x, b.x) - 10, y: Math.min(a.y, b.y) - 10, width: Math.abs(a.x - b.x) + 20, height: Math.abs(a.y - b.y) + 20, fill: 'transparent' });
       }
-      this.updates.push(dt => { const q = route.valid ? this.flows.get(edge.id) : 0; const phase = this.phase(edge.id, q == null ? 0 : q * 4.5, dt); flow.setAttribute('stroke-dashoffset', String(-phase % 66)); flow.setAttribute('opacity', q == null ? '0' : '.8'); });
+      this.updates.push(dt => { const q = route.valid ? this.flows.get(edge.id) : 0; const phase = this.phase(edge.id, q == null ? 0 : q * 4.5, dt); flow.setAttribute('stroke-dashoffset', String(-phase % 66)); flow.setAttribute('opacity', q == null ? '0' : '.8'); water.setAttribute('stroke', !route.valid ? '#ca6661' : q == null ? '#b5c8d1' : '#08a7c5'); });
     }
-    for (const n of scene.nodes.filter(n => !catalog[n.kind].instrument)) this.equipment(devices, n);
-    for (const n of scene.nodes.filter(n => catalog[n.kind].instrument)) this.instrument(instruments, n);
-    this.select(this.selected);
+    for (const n of [...this.renderedNodes.values()].filter(n => !catalog[n.kind].instrument)) this.equipment(devices, n);
+    for (const n of [...this.renderedNodes.values()].filter(n => catalog[n.kind].instrument)) this.instrument(instruments, n);
+    this.syncStatuses(); this.select(this.selected);
     for (const fn of this.updates) fn(0);
   }
   private root(parent: SVGGElement, n: Equipment, x: number, y: number): SVGGElement {
@@ -86,8 +108,19 @@ export class SceneView {
     const header = el(g, 'g', { class: 'object-label' });
     label(header, 0, -30, n.id, 18, 'start', '#224f63');
     el(header, 'text', { x: 0, y: -11, fill: '#738e9b', 'font-size': 14, 'font-family': 'system-ui, sans-serif' }, d.label);
-    if (n.props.quality !== 'good' || n.props.alarm !== 'none') label(g, d.width, -30, n.props.quality !== 'good' ? String(n.props.quality).toUpperCase() : String(n.props.alarm).toUpperCase(), 11, 'end', n.props.quality !== 'good' ? '#7c8f98' : '#bd5145');
+    // Reserve a separate line for exceptional state: it must never cover the ID.
+    const status = label(g, 0, d.height + 18, '', 11, 'start');
+    this.roots.set(n.id, { root: g, status });
     return g;
+  }
+  private syncStatuses() {
+    for (const [id, { root, status }] of this.roots) {
+      const n = this.renderedNodes.get(id)!;
+      const quality = String(n.props.quality), alarm = String(n.props.alarm);
+      root.setAttribute('data-quality', quality); root.setAttribute('data-alarm', alarm);
+      status.textContent = quality !== 'good' ? quality.toUpperCase() : alarm !== 'none' ? alarm.toUpperCase() : '';
+      status.setAttribute('fill', quality !== 'good' ? '#6a8190' : '#bd5145');
+    }
   }
   private equipment(parent: SVGGElement, n: Equipment) {
     const d = catalog[n.kind], g = this.root(parent, n, Number(n.props.x), Number(n.props.y));
@@ -108,7 +141,7 @@ export class SceneView {
       el(body, 'ellipse', { cx: 79, cy: 41, rx: 61, ry: 15, fill: metal, stroke: '#86a2ae', 'stroke-width': 1.5 });
       rect(68, 3, 23, 25, 1);
       const value = label(body, 79, 135, '', 22, 'middle', '#12475e');
-      this.updates.push(dt => { const v = this.value(n, 'level', dt), y = 195 - v * 1.44; fluid.setAttribute('y', String(y)); fluid.setAttribute('height', String(215 - y)); surface.setAttribute('cy', String(y)); value.textContent = n.props.quality === 'bad' ? '—' : `${Math.round(v)}%`; water.setAttribute('opacity', n.props.quality === 'bad' ? '.15' : '1'); });
+      this.updates.push(dt => { const v = this.value(n, 'level', dt), y = 195 - v * 1.44; fluid.setAttribute('y', String(y)); fluid.setAttribute('height', String(215 - y)); surface.setAttribute('cy', String(y)); value.textContent = n.props.quality === 'bad' ? '—' : `${Math.round(v)}%`; water.setAttribute('opacity', n.props.quality === 'bad' ? '0' : '1'); });
     } else if (n.kind === 'pump') {
       el(body, 'ellipse', { cx: 118, cy: 160, rx: 95, ry: 5, fill: '#254e60', opacity: .07 });
       el(body, 'path', { d: 'M40 132 32 151H109L100 132M143 130 138 151H207L200 130', fill: dark, stroke: '#547685' });
@@ -126,7 +159,7 @@ export class SceneView {
       el(body, 'circle', { cx: 76, cy: 96, r: 8, fill: metal, stroke: '#718f9c' });
       for (let angle = 0; angle < 360; angle += 60) bolt(body, 76 + 43 * Math.cos(angle * Math.PI / 180), 96 + 43 * Math.sin(angle * Math.PI / 180), 2.3);
       const value = label(body, 171, 149, '', 9); const lamp = el(body, 'circle', { cx: 141, cy: 145, r: 2.4 });
-      this.updates.push(dt => { const rpm = this.value(n, 'rpm', dt), stopped = n.props.quality !== 'good' || n.props.alarm === 'trip'; const angle = this.phase(`${n.id}:rotor`, stopped ? 0 : rpm / 10, dt); rotor.setAttribute('transform', `rotate(${angle % 360} 76 96)`); value.textContent = n.props.quality !== 'good' ? String(n.props.quality) : stopped ? 'TRIP' : Math.abs(rpm) < 1 ? 'СТОП' : 'РАБОТА'; lamp.setAttribute('fill', stopped ? '#cd6152' : Math.abs(rpm) < 1 ? '#91a7af' : '#23a381'); });
+      this.updates.push(dt => { const rpm = this.value(n, 'rpm', dt), stopped = n.props.quality !== 'good' || n.props.alarm === 'trip'; const angle = this.phase(`${n.id}:rotor`, stopped || Math.abs(rpm) < 1 ? 0 : rpm / 10, dt); rotor.setAttribute('transform', `rotate(${angle % 360} 76 96)`); value.textContent = n.props.quality !== 'good' ? String(n.props.quality) : stopped ? 'TRIP' : Math.abs(rpm) < 1 ? 'СТОП' : 'РАБОТА'; lamp.setAttribute('fill', n.props.quality !== 'good' ? '#91a7af' : stopped ? '#cd6152' : Math.abs(rpm) < 1 ? '#91a7af' : '#23a381'); });
     } else if (n.kind === 'valve') {
       rect(0, 90, 160, 24); [7, 137].forEach(x => { rect(x, 81, 13, 42, 3); [88, 116].forEach(y => bolt(body, x + 6.5, y)); });
       el(body, 'path', { d: 'M43 88 62 72H98L119 88V116L98 132H62L43 116Z', fill: metal, stroke: '#6d8d9b', 'stroke-width': 1.4 });
@@ -136,7 +169,7 @@ export class SceneView {
       el(body, 'path', { d: 'M61 73V31H99V73M57 73H104', fill: 'none', stroke: '#5f7f8f', 'stroke-width': 4 });
       rect(51, 6, 58, 28, 6, dark); rect(60, 13, 40, 9, 2, '#9abcc9');
       const value = label(body, 80, 156, '', 14);
-      this.updates.push(dt => { const v = this.value(n, 'opening', dt); gate.setAttribute('height', String(25 * (1 - v / 100))); gate.setAttribute('opacity', v > 99.9 ? '0' : '1'); stem.setAttribute('transform', `translate(0 ${-v * .11})`); value.textContent = n.props.quality === 'bad' ? '—' : `${Math.round(v)}%`; });
+      this.updates.push(dt => { const v = this.value(n, 'opening', dt); gate.setAttribute('height', String(25 * (1 - v / 100))); gate.setAttribute('opacity', v > 99.9 ? '0' : '1'); stem.setAttribute('transform', `translate(0 ${-v * .11})`); gate.setAttribute('visibility', n.props.quality === 'bad' ? 'hidden' : 'visible'); stem.setAttribute('visibility', n.props.quality === 'bad' ? 'hidden' : 'visible'); value.textContent = n.props.quality === 'bad' ? '—' : `${Math.round(v)}%`; });
     } else if (n.kind === 'flowmeter') {
       rect(0, 26, 96, 24); [0, 87].forEach(x => { rect(x, 16, 9, 44, 2); [23, 53].forEach(y => bolt(body, x + 4.5, y, 1.8)); });
       el(body, 'circle', { cx: 48, cy: 38, r: 32, fill: '#f1f8fa', stroke: '#7b9aa7', 'stroke-width': 3 });
@@ -148,7 +181,7 @@ export class SceneView {
       rect(20, 25, 130, 115, 20); rect(32, 37, 106, 90, 13, dark);
       const coil = el(body, 'path', { d: 'M45 53H121Q128 53 128 62Q128 70 121 70H49Q42 70 42 80Q42 89 49 89H121Q128 89 128 98Q128 109 121 109H45', fill: 'none', stroke: '#37c4d0', 'stroke-width': 7, 'stroke-linecap': 'round' });
       const value = label(body, 85, 162, '', 14);
-      this.updates.push(dt => { const v = this.value(n, 'temperature', dt); value.textContent = n.props.quality === 'bad' ? '—' : `${Math.round(v)} °C`; coil.setAttribute('stroke', v > 90 ? '#dd9c62' : '#37c4d0'); });
+      this.updates.push(dt => { const v = this.value(n, 'temperature', dt); value.textContent = n.props.quality === 'bad' ? '—' : `${Math.round(v)} °C`; coil.setAttribute('stroke', n.props.quality === 'bad' ? '#91a7af' : v > 90 ? '#dd9c62' : '#37c4d0'); });
     } else if (n.kind === 'outlet') {
       el(body, 'path', { d: 'M0 10H22V2L43 20 22 38V30H0Z', fill: metal, stroke: '#668c9c', 'stroke-width': 1.5 });
     }

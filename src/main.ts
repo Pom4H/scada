@@ -106,7 +106,7 @@ function updateDiagnostics() {
   $('diagnostics').replaceChildren();
   for (const message of messages.length ? messages : ['Синтаксис и геометрия проверены. Расход — упрощённая демонстрационная модель.']) { const p = document.createElement('p'); p.textContent = message; $('diagnostics').append(p); }
 }
-function setTab(tab: string) { workspace.dataset.tab = tab; document.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === tab))); editor.requestMeasure(); }
+function setTab(tab: string) { workspace.dataset.tab = tab; document.querySelectorAll<HTMLButtonElement>('button[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === tab))); editor.requestMeasure(); }
 function select(id: string | null, reveal = false) {
   selected = id; sceneView.select(id); inspectorFor = null; renderInspector();
   if (id) workspace.classList.remove('no-inspector');
@@ -239,7 +239,7 @@ $('format').addEventListener('click', () => safely(() => replaceSource(formatSou
 $('diagnostics-button').addEventListener('click', () => $('diagnostics').hidden = !$('diagnostics').hidden);
 $('help').onclick = () => { const dialog = $('guide') as HTMLDialogElement; dialog.showModal(); };
 $('guide-close').addEventListener('click', () => ($('guide') as HTMLDialogElement).close());
-document.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab!)));
+document.querySelectorAll<HTMLButtonElement>('button[data-tab]').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab!)));
 $('add').addEventListener('click', () => $('palette').hidden = !$('palette').hidden);
 for (const [kind, spec] of Object.entries(catalog)) {
   const button = document.createElement('button'); button.textContent = spec.label;

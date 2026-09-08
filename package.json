@@ -22,11 +22,9 @@
     "@codemirror/lint": "6.9.7",
     "@codemirror/state": "6.7.4",
     "@codemirror/view": "6.43.11",
-    "@playwright/test": "1.55.1",
     "codemirror": "6.0.2",
-    "esbuild": "0.25.5",
-    "typescript": "5.9.3",
-    "@lezer/highlight": "1.2.3"
+    "@lezer/highlight": "1.2.3",
+    "@typescript/typescript6": "6.0.2"
   },
   "private": true,
   "type": "module",
@@ -35,6 +33,11 @@
     "url": "https://github.com/Pom4H/scada.git"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=24.20.0 <25"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "esbuild": "0.28.2",
+    "typescript": "7.0.2"
   }
 }

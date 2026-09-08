@@ -31,7 +31,7 @@ Syntax errors keep the last valid preview visible and block visual changes until
 
 ## Local development
 
-Node.js 22 or later:
+Node.js **24 LTS** (exact tested version in `.nvmrc`):
 
 ```sh
 npm ci
@@ -69,3 +69,14 @@ The Pages workflow runs the build, core tests and browser tests before publishin
 For forks, select **Settings → Pages → Source → GitHub Actions**, then run **Check and deploy**. The first deployment requires Pages to be enabled by a repository administrator; ordinary workflow tokens may not be permitted to enable a new site.
 
 MIT © Roman Popov. See [CONTRIBUTING](CONTRIBUTING.md) and [SECURITY](SECURITY.md).
+
+## Toolchain and updates
+
+`typescript` 7 checks the project. The browser DSL parser imports Microsoft's
+`@typescript/typescript6` compatibility package, because TypeScript 7.0 does not
+provide the JavaScript Compiler API. Test/build tools are development dependencies.
+Dependabot groups monthly npm and Actions updates rather than opening a PR per package.
+
+Parameter and quality changes retain existing SVG nodes and animation phases.
+Routing is recalculated only when topology, positions or tap placement change.
+This cache is disposable; the only saved project is still `scene.ts`.
