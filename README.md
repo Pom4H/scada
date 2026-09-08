@@ -45,7 +45,7 @@ Bun can also run the scripts (`bun run build`, `bun run preview`); CI installs t
 ```sh
 npm run check                       # build, strict TypeScript, core tests
 npx playwright install --with-deps chromium webkit
-npm run test:e2e                     # real browser interaction tests
+npm run test:e2e                    # real browser interaction tests
 ```
 
 For browser runtimes that deliberately disallow HTTP navigation, `SCADA_INJECT=1` injects the same built assets into an opaque-origin Chromium page. It skips the two tests that require an HTTP origin. CI never uses this mode.
@@ -54,7 +54,7 @@ For browser runtimes that deliberately disallow HTTP navigation, `SCADA_INJECT=1
 
 Tank, round pump, regulating valve, flanged inline flowmeter, heat exchanger, process outlet, pressure gauge and temperature sensor; quality/alarm states; port-aware obstacle routing; real rotor and rectangular water-flow animations; a sampled flow trend; source-preserving AST edits; code completion, diagnostics, formatting and a shared undo history; file and HTML export; URL sharing; responsive layout; CI and Pages deployment.
 
-This is a **declarative TypeScript subset**, interpreted from the TypeScript AST. It does not execute arbitrary JavaScript. It accepts named imports, `const`, DSL calls, literal property objects and scalar expressions. See the [language contract](docs/dsl.md). TypeScript 5.9.3 is pinned for its JavaScript compiler API, which runs in the browser; native-only compiler executables cannot replace that API here.
+This is a **declarative TypeScript subset**, interpreted from the TypeScript AST. It does not execute arbitrary JavaScript. It accepts named imports, `const`, DSL calls, literal property objects and scalar expressions. See the [language contract](docs/dsl.md).
 
 ## Simulation boundary
 
@@ -68,15 +68,10 @@ The Pages workflow runs the build, core tests and browser tests before publishin
 
 For forks, select **Settings → Pages → Source → GitHub Actions**, then run **Check and deploy**. The first deployment requires Pages to be enabled by a repository administrator; ordinary workflow tokens may not be permitted to enable a new site.
 
-MIT © Roman Popov. See [CONTRIBUTING](CONTRIBUTING.md) and [SECURITY](SECURITY.md).
-
 ## Toolchain and updates
 
-`typescript` 7 checks the project. The browser DSL parser imports Microsoft's
-`@typescript/typescript6` compatibility package, because TypeScript 7.0 does not
-provide the JavaScript Compiler API. Test/build tools are development dependencies.
-Dependabot groups monthly npm and Actions updates rather than opening a PR per package.
+The project is checked with TypeScript 7. The browser-side DSL parser uses Microsoft's `@typescript/typescript6` compatibility package for the JavaScript Compiler API. Test/build tools are development dependencies. Dependabot groups monthly npm and Actions updates rather than opening a PR per package.
 
-Parameter and quality changes retain existing SVG nodes and animation phases.
-Routing is recalculated only when topology, positions or tap placement change.
-This cache is disposable; the only saved project is still `scene.ts`.
+Parameter and quality changes retain existing SVG nodes and animation phases. Routing is recalculated only when topology, positions or tap placement change. This cache is disposable; the only saved project is still `scene.ts`.
+
+MIT © Roman Popov. See [CONTRIBUTING](CONTRIBUTING.md) and [SECURITY](SECURITY.md).
