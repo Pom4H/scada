@@ -22,7 +22,10 @@
     "server": "npm run server:build && node .server/cli.mjs",
     "demo": "npm run build && npm run server",
     "test:runtime": "node scripts/server-test.mjs && node scripts/runtime-qa-test.mjs",
-    "test:runtime:e2e": "playwright test -c playwright.runtime.config.ts"
+    "test:runtime:e2e": "playwright test -c playwright.runtime.config.ts",
+    "runtime:capture": "node scripts/runtime-qa-capture.mjs",
+    "runtime:bench": "node scripts/runtime-qa-benchmark.mjs",
+    "runtime:animation": "node scripts/runtime-qa-animation.mjs"
   },
   "keywords": [],
   "author": "Roman Popov",
