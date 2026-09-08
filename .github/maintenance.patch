@@ -1,0 +1,325 @@
+diff --git a/.github/dependabot.yml b/.github/dependabot.yml
+index 3225a69..2260038 100644
+--- a/.github/dependabot.yml
++++ b/.github/dependabot.yml
+@@ -6,0 +7 @@ updates:
++    open-pull-requests-limit: 2
+@@ -8,2 +9,2 @@ updates:
+-      codemirror:
+-        patterns: ['@codemirror/*', '@lezer/*', 'codemirror']
++      npm-dependencies:
++        patterns: ['*']
+@@ -13,0 +15,4 @@ updates:
++    open-pull-requests-limit: 2
++    groups:
++      github-actions:
++        patterns: ['*']
+diff --git a/.nvmrc b/.nvmrc
+new file mode 100644
+index 0000000..b7179ae
+--- /dev/null
++++ b/.nvmrc
+@@ -0,0 +1 @@
++24.20.0
+diff --git a/README.md b/README.md
+index ae6edde..1ce36d5 100644
+--- a/README.md
++++ b/README.md
+@@ -34 +34 @@ Syntax errors keep the last valid preview visible and block visual changes until
+-Node.js 22 or later:
++Node.js **24 LTS** (exact tested version in `.nvmrc`):
+@@ -71,0 +72,11 @@ MIT © Roman Popov. See [CONTRIBUTING](CONTRIBUTING.md) and [SECURITY](SECURITY.
++
++## Toolchain and updates
++
++`typescript` 7 checks the project. The browser DSL parser imports Microsoft's
++`@typescript/typescript6` compatibility package, because TypeScript 7.0 does not
++provide the JavaScript Compiler API. Test/build tools are development dependencies.
++Dependabot groups monthly npm and Actions updates rather than opening a PR per package.
++
++Parameter and quality changes retain existing SVG nodes and animation phases.
++Routing is recalculated only when topology, positions or tap placement change.
++This cache is disposable; the only saved project is still `scene.ts`.
+diff --git a/index.html b/index.html
+index eaeda87..d31bd6f 100644
+--- a/index.html
++++ b/index.html
+@@ -31 +31 @@
+-    <main class="workspace" data-tab="canvas">
++    <main class="workspace no-inspector" data-tab="canvas">
+diff --git a/package.json b/package.json
+index 9c69183..c380cc7 100644
+--- a/package.json
++++ b/package.json
+@@ -25 +24,0 @@
+-    "@playwright/test": "1.55.1",
+@@ -27,3 +26,2 @@
+-    "esbuild": "0.25.5",
+-    "typescript": "5.9.3",
+-    "@lezer/highlight": "1.2.3"
++    "@lezer/highlight": "1.2.3",
++    "@typescript/typescript6": "6.0.2"
+@@ -38 +36,6 @@
+-    "node": ">=22"
++    "node": ">=24.20.0 <25"
++  },
++  "devDependencies": {
++    "@playwright/test": "1.63.0",
++    "esbuild": "0.28.2",
++    "typescript": "7.0.2"
+diff --git a/playwright.config.ts b/playwright.config.ts
+index 6f13273..7768304 100644
+--- a/playwright.config.ts
++++ b/playwright.config.ts
+@@ -1,0 +2 @@ import { defineConfig } from '@playwright/test';
++const executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
+@@ -4,4 +5,10 @@ export default defineConfig({
+-  reporter: [['list'], ['html', {open: 'never'}]],
+-  use: {baseURL: 'http://127.0.0.1:4173/scada/', viewport: {width: 1440, height: 900}, screenshot: 'only-on-failure', trace:'retain-on-failure'},
+-  webServer: {command:'node scripts/serve.mjs',url:'http://127.0.0.1:4173/scada/',reuseExistingServer:!process.env.CI},
+-  projects: process.env.SCADA_INJECT ? [{name:'chromium',use:{browserName:'chromium',launchOptions:{executablePath:'/usr/bin/chromium',args:['--no-sandbox']}}}] : [{name:'chromium',use:{browserName:'chromium'}},{name:'webkit',use:{browserName:'webkit'}}],
++  reporter: [['list'], ['html', { open: 'never' }]],
++  use: {
++    baseURL: 'http://127.0.0.1:4173/scada/', viewport: { width: 1440, height: 900 },
++    reducedMotion: 'no-preference', screenshot: 'only-on-failure', trace: 'retain-on-failure',
++  },
++  webServer: { command: 'node scripts/serve.mjs', url: 'http://127.0.0.1:4173/scada/', reuseExistingServer: !process.env.CI },
++  projects: [
++    { name: 'chromium', use: { browserName: 'chromium', ...(executablePath ? { launchOptions: { executablePath } } : {}) } },
++    { name: 'webkit', use: { browserName: 'webkit' } },
++  ],
+diff --git a/scripts/build.mjs b/scripts/build.mjs
+index c28c7bf..a5b9f1f 100644
+--- a/scripts/build.mjs
++++ b/scripts/build.mjs
+@@ -8 +8,6 @@ await build({ entryPoints: ['src/main.ts'], outfile: 'dist/app.js', bundle: true
+-await copyFile('index.html', 'dist/index.html'); await copyFile('public/favicon.svg', 'dist/favicon.svg'); await writeFile('dist/.nojekyll', '');
++const revision = process.env.GITHUB_SHA || 'local';
++const html = (await readFile('index.html', 'utf8'))
++  .replace('</head>', `<meta name="scada-revision" content="${revision}"></head>`)
++  .replace('src="./app.js"', `src="./app.js?v=${revision}"`)
++  .replace('href="./app.css"', `href="./app.css?v=${revision}"`);
++await writeFile('dist/index.html', html); await copyFile('public/favicon.svg', 'dist/favicon.svg'); await writeFile('dist/.nojekyll', '');
+diff --git a/scripts/verify-live.mjs b/scripts/verify-live.mjs
+index 1577e8e..6f89214 100644
+--- a/scripts/verify-live.mjs
++++ b/scripts/verify-live.mjs
+@@ -13,0 +14 @@ try {
++  const expectedRevision = process.env.GITHUB_SHA;
+@@ -15,2 +16,4 @@ try {
+-    const response = await page.goto(url, { waitUntil: 'networkidle', timeout: 60000 });
+-    status = response?.status() || 0; if (status === 200) break;
++    const response = await page.goto(expectedRevision ? `${url}?revision=${expectedRevision}` : url, { waitUntil: 'networkidle', timeout: 60000 });
++    status = response?.status() || 0;
++    const revision = await page.locator('meta[name="scada-revision"]').getAttribute('content').catch(() => null);
++    if (status === 200 && (!expectedRevision || revision === expectedRevision)) break;
+@@ -19,0 +23 @@ try {
++  if (expectedRevision) assert.equal(await page.locator('meta[name="scada-revision"]').getAttribute('content'), expectedRevision, 'Published revision matches this workflow');
+@@ -25 +29 @@ try {
+-  assert.notEqual(await rotor(), a); assert.notEqual(await water(), w);
++  await page.waitForFunction(([a, w]) => document.querySelector('[data-part="rotor"]').getAttribute('transform') !== a && document.querySelector('[data-flow]').getAttribute('stroke-dashoffset') !== w, [a, w]);
+@@ -39 +43 @@ try {
+-  await page.setViewportSize({ width: 390, height: 844 }); await page.locator('[data-tab="canvas"]').click();
++  await page.setViewportSize({ width: 390, height: 844 }); await page.locator('button[data-tab="canvas"]').click();
+@@ -41 +45 @@ try {
+-  await page.locator('[data-tab="inspect"]').click();
++  await page.locator('button[data-tab="inspect"]').click();
+@@ -44 +48 @@ try {
+-  const result = { url, status, passed: true, checks: ['HTML and assets', 'eight equipment elements', 'rotor animation', 'water animation', 'drag updates TypeScript', 'one undo restores source', 'closed valve stops flow', 'closed valve does not stop powered rotor', 'responsive panels', 'no page errors'] };
++  const result = { url, status, revision: expectedRevision, passed: true, checks: ['HTML and assets', 'eight equipment elements', 'rotor animation', 'water animation', 'drag updates TypeScript', 'one undo restores source', 'closed valve stops flow', 'closed valve does not stop powered rotor', 'responsive panels', 'no page errors'] };
+diff --git a/src/assets.d.ts b/src/assets.d.ts
+new file mode 100644
+index 0000000..35306c6
+--- /dev/null
++++ b/src/assets.d.ts
+@@ -0,0 +1 @@
++declare module '*.css';
+diff --git a/src/main.ts b/src/main.ts
+index ef43ff8..ed6a34c 100644
+--- a/src/main.ts
++++ b/src/main.ts
+@@ -109 +109 @@ function updateDiagnostics() {
+-function setTab(tab: string) { workspace.dataset.tab = tab; document.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === tab))); editor.requestMeasure(); }
++function setTab(tab: string) { workspace.dataset.tab = tab; document.querySelectorAll<HTMLButtonElement>('button[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === tab))); editor.requestMeasure(); }
+@@ -242 +242 @@ $('guide-close').addEventListener('click', () => ($('guide') as HTMLDialogElemen
+-document.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab!)));
++document.querySelectorAll<HTMLButtonElement>('button[data-tab]').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab!)));
+diff --git a/src/source.ts b/src/source.ts
+index d198ae8..772b3bf 100644
+--- a/src/source.ts
++++ b/src/source.ts
+@@ -1 +1 @@
+-import ts from 'typescript';
++import ts from '@typescript/typescript6';
+diff --git a/src/view.ts b/src/view.ts
+index b8cb47b..6aaa288 100644
+--- a/src/view.ts
++++ b/src/view.ts
+@@ -20,0 +21,4 @@ export class SceneView {
++  // Disposable render cache only. The TypeScript document remains authoritative.
++  private geometryKey = '';
++  private renderedNodes = new Map<string, Equipment>();
++  private roots = new Map<string, { root: SVGGElement; status: SVGTextElement }>();
+@@ -34 +38 @@ export class SceneView {
+-      const dt = Math.min(.05, this.last ? (time - this.last) / 1000 : 0); this.last = time;
++      const dt = Math.min(.25, this.last ? (time - this.last) / 1000 : 0); this.last = time;
+@@ -44,0 +49 @@ export class SceneView {
++    if (n.props.quality !== 'good') return old;
+@@ -58 +63,19 @@ export class SceneView {
+-    this.scene = scene; this.updates = [];
++    this.scene = scene;
++    const sim = simulate(scene); this.flows = sim.flows; this.notes = sim.notes;
++    // Parameters/quality do not change routing. Keep DOM nodes and animation
++    // closures alive; refresh only the derived props they read on the next frame.
++    const key = JSON.stringify([
++      scene.nodes.map(n => [n.id, n.kind, n.tap, n.props.x, n.props.y, n.props.at, n.props.offset]),
++      scene.links,
++    ]);
++    if (key === this.geometryKey) {
++      for (const n of scene.nodes) this.renderedNodes.get(n.id)!.props = { ...n.props };
++      this.syncStatuses();
++      for (const update of this.updates) update(0);
++      return;
++    }
++    this.geometryKey = key; this.updates = []; this.roots.clear();
++    this.renderedNodes = new Map(scene.nodes.map(n => [n.id, { ...n, props: { ...n.props } }]));
++    // Remove animation state for deleted items as well as rendered values.
++    const phaseKeys = new Set([...scene.links.map(l => l.id), ...scene.nodes.map(n => `${n.id}:rotor`)]);
++    for (const id of this.phases.keys()) if (!phaseKeys.has(id)) this.phases.delete(id);
+@@ -61 +83,0 @@ export class SceneView {
+-    const sim = simulate(scene); this.flows = sim.flows; this.notes = sim.notes;
+@@ -68 +90 @@ export class SceneView {
+-      el(g, 'path', { d: route.path, ...pipeAttrs, stroke: route.valid ? '#08a7c5' : '#ca6661', 'stroke-width': 18, 'data-water': edge.id });
++      const water = el(g, 'path', { d: route.path, ...pipeAttrs, stroke: route.valid ? '#08a7c5' : '#ca6661', 'stroke-width': 18, 'data-water': edge.id });
+@@ -75 +97 @@ export class SceneView {
+-      this.updates.push(dt => { const q = route.valid ? this.flows.get(edge.id) : 0; const phase = this.phase(edge.id, q == null ? 0 : q * 4.5, dt); flow.setAttribute('stroke-dashoffset', String(-phase % 66)); flow.setAttribute('opacity', q == null ? '0' : '.8'); });
++      this.updates.push(dt => { const q = route.valid ? this.flows.get(edge.id) : 0; const phase = this.phase(edge.id, q == null ? 0 : q * 4.5, dt); flow.setAttribute('stroke-dashoffset', String(-phase % 66)); flow.setAttribute('opacity', q == null ? '0' : '.8'); water.setAttribute('stroke', !route.valid ? '#ca6661' : q == null ? '#b5c8d1' : '#08a7c5'); });
+@@ -77,3 +99,3 @@ export class SceneView {
+-    for (const n of scene.nodes.filter(n => !catalog[n.kind].instrument)) this.equipment(devices, n);
+-    for (const n of scene.nodes.filter(n => catalog[n.kind].instrument)) this.instrument(instruments, n);
+-    this.select(this.selected);
++    for (const n of [...this.renderedNodes.values()].filter(n => !catalog[n.kind].instrument)) this.equipment(devices, n);
++    for (const n of [...this.renderedNodes.values()].filter(n => catalog[n.kind].instrument)) this.instrument(instruments, n);
++    this.syncStatuses(); this.select(this.selected);
+@@ -89 +111,3 @@ export class SceneView {
+-    if (n.props.quality !== 'good' || n.props.alarm !== 'none') label(g, d.width, -30, n.props.quality !== 'good' ? String(n.props.quality).toUpperCase() : String(n.props.alarm).toUpperCase(), 11, 'end', n.props.quality !== 'good' ? '#7c8f98' : '#bd5145');
++    // Reserve a separate line for exceptional state: it must never cover the ID.
++    const status = label(g, 0, d.height + 18, '', 11, 'start');
++    this.roots.set(n.id, { root: g, status });
+@@ -91,0 +116,9 @@ export class SceneView {
++  private syncStatuses() {
++    for (const [id, { root, status }] of this.roots) {
++      const n = this.renderedNodes.get(id)!;
++      const quality = String(n.props.quality), alarm = String(n.props.alarm);
++      root.setAttribute('data-quality', quality); root.setAttribute('data-alarm', alarm);
++      status.textContent = quality !== 'good' ? quality.toUpperCase() : alarm !== 'none' ? alarm.toUpperCase() : '';
++      status.setAttribute('fill', quality !== 'good' ? '#6a8190' : '#bd5145');
++    }
++  }
+@@ -111 +144 @@ export class SceneView {
+-      this.updates.push(dt => { const v = this.value(n, 'level', dt), y = 195 - v * 1.44; fluid.setAttribute('y', String(y)); fluid.setAttribute('height', String(215 - y)); surface.setAttribute('cy', String(y)); value.textContent = n.props.quality === 'bad' ? '—' : `${Math.round(v)}%`; water.setAttribute('opacity', n.props.quality === 'bad' ? '.15' : '1'); });
++      this.updates.push(dt => { const v = this.value(n, 'level', dt), y = 195 - v * 1.44; fluid.setAttribute('y', String(y)); fluid.setAttribute('height', String(215 - y)); surface.setAttribute('cy', String(y)); value.textContent = n.props.quality === 'bad' ? '—' : `${Math.round(v)}%`; water.setAttribute('opacity', n.props.quality === 'bad' ? '0' : '1'); });
+@@ -129 +162 @@ export class SceneView {
+-      this.updates.push(dt => { const rpm = this.value(n, 'rpm', dt), stopped = n.props.quality !== 'good' || n.props.alarm === 'trip'; const angle = this.phase(`${n.id}:rotor`, stopped ? 0 : rpm / 10, dt); rotor.setAttribute('transform', `rotate(${angle % 360} 76 96)`); value.textContent = n.props.quality !== 'good' ? String(n.props.quality) : stopped ? 'TRIP' : Math.abs(rpm) < 1 ? 'СТОП' : 'РАБОТА'; lamp.setAttribute('fill', stopped ? '#cd6152' : Math.abs(rpm) < 1 ? '#91a7af' : '#23a381'); });
++      this.updates.push(dt => { const rpm = this.value(n, 'rpm', dt), stopped = n.props.quality !== 'good' || n.props.alarm === 'trip'; const angle = this.phase(`${n.id}:rotor`, stopped || Math.abs(rpm) < 1 ? 0 : rpm / 10, dt); rotor.setAttribute('transform', `rotate(${angle % 360} 76 96)`); value.textContent = n.props.quality !== 'good' ? String(n.props.quality) : stopped ? 'TRIP' : Math.abs(rpm) < 1 ? 'СТОП' : 'РАБОТА'; lamp.setAttribute('fill', n.props.quality !== 'good' ? '#91a7af' : stopped ? '#cd6152' : Math.abs(rpm) < 1 ? '#91a7af' : '#23a381'); });
+@@ -139 +172 @@ export class SceneView {
+-      this.updates.push(dt => { const v = this.value(n, 'opening', dt); gate.setAttribute('height', String(25 * (1 - v / 100))); gate.setAttribute('opacity', v > 99.9 ? '0' : '1'); stem.setAttribute('transform', `translate(0 ${-v * .11})`); value.textContent = n.props.quality === 'bad' ? '—' : `${Math.round(v)}%`; });
++      this.updates.push(dt => { const v = this.value(n, 'opening', dt); gate.setAttribute('height', String(25 * (1 - v / 100))); gate.setAttribute('opacity', v > 99.9 ? '0' : '1'); stem.setAttribute('transform', `translate(0 ${-v * .11})`); gate.setAttribute('visibility', n.props.quality === 'bad' ? 'hidden' : 'visible'); stem.setAttribute('visibility', n.props.quality === 'bad' ? 'hidden' : 'visible'); value.textContent = n.props.quality === 'bad' ? '—' : `${Math.round(v)}%`; });
+@@ -151 +184 @@ export class SceneView {
+-      this.updates.push(dt => { const v = this.value(n, 'temperature', dt); value.textContent = n.props.quality === 'bad' ? '—' : `${Math.round(v)} °C`; coil.setAttribute('stroke', v > 90 ? '#dd9c62' : '#37c4d0'); });
++      this.updates.push(dt => { const v = this.value(n, 'temperature', dt); value.textContent = n.props.quality === 'bad' ? '—' : `${Math.round(v)} °C`; coil.setAttribute('stroke', n.props.quality === 'bad' ? '#91a7af' : v > 90 ? '#dd9c62' : '#37c4d0'); });
+diff --git a/tests/e2e/editor.spec.ts b/tests/e2e/editor.spec.ts
+index 20513f0..e140fb2 100644
+--- a/tests/e2e/editor.spec.ts
++++ b/tests/e2e/editor.spec.ts
+@@ -5,4 +5 @@ async function open(page:Page){
+- if(process.env.SCADA_INJECT){
+-  const html=(await readFile('dist/index.html','utf8')).replace('<script type="module" src="./app.js"></script>','').replace('<link rel="stylesheet" href="./app.css" />','');
+-  await page.setContent(html);await page.addStyleTag({content:await readFile('dist/app.css','utf8')});await page.addScriptTag({content:await readFile('dist/app.js','utf8'),type:'module'});
+- }else await page.goto('./');
++ await page.goto('./');
+@@ -10,0 +8 @@ async function open(page:Page){
++
+@@ -27 +25,2 @@ test('boot: code editor, connected geometry, visible water, real rotor movement'
+- const a=await rotor(page),p=await phase(page);await page.waitForTimeout(300);expect(await rotor(page)).not.toBe(a);expect(await phase(page)).not.toBe(p);
++ const a=await rotor(page),p=await phase(page);
++ await expect.poll(()=>rotor(page)).not.toBe(a);await expect.poll(()=>phase(page)).not.toBe(p);
+@@ -85 +84 @@ test('responsive layouts do not overflow or cover the inspector and canvas',asyn
+- await page.setViewportSize({width:390,height:844});await page.locator('[data-tab="code"]').click();await expect(page.locator('.cm-content')).toBeVisible();await page.locator('[data-tab="inspect"]').click();await expect(page.locator('#inspector-body')).toBeVisible();
++ await page.setViewportSize({width:390,height:844});await page.locator('button[data-tab="code"]').click();await expect(page.locator('.cm-content')).toBeVisible();await page.locator('button[data-tab="inspect"]').click();await expect(page.locator('#inspector-body')).toBeVisible();
+@@ -93 +91,0 @@ test('TS export equals exact source, import and reload retain source',async({pag
+- test.skip(!!process.env.SCADA_INJECT,'Opaque-origin injection cannot exercise native file origin storage. CI runs real HTTP pages.');
+@@ -100 +97,0 @@ test('shared source loads from a unicode-safe URL hash',async({page})=>{
+- test.skip(!!process.env.SCADA_INJECT,'CI verifies navigation and hash on HTTP origins.');
+diff --git a/tests/e2e/maintenance.spec.ts b/tests/e2e/maintenance.spec.ts
+new file mode 100644
+index 0000000..8d46bd3
+--- /dev/null
++++ b/tests/e2e/maintenance.spec.ts
+@@ -0,0 +1,66 @@
++import { test, expect } from '@playwright/test';
++
++test.beforeEach(async ({ page }) => {
++  await page.goto('./');
++  await page.waitForFunction(() => !!(window as any).__scada);
++});
++
++test('parameter edits retain SVG nodes, routing and the paused rotor phase', async ({ page }) => {
++  await page.locator('[data-node="P-101"]').click();
++  const rotor = page.locator('[data-node="P-101"] [data-part="rotor"]');
++  const first = await rotor.getAttribute('transform');
++  await expect.poll(() => rotor.getAttribute('transform')).not.toBe(first);
++  await page.locator('#pause').click();
++  const phase = await rotor.getAttribute('transform');
++  await page.evaluate(() => {
++    (window as any).__rotorProbe = document.querySelector('[data-node="P-101"] [data-part="rotor"]');
++    (window as any).__pipeProbe = document.querySelector('[data-water]');
++  });
++  await page.locator('#field-temperature').fill('85');
++  await page.locator('#field-temperature').press('Tab');
++  expect(await page.evaluate(() =>
++    (window as any).__rotorProbe === document.querySelector('[data-node="P-101"] [data-part="rotor"]') &&
++    (window as any).__pipeProbe === document.querySelector('[data-water]')
++  )).toBe(true);
++  expect(await rotor.getAttribute('transform')).toBe(phase);
++  expect(await page.evaluate(() => (window as any).__scada.source)).toContain('temperature: 85');
++  await page.locator('#pause').click();
++  await expect.poll(() => rotor.getAttribute('transform')).not.toBe(phase);
++});
++
++test('quality changes suppress fabricated water and keep the equipment ID legible', async ({ page }) => {
++  await page.locator('[data-node="P-101"]').click();
++  await page.locator('#field-quality').selectOption('bad');
++  await expect(page.locator('[data-node="P-101"]')).toHaveAttribute('data-quality', 'bad');
++  await expect(page.locator('[data-flow]').first()).toHaveAttribute('opacity', '0');
++  await expect(page.locator('#flow-readout')).toHaveText('—');
++  await expect(page.locator('[data-water]').first()).toHaveAttribute('stroke', '#b5c8d1');
++  const title = await page.locator('[data-node="P-101"] .object-label').boundingBox();
++  const state = await page.locator('[data-node="P-101"] > text').boundingBox();
++  expect(state!.y).toBeGreaterThan(title!.y + title!.height);
++  await page.screenshot({ path: 'test-results/quality-bad.png' });
++  await page.locator('#field-quality').selectOption('good');
++  await expect(page.locator('[data-water]').first()).toHaveAttribute('stroke', '#08a7c5');
++});
++
++test('tank with unavailable data does not show a made-up fluid level', async ({ page }) => {
++  await page.locator('[data-node="T-101"]').click();
++  await page.locator('#field-quality').selectOption('bad');
++  await expect(page.locator('[data-node="T-101"] [clip-path]')).toHaveAttribute('opacity', '0');
++  await page.locator('#field-quality').selectOption('good');
++  await expect(page.locator('[data-node="T-101"] [clip-path]')).toHaveAttribute('opacity', '1');
++});
++
++test('changing coordinates still reroutes after parameter-only updates', async ({ page }) => {
++  await page.locator('[data-node="V-101"]').click();
++  await page.locator('#field-opening').fill('0');
++  await page.locator('#field-opening').press('Tab');
++  const before = await page.locator('[data-water]').nth(2).getAttribute('d');
++  await page.locator('#field-y').fill('220');
++  await page.locator('#field-y').press('Tab');
++  expect(await page.locator('[data-water]').nth(2).getAttribute('d')).not.toBe(before);
++  expect(await page.evaluate(() => (window as any).__scada.flows['F-101'])).toBe(0);
++  await page.locator('#field-opening').fill('100');
++  await page.locator('#field-opening').press('Tab');
++  expect(await page.evaluate(() => (window as any).__scada.flows['F-101'])).toBe(12);
++});

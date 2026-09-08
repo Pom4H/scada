@@ -1,60 +1,32 @@
-name: Maintenance workspace
+name: Apply reviewed maintenance
 on:
   push:
     branches: [maintenance/lts-polish]
-    paths: [.github/workflows/maintenance-snapshot.yml]
+    paths: [.github/maintenance.patch]
 permissions:
-  contents: read
+  contents: write
 jobs:
-  snapshot:
-    runs-on: ubuntu-latest
+  apply:
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7.0.1
         with:
-          persist-credentials: false
-      - uses: actions/setup-node@v6
+          ref: maintenance/lts-polish
+      - uses: actions/setup-node@v7.0.0
         with:
           node-version: '24.20.0'
-      - name: Prepare exact source and updated toolchain
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Apply reviewed source changes and generate lockfile
         run: |
-          mkdir -p snapshot/workspace snapshot/tools
-          git archive HEAD | tar -x -C snapshot/workspace
-          git rev-parse HEAD > snapshot/base-commit.txt
-          cp "$(command -v node)" snapshot/tools/node
-          for action in checkout setup-node upload-artifact upload-pages-artifact configure-pages deploy-pages; do
-            gh api "repos/actions/$action/releases/latest" --jq '{name: .name, tag: .tag_name, target: .target_commitish}' > "snapshot/action-$action.json"
-          done
-          gh api repos/Pom4H/scada/pulls --paginate --jq '.[] | {number,title,head:.head.ref,sha:.head.sha}' > snapshot/prs.jsonl
-          cd snapshot/workspace
-          node --input-type=module <<'JS'
-          import fs from 'node:fs';
-          import {execFileSync} from 'node:child_process';
-          const p=JSON.parse(fs.readFileSync('package.json','utf8'));
-          fs.copyFileSync('package.json','package.before.json');
-          fs.copyFileSync('package-lock.json','package-lock.before.json');
-          const dev=new Set(['typescript','esbuild','@playwright/test']);
-          const all={...p.dependencies,...p.devDependencies,'@typescript/typescript6':''};
-          p.dependencies={};p.devDependencies={};
-          const versions={};
-          for(const name of Object.keys(all)) {
-            const v=JSON.parse(execFileSync('npm',['view',name+'@latest','version','--json'],{encoding:'utf8'}));
-            versions[name]=v;
-            (dev.has(name)?p.devDependencies:p.dependencies)[name]=v;
-          }
-          p.engines={node:'>=24.20.0 <25'};
-          fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');
-          fs.writeFileSync('../versions.json',JSON.stringify(versions,null,2)+'\n');
-          JS
-          npm install --no-fund
-          npm audit --json > ../audit.json || true
-          npm outdated --json > ../outdated.json || true
-          cd ../..
-          tar -czf scada-maintenance.tgz -C snapshot .
-      - uses: actions/upload-artifact@v7
-        with:
-          name: scada-maintenance
-          path: scada-maintenance.tgz
-          retention-days: 1
+          git apply --check --unidiff-zero .github/maintenance.patch
+          git apply --unidiff-zero .github/maintenance.patch
+          npm install --package-lock-only --ignore-scripts --no-fund
+          npm ci --no-fund
+          npm audit --audit-level=high
+          npm run check
+          git rm .github/maintenance.patch
+          git add .nvmrc .github/dependabot.yml README.md index.html package.json package-lock.json playwright.config.ts scripts/build.mjs scripts/verify-live.mjs src/assets.d.ts src/main.ts src/source.ts src/view.ts tests/e2e/editor.spec.ts tests/e2e/maintenance.spec.ts
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'chore: Node 24 LTS, current dependencies and verified renderer maintenance'
+          git push origin HEAD:maintenance/lts-polish
