@@ -2,12 +2,10 @@ import { test, expect, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import { booster } from '../../src/examples';
 async function open(page:Page){
- if(process.env.SCADA_INJECT){
-  const html=(await readFile('dist/index.html','utf8')).replace('<script type="module" src="./app.js"></script>','').replace('<link rel="stylesheet" href="./app.css" />','');
-  await page.setContent(html);await page.addStyleTag({content:await readFile('dist/app.css','utf8')});await page.addScriptTag({content:await readFile('dist/app.js','utf8'),type:'module'});
- }else await page.goto('./');
+ await page.goto('./');
  await page.waitForFunction(()=>!!(window as any).__scada);
 }
+
 const api=(page:Page)=>page.evaluate(()=>({source:(window as any).__scada.source,error:(window as any).__scada.error,flows:(window as any).__scada.flows,warnings:(window as any).__scada.warnings}));
 async function choose(page:Page,id:string){await page.locator(`[data-node="${id}"]`).click();await expect(page.locator('.inspector-id')).toHaveText(id);}
 async function field(page:Page,name:string,value:string){const el=page.locator(`#field-${name}`);await el.fill(value);await el.press('Tab');}
@@ -24,7 +22,8 @@ test('boot: code editor, connected geometry, visible water, real rotor movement'
  expect((await api(page)).error).toBeNull();expect((await api(page)).warnings).toEqual([]);
  await expect(page.locator('[data-node]')).toHaveCount(8);await expect(page.locator('[data-edge]')).toHaveCount(5);
  await expect(page.locator('.node.selected')).toHaveCount(0);
- const a=await rotor(page),p=await phase(page);await page.waitForTimeout(300);expect(await rotor(page)).not.toBe(a);expect(await phase(page)).not.toBe(p);
+ const a=await rotor(page),p=await phase(page);
+ await expect.poll(()=>rotor(page)).not.toBe(a);await expect.poll(()=>phase(page)).not.toBe(p);
  expect(await page.locator('[data-water]').first().getAttribute('stroke')).toBe('#08a7c5');expect(errors).toEqual([]);
 });
 test('drag patches TS x/y; all comments survive; one undo restores the whole gesture',async({page})=>{
@@ -82,7 +81,7 @@ test('responsive layouts do not overflow or cover the inspector and canvas',asyn
   const sizes=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,w:innerWidth,body:document.body.scrollHeight,h:innerHeight}));expect(sizes.scroll).toBeLessThanOrEqual(width);expect(sizes.body).toBeLessThanOrEqual(height);
   const svg=(await page.locator('#scene').boundingBox())!;expect(svg.x).toBeGreaterThanOrEqual(0);expect(svg.x+svg.width).toBeLessThanOrEqual(width+1);expect(svg.y+svg.height).toBeLessThanOrEqual(height);
  }
- await page.setViewportSize({width:390,height:844});await page.locator('[data-tab="code"]').click();await expect(page.locator('.cm-content')).toBeVisible();await page.locator('[data-tab="inspect"]').click();await expect(page.locator('#inspector-body')).toBeVisible();
+ await page.setViewportSize({width:390,height:844});await page.locator('button[data-tab="code"]').click();await expect(page.locator('.cm-content')).toBeVisible();await page.locator('button[data-tab="inspect"]').click();await expect(page.locator('#inspector-body')).toBeVisible();
 });
 test('help dialog and standalone HTML export are usable',async({page})=>{
  await page.locator('#help').click();await expect(page.locator('#guide')).toBeVisible();await page.locator('#guide-close').click();
@@ -90,14 +89,12 @@ test('help dialog and standalone HTML export are usable',async({page})=>{
  const standalone=await page.context().newPage();await standalone.setContent(html);await expect(standalone.locator('[data-node]')).toHaveCount(8);const r=standalone.locator('[data-part="rotor"]');const a=await r.getAttribute('transform');await standalone.waitForTimeout(200);expect(await r.getAttribute('transform')).not.toBe(a);await standalone.close();
 });
 test('TS export equals exact source, import and reload retain source',async({page})=>{
- test.skip(!!process.env.SCADA_INJECT,'Opaque-origin injection cannot exercise native file origin storage. CI runs real HTTP pages.');
  await choose(page,'P-101');await field(page,'rpm','800');const s=(await api(page)).source;
  const dEvent=page.waitForEvent('download');await page.locator('#save').click();const d=await dEvent;expect(await readFile((await d.path())!,'utf8')).toBe(s);
  await page.reload();await page.waitForFunction(()=>!!(window as any).__scada);expect((await api(page)).source).toBe(s);
  const context=await page.context().browser()!.newContext();const fresh=await context.newPage();await fresh.goto('http://127.0.0.1:4173/scada/');await fresh.locator('#file').setInputFiles({name:'roundtrip.ts',mimeType:'text/plain',buffer:Buffer.from(s)});expect((await api(fresh)).source).toBe(s);await context.close();
 });
 test('shared source loads from a unicode-safe URL hash',async({page})=>{
- test.skip(!!process.env.SCADA_INJECT,'CI verifies navigation and hash on HTTP origins.');
  const s=booster.replace('opening: 76','opening: 33'),code=Buffer.from(s).toString('base64url');await page.goto('./#code='+code);await page.waitForFunction(()=>!!(window as any).__scada);expect((await api(page)).source).toBe(s);
 });
 
