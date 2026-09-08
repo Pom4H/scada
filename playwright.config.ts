@@ -1,7 +1,7 @@
 import { defineConfig } from '@playwright/test';
 const executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
 export default defineConfig({
-  testDir: './tests/e2e', timeout: 30000, fullyParallel: false, workers: 1,
+  testDir: './tests/e2e', testIgnore: 'runtime*.spec.ts', timeout: 30000, fullyParallel: false, workers: 1,
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
     baseURL: 'http://127.0.0.1:4173/scada/', viewport: { width: 1440, height: 900 },

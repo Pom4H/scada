@@ -1,3 +1,5 @@
+import './components/installed';
+import './visual-components';
 import { SceneView } from './view';
 const svg = document.getElementById('scene') as unknown as SVGSVGElement;
 const model = JSON.parse(document.getElementById('model')!.textContent!);

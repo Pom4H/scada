@@ -33,13 +33,15 @@ jobs:
           path: |
             playwright-report/
             test-results/
+            runtime-playwright-report/
+            runtime-test-results/
           retention-days: 7
       - uses: actions/upload-pages-artifact@v5.0.0
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
         with:
           path: dist
   deploy:
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
     needs: check
     runs-on: ubuntu-24.04
     timeout-minutes: 15

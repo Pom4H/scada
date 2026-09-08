@@ -1,10 +1,12 @@
 import ts from '@typescript/typescript6';
 import { catalog, defaults, type Scene, type Equipment, type Endpoint, type Link, type Value, type Kind } from './core';
+import './components/installed';
+import type { RuntimeConfig } from './runtime/protocol';
 
 export interface Span { from: number; to: number }
 export interface Change extends Span { insert: string }
 export interface SourceObject { span: Span; options: ts.ObjectLiteralExpression; fields: Map<string, ts.Expression>; statement: ts.Statement; variable: string }
-export interface Compiled { scene: Scene; file: ts.SourceFile; objects: Map<string, SourceObject>; statements: Map<string, ts.Statement>; imports: Map<string, string> }
+export interface Compiled { scene: Scene; runtime?: RuntimeConfig; file: ts.SourceFile; objects: Map<string, SourceObject>; statements: Map<string, ts.Statement>; imports: Map<string, string>; linkExpressions: Map<string, ts.CallExpression>; tapExpressions: Map<string, ts.CallExpression> }
 export class SourceError extends Error {
   constructor(message: string, public from = 0, public to = from + 1) { super(message); this.name = 'SourceError'; }
 }
@@ -17,7 +19,18 @@ const literal = (n: ts.Expression): boolean => ts.isNumericLiteral(n) || ts.isSt
 /** Read a bounded, declarative TypeScript subset. NEVER eval / new Function. */
 export function compile(source: string): Compiled {
   if (source.length > 120_000) throw new SourceError('Максимальный размер проекта: 120 000 символов.');
-  const file = ts.createSourceFile('scene.ts', source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+  // Bound nesting before the TypeScript parser recurses. Scanner skips strings/comments.
+  const scanner = ts.createScanner(ts.ScriptTarget.Latest, true, ts.LanguageVariant.Standard, source);
+  let nesting = 0, tokens = 0;
+  for (let token = scanner.scan(); token !== ts.SyntaxKind.EndOfFileToken; token = scanner.scan()) {
+    if (++tokens > 25_000) throw new SourceError('Слишком сложный проект.');
+    if ([ts.SyntaxKind.OpenParenToken, ts.SyntaxKind.OpenBraceToken, ts.SyntaxKind.OpenBracketToken].includes(token)) nesting++;
+    if ([ts.SyntaxKind.CloseParenToken, ts.SyntaxKind.CloseBraceToken, ts.SyntaxKind.CloseBracketToken].includes(token)) nesting--;
+    if (nesting > 80) throw new SourceError('Слишком большая вложенность.', scanner.getTokenPos(), scanner.getTextPos());
+  }
+  let file: ts.SourceFile;
+  try { file = ts.createSourceFile('scene.ts', source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS); }
+  catch (error) { if (error instanceof RangeError) throw new SourceError('Слишком сложный проект.'); throw error; }
   const diagnostics = (file as ts.SourceFile & { parseDiagnostics: readonly ts.Diagnostic[] }).parseDiagnostics;
   if (diagnostics.length) {
     const d = diagnostics[0]; throw new SourceError(ts.flattenDiagnosticMessageText(d.messageText, '\n'), d.start ?? 0, (d.start ?? 0) + (d.length ?? 1));
@@ -25,6 +38,8 @@ export function compile(source: string): Compiled {
   const scene: Scene = { nodes: [], links: [] };
   const objects = new Map<string, SourceObject>(); const statements = new Map<string, ts.Statement>();
   const values = new Map<string, unknown>(); const imports = new Map<string, string>();
+  const linkExpressions = new Map<string, ts.CallExpression>(), tapExpressions = new Map<string, ts.CallExpression>();
+  let runtime: RuntimeConfig | undefined;
   let statement: ts.Statement; let variable = ''; let steps = 0;
   function fail(n: ts.Node, message: string): never { throw new SourceError(message, n.getStart(file), n.getEnd()); }
   function evaluate(n: ts.Expression, depth = 0): unknown {
@@ -63,6 +78,25 @@ export function compile(source: string): Compiled {
     if (ts.isCallExpression(n) && ts.isIdentifier(n.expression)) {
       const name = imports.get(n.expression.text);
       if (!name) fail(n.expression, 'Вызов должен быть импортирован из "@scada/core".');
+      if (name === 'runtime') {
+        if (runtime) fail(n, 'В проекте допускается одна настройка runtime.');
+        if (n.arguments.length !== 1 || !ts.isObjectLiteralExpression(n.arguments[0])) fail(n, 'runtime({ server, project, run? }) ожидает объект настроек.');
+        const config: Record<string, string> = Object.create(null);
+        for (const property of n.arguments[0].properties) {
+          if (!ts.isPropertyAssignment(property) || !(ts.isIdentifier(property.name) || ts.isStringLiteral(property.name))) fail(property, 'Только явные свойства runtime.');
+          const key = property.name.text;
+          if (!['server', 'project', 'run'].includes(key) || has(config, key)) fail(property, `Недопустимое или повторное свойство runtime: ${key}. Учётные данные вводятся отдельно.`);
+          const value = ev(property.initializer);
+          if (typeof value !== 'string' || value.length > 2048) fail(property, 'Настройка runtime ожидает строку.');
+          config[key] = value;
+        }
+        if (!config.server || !config.project || !/^[\p{L}\p{N}_.-]{1,64}$/u.test(config.project) || (config.run !== undefined && !/^[a-zA-Z0-9_.-]{1,80}$/.test(config.run))) fail(n, 'Укажите server и корректный project; run — идентификатор прогона.');
+        let url: URL;
+        try { url = new URL(config.server); } catch { fail(n, 'Некорректный URL сервера.'); }
+        if (url!.username || url!.password || url!.search || url!.hash || !['http:', 'https:'].includes(url!.protocol) || (url!.protocol === 'http:' && !['localhost', '127.0.0.1', '[::1]'].includes(url!.hostname))) fail(n, 'Сервер: HTTPS или локальный HTTP, без учётных данных, query и fragment.');
+        runtime = { server: config.server.replace(/\/$/, ''), project: config.project, ...(config.run ? { run: config.run } : {}) };
+        return runtime;
+      }
       if (name === 'connect') {
         if (n.arguments.length !== 2) fail(n, 'connect(from.outlet, to.inlet) принимает два порта.');
         const from = ev(n.arguments[0]), to = ev(n.arguments[1]);
@@ -73,7 +107,9 @@ export function compile(source: string): Compiled {
           if (catalog[node.kind].ports[endpoint.port].role !== role) fail(n, 'Соединение должно идти от выхода ко входу.');
           if (scene.links.some(l => [l.from, l.to].some(p => p.node === endpoint.node && p.port === endpoint.port))) fail(n, `Порт ${endpoint.node}.${endpoint.port} уже занят.`);
         }
-        const edge: Link = { id: `${from.node}.${from.port}:${to.node}.${to.port}`, from, to, variable };
+        const assigned = ts.isVariableStatement(statement) && statement.declarationList.declarations[0].initializer === n;
+        const edge: Link = { id: `${from.node}.${from.port}:${to.node}.${to.port}`, from, to, variable: assigned ? variable : undefined };
+        linkExpressions.set(edge.id, n);
         scene.links.push(edge); statements.set(edge.id, statement); return edge;
       }
       if (name === 'tap') {
@@ -81,16 +117,20 @@ export function compile(source: string): Compiled {
         const line = ev(n.arguments[0]); const instrument = ev(n.arguments[1]);
         if (!isLink(line) || !isEquipment(instrument) || !catalog[instrument.kind].instrument) fail(n, 'tap ожидает connect(...) и pressure(...) или temperature(...).');
         if (instrument.tap) fail(n, 'Прибор уже подключён к линии.');
-        instrument.tap = line.id; statements.set(`tap:${instrument.id}`, statement); return instrument;
+        instrument.tap = line.id; tapExpressions.set(instrument.id, n); statements.set(`tap:${instrument.id}`, statement); return instrument;
       }
-      if (has(catalog, name!)) {
-        const kind = name as Kind, definition = catalog[kind];
-        if (n.arguments.length !== 2 || !ts.isObjectLiteralExpression(n.arguments[1])) fail(n, `${name}("ID", { ... }) требует литерал объекта свойств.`);
-        const id = ev(n.arguments[0]);
+      if (name === 'component' || has(catalog, name!)) {
+        const offset = name === 'component' ? 1 : 0;
+        if (n.arguments.length !== 2 + offset) fail(n, `${name}: неверное число аргументов.`);
+        const kindValue = offset ? ev(n.arguments[0]) : name;
+        if (typeof kindValue !== 'string' || !has(catalog, kindValue)) fail(n, `Не установлен тип компонента: ${String(kindValue)}.`);
+        const kind = kindValue as Kind, definition = catalog[kind];
+        if (n.arguments.length !== 2 + offset || !ts.isObjectLiteralExpression(n.arguments[1 + offset])) fail(n, `${name}("ID", { ... }) требует литерал объекта свойств.`);
+        const id = ev(n.arguments[offset]);
         if (typeof id !== 'string' || !/^[\p{L}\p{N}_.-]{1,48}$/u.test(id)) fail(n.arguments[0], 'ID: 1–48 букв, цифр, точек, дефисов или подчёркиваний.');
         if (objects.has(id)) fail(n, `Повторный ID: ${id}.`);
         if (scene.nodes.length >= 48) fail(n, 'В этой версии максимум 48 элементов на сцене.');
-        const options = n.arguments[1] as ts.ObjectLiteralExpression;
+        const options = n.arguments[1 + offset] as ts.ObjectLiteralExpression;
         const fields = new Map<string, ts.Expression>(); const props = defaults(kind);
         for (const p of options.properties) {
           if (!ts.isPropertyAssignment(p) || !(ts.isIdentifier(p.name) || ts.isStringLiteral(p.name))) fail(p, 'Только явные свойства: x: 100. Spread, методы и shorthand не поддерживаются.');
@@ -120,7 +160,7 @@ export function compile(source: string): Compiled {
       if (!binding || !ts.isNamedImports(binding)) fail(s, 'Используйте именованные импорты: import { pump } from "@scada/core".');
       for (const item of binding.elements) {
         const remote = item.propertyName?.text ?? item.name.text;
-        if (!has(catalog, remote) && !['connect', 'tap'].includes(remote)) fail(item, `Неизвестный экспорт: ${remote}.`);
+        if (!has(catalog, remote) && !['connect', 'tap', 'component', 'runtime'].includes(remote)) fail(item, `Неизвестный экспорт: ${remote}.`);
         if (imports.has(item.name.text) || values.has(item.name.text)) fail(item, 'Повторное имя импорта.');
         imports.set(item.name.text, remote);
       }
@@ -137,7 +177,7 @@ export function compile(source: string): Compiled {
     } else if (s.kind !== ts.SyntaxKind.EmptyStatement) fail(s, 'Поддерживаются import, const, connect и tap.');
   }
   for (const item of scene.nodes) if (catalog[item.kind].instrument && !item.tap) throw new SourceError(`${item.id}: подключите прибор через tap(line, ...).`, objects.get(item.id)!.span.from, objects.get(item.id)!.span.to);
-  return { scene, file, objects, statements, imports };
+  return { scene, runtime, file, objects, statements, imports, linkExpressions, tapExpressions };
 }
 export function editable(compiled: Compiled, id: string, key: string): boolean { const p = compiled.objects.get(id)?.fields.get(key); return !p || literal(p); }
 export function applyChanges(source: string, changes: readonly Change[]): string {
@@ -165,6 +205,18 @@ export function patchFields(source: string, id: string, patch: Record<string, Va
 }
 export function removeObject(source: string, id: string): Change[] {
   const c = compile(source); const removed = new Set<string>([id]);
+  const instrument = c.scene.nodes.find(n => n.id === id && n.tap);
+  const tapCall = c.tapExpressions.get(id);
+  if (instrument && tapCall) {
+    const changes: Change[] = [];
+    const tapStatement = c.statements.get(`tap:${id}`)!;
+    const linkCall = c.linkExpressions.get(instrument.tap!)!;
+    const nestedLink = linkCall.getStart(c.file) >= tapCall.getStart(c.file) && linkCall.getEnd() <= tapCall.getEnd();
+    changes.push({ from: tapStatement.getStart(c.file), to: tapStatement.getEnd(), insert: nestedLink ? linkCall.getText(c.file) + ';' : '' });
+    const ownStatement = c.objects.get(id)!.statement;
+    if (ownStatement !== tapStatement) changes.push({ from: ownStatement.getStart(c.file), to: ownStatement.getEnd(), insert: '' });
+    compile(applyChanges(source, changes)); return changes;
+  }
   for (const l of c.scene.links) if (l.id === id || l.from.node === id || l.to.node === id) removed.add(l.id);
   for (const n of c.scene.nodes) if (n.tap && removed.has(n.tap)) { removed.add(n.id); removed.add(`tap:${n.id}`); }
   if (c.scene.nodes.find(n => n.id === id)?.tap) removed.add(`tap:${id}`);
@@ -175,33 +227,57 @@ export function removeObject(source: string, id: string): Change[] {
 export function ensureImport(source: string, names: string[]): string {
   const c = compile(source); const missing = names.filter(name => ![...c.imports.values()].includes(name));
   if (!missing.length) return source;
-  return `import { ${missing.join(', ')} } from "@scada/core";\n` + source;
+  const used = new Set([...c.imports.keys()]);
+  for (const s of c.file.statements) if (ts.isVariableStatement(s)) for (const d of s.declarationList.declarations) if (ts.isIdentifier(d.name)) used.add(d.name.text);
+  const bindings = missing.map(name => { let local = name, index = 1; while (used.has(local)) local = `${name}Factory${index++}`; used.add(local); return local === name ? name : `${name} as ${local}`; });
+  return `import { ${bindings.join(', ')} } from "@scada/core";\n` + source;
 }
 export function appendEquipment(source: string, kind: Kind, x: number, y: number): string {
-  const c = compile(source); let i = 1; const prefix = { tank: 'T', pump: 'P', valve: 'V', flowmeter: 'F', exchanger: 'HX', outlet: 'OUT', pressure: 'PT', temperature: 'TT' }[kind];
+  const c = compile(source); let i = 1; const prefix = catalog[kind].prefix ?? ({ tank: 'T', pump: 'P', valve: 'V', flowmeter: 'F', exchanger: 'HX', outlet: 'OUT', pressure: 'PT', temperature: 'TT' } as Record<string, string>)[kind] ?? kind.toUpperCase();
   while (c.scene.nodes.some(n => n.id === `${prefix}-${100 + i}`) || c.file.text.includes(`${kind}${i}`)) i++;
   if (catalog[kind].instrument) throw new SourceError('Выберите трубопровод, затем добавьте отвод с прибором.');
-  const local = [...c.imports].find(([, remote]) => remote === kind)?.[0] ?? kind;
-  const result = ensureImport(source, [kind]) + `\nconst ${kind}${i} = ${local}("${prefix}-${100 + i}", { x: ${x}, y: ${y} });\n`;
+  const builtin = ['tank', 'pump', 'valve', 'flowmeter', 'exchanger', 'outlet', 'pressure', 'temperature'].includes(kind), factory = builtin ? kind : 'component';
+  const imported = ensureImport(source, [factory]);
+  const local = [...compile(imported).imports].find(([, remote]) => remote === factory)![0];
+  const result = imported + `\nconst ${kind}${i} = ${local}(${builtin ? '' : JSON.stringify(kind) + ', '}"${prefix}-${100 + i}", { x: ${x}, y: ${y} });\n`;
   compile(result); return result;
 }
 export function appendConnection(source: string, from: Endpoint, to: Endpoint): string {
   const c = compile(source); const a = c.objects.get(from.node)?.variable, b = c.objects.get(to.node)?.variable;
   if (!a || !b) throw new SourceError('Для соединения у элементов должны быть имена const.');
-  const fn = [...c.imports].find(([, remote]) => remote === 'connect')?.[0] ?? 'connect';
+  const imported = ensureImport(source, ['connect']);
+  const fn = [...compile(imported).imports].find(([, remote]) => remote === 'connect')![0];
   let i = 1; while (new RegExp(`\\bline${i}\\b`).test(source)) i++;
-  const result = ensureImport(source, ['connect']) + `\nconst line${i} = ${fn}(${a}.${from.port}, ${b}.${to.port});\n`;
+  const result = imported + `\nconst line${i} = ${fn}(${a}.${from.port}, ${b}.${to.port});\n`;
   compile(result); return result;
 }
 export function appendTap(source: string, lineId: string, kind: 'pressure' | 'temperature'): string {
   const c = compile(source), line = c.scene.links.find(l => l.id === lineId);
   if (!line) throw new SourceError('Выберите линию.');
   let text = source; let ref = line.variable;
-  if (!ref) { let i = 1; while (new RegExp(`\\bline${i}\\b`).test(text)) i++; ref = `line${i}`; const s = c.statements.get(line.id)!; text = text.slice(0, s.getStart()) + `const ${ref} = ` + text.slice(s.getStart()); }
+  if (!ref) {
+    let i = 1; while (new RegExp(`\\bline${i}\\b`).test(text)) i++; ref = `line${i}`;
+    const s = c.statements.get(line.id)!, call = c.linkExpressions.get(line.id)!;
+    if (ts.isExpressionStatement(s) && s.expression === call) text = text.slice(0, s.getStart()) + `const ${ref} = ` + text.slice(s.getStart());
+    else text = applyChanges(text, [{ from: s.getStart(), to: s.getStart(), insert: `const ${ref} = ${call.getText(c.file)};\n` }, { from: call.getStart(c.file), to: call.getEnd(), insert: ref }]);
+  }
   let i = 101; const prefix = kind === 'pressure' ? 'PT' : 'TT'; while (c.objects.has(`${prefix}-${i}`)) i++;
-  const local = [...c.imports].find(([, r]) => r === kind)?.[0] ?? kind;
-  const tapName = [...c.imports].find(([, r]) => r === 'tap')?.[0] ?? 'tap';
-  text = ensureImport(text, [kind, 'tap']) + `\n${tapName}(${ref}, ${local}("${prefix}-${i}", { at: 0.5, offset: 110 }));\n`;
+  text = ensureImport(text, [kind, 'tap']); const imported = compile(text);
+  const local = [...imported.imports].find(([, r]) => r === kind)![0];
+  const tapName = [...imported.imports].find(([, r]) => r === 'tap')![0];
+  text += `\n${tapName}(${ref}, ${local}("${prefix}-${i}", { at: 0.5, offset: 110 }));\n`;
   compile(text); return text;
 }
 export function formatSource(source: string): string { const c = compile(source); return ts.createPrinter({ newLine: ts.NewLineKind.LineFeed }).printFile(c.file); }
+
+/** Explicit authoring/share action only. Runtime frames never call this function. */
+export function setRuntimeConfiguration(source: string, configuration: RuntimeConfig): string {
+  const imported = ensureImport(source, ['runtime']);
+  const c = compile(imported), local = [...c.imports].find(([, name]) => name === 'runtime')![0];
+  let call: ts.CallExpression | undefined;
+  const walk = (node: ts.Node) => { if (ts.isCallExpression(node) && ts.isIdentifier(node.expression) && c.imports.get(node.expression.text) === 'runtime') call = node; ts.forEachChild(node, walk); };
+  walk(c.file);
+  const value = JSON.stringify(configuration);
+  const result = call ? applyChanges(imported, [{ from: call.arguments[0].getStart(c.file), to: call.arguments[0].getEnd(), insert: value }]) : `${imported}\n${local}(${value});\n`;
+  compile(result); return result;
+}

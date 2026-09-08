@@ -9,6 +9,7 @@ const teal = new THREE.MeshStandardMaterial({ color: 0x167c88, metalness: .3, ro
 const amber = new THREE.MeshStandardMaterial({ color: 0xe9ac43, metalness: .35, roughness: .3 });
 const fluid = new THREE.MeshStandardMaterial({ color: 0x21bdc6, metalness: .12, roughness: .22 });
 const greyFluid = new THREE.MeshStandardMaterial({ color: 0x819199, roughness: .6 });
+const sharedMaterials = new Set<THREE.Material>([steel, lightSteel, dark, teal, amber, fluid, greyFluid]);
 const v = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
 function mesh(parent: THREE.Object3D, geometry: THREE.BufferGeometry, material: THREE.Material, position = v(0, 0, 0)) {
   const object = new THREE.Mesh(geometry, material); object.position.copy(position);
@@ -41,6 +42,7 @@ export interface Model {
   update: (signals: Signals, dt: number) => void;
   reset: () => void;
   metrics: () => Record<string, number | null>;
+  dispose: () => void;
 }
 type Builder = (asset: Asset) => Model;
 const builders = new Map<string, Builder>();
@@ -56,7 +58,16 @@ function finish(asset: Asset, root: THREE.Group, update: Model['update'], reset:
     anchor.quaternion.setFromUnitVectors(v(0, 0, 1), new THREE.Vector3().fromArray(port.normal));
     root.add(anchor); anchors.set(port.id, anchor);
   }
-  return { root, anchors, update, reset, metrics };
+  const dispose = () => {
+    const ownedMaterials = new Set<THREE.Material>();
+    root.traverse(object => {
+      if (!(object instanceof THREE.Mesh)) return;
+      object.geometry.dispose();
+      for (const material of Array.isArray(object.material) ? object.material : [object.material]) if (!sharedMaterials.has(material)) ownedMaterials.add(material);
+    });
+    for (const material of ownedMaterials) material.dispose();
+  };
+  return { root, anchors, update, reset, metrics, dispose };
 }
 registerModel('process.tank.vertical', asset => {
   if (rotate([0, 0, 1], asset.pose3D.rotation)[2] < .999999) throw new Error('Vertical tank renderer supports yaw only; tilted liquid needs world-plane clipping');

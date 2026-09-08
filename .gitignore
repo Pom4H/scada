@@ -14,3 +14,11 @@ challenge-results/
 
 .lab-dist/
 .lab-evidence/
+
+.runtime-evidence/
+.runtime-data/
+.server/
+
+data/
+runtime-test-results/
+runtime-playwright-report/

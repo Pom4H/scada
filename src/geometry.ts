@@ -62,11 +62,30 @@ export function routeLink(scene: Scene, link: Link): Route {
   const scores = new Map<number, number>(), previous = new Map<number, number>();
   const closed = new Set<number>();
   const queue: { key: number; score: number }[] = [];
-  for (let axis = 0; axis < 2; axis++) { const key = startIndex * 2 + axis; scores.set(key, 0); queue.push({ key, score: 0 }); }
+  // A binary heap avoids sorting the entire frontier on every A* expansion.
+  const push = (item: { key: number; score: number }) => {
+    let i = queue.length; queue.push(item);
+    while (i > 0) { const parent = (i - 1) >> 1; if (queue[parent].score <= item.score) break; queue[i] = queue[parent]; i = parent; }
+    queue[i] = item;
+  };
+  const pop = () => {
+    const first = queue[0], last = queue.pop()!;
+    if (queue.length) {
+      let i = 0;
+      while (i * 2 + 1 < queue.length) {
+        let child = i * 2 + 1;
+        if (child + 1 < queue.length && queue[child + 1].score < queue[child].score) child++;
+        if (queue[child].score >= last.score) break;
+        queue[i] = queue[child]; i = child;
+      }
+      queue[i] = last;
+    }
+    return first;
+  };
+  for (let axis = 0; axis < 2; axis++) { const key = startIndex * 2 + axis; scores.set(key, 0); push({ key, score: 0 }); }
   let found: number | undefined;
   while (queue.length) {
-    queue.sort((a, b) => b.score - a.score);
-    const key = queue.pop()!.key;
+    const key = pop().key;
     if (closed.has(key)) continue;
     closed.add(key);
     const index = Math.floor(key / 2), axis = key % 2, p = point(index), x = index % W, y = Math.floor(index / W);
@@ -78,7 +97,7 @@ export function routeLink(scene: Scene, link: Link): Route {
       const distance = scores.get(key)! + Math.abs(p.x - q.x) + Math.abs(p.y - q.y) + (axis !== na ? 28 : 0);
       if (distance >= (scores.get(next) ?? Infinity)) continue;
       scores.set(next, distance); previous.set(next, key);
-      queue.push({ key: next, score: distance + Math.abs(q.x - end.x) + Math.abs(q.y - end.y) });
+      push({ key: next, score: distance + Math.abs(q.x - end.x) + Math.abs(q.y - end.y) });
     }
   }
   if (found !== undefined) {
@@ -93,6 +112,11 @@ export function layout(scene: Scene): { routes: Map<string, Route>; warnings: st
   const routes = new Map<string, Route>(); const warnings: string[] = [];
   for (const link of scene.links) { const route = routeLink(scene, link); routes.set(link.id, route); if (!route.valid) warnings.push(`${link.from.node} → ${link.to.node}: ${route.reason}`); }
   const boxes = scene.nodes.filter(n => !catalog[n.kind].instrument).map(n => bounds(n));
+  for (const n of scene.nodes.filter(n => catalog[n.kind].instrument && n.tap)) {
+    const route = routes.get(n.tap!); if (!route) continue;
+    const p = tapPoint(route, Number(n.props.at));
+    boxes.push({ id: n.id, x: p.x - 33, y: p.y - Number(n.props.offset), width: catalog[n.kind].width, height: catalog[n.kind].height });
+  }
   for (let i = 0; i < boxes.length; i++) for (const b of boxes.slice(i + 1)) {
     const a = boxes[i];
     if (a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y) warnings.push(`Перекрытие: ${a.id} / ${b.id}`);
