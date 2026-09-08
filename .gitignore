@@ -11,3 +11,6 @@ challenge-results/
 .DS_Store
 .env
 .env.*
+
+.lab-dist/
+.lab-evidence/

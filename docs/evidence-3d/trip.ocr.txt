@@ -1,0 +1,173 @@
+Equipment lab / 3D foundation
+
+FIXTURE - NO LIVE
+
+DATA
+
+scada.
+
+PROCESS / 01
+
+SPATIAL VIEW
+
+STATE EXPLORER
+
+Process overview
+
+[|r |e | me
+
+Water
+
+Test scenario
+
+transfer
+
+TRIP
+
+‘One asset model.
+
+Conditional cutaway » metres -Z up
+
+Two ways to see it.
+
+‘TRIP - P-101
+
+TRIP P-101
+
+@ Overview
+
+03
+
+TK-101
+
+coop
+
+v-101
+
+Vertical tank
+
+TK-101
+
+65%
+
+P-101
+
+62%
+
+‘TRIP
+
+level
+
+62%
+
+TK-101
+
+Vertical tank
+
+our
+
+AB
+
+P-101
+
+RIP
+
+1"
+
+P-101
+
+Centrifugal pump
+
+©
+
+‘our
+
+(Centrifugal pump
+
+rpm
+
+0 rpm
+
+flow
+
+omh
+
+V-101
+
+Pa
+
+valve
+
+Three-way diverting
+
+coop
+
+V-101
+
+Three-way diverting valve
+
+position
+
+65%
+
+Drag to orbit - Scroll to zoom
+
+‘command
+
+65%
+
+FlowAB
+
+omh
+
+MODEL LIBRARY
+
+flowA
+
+omh
+
+> Play
+
+oi
+
+1.28 s Symbolic motion
+
+flows
+
+omh
+
+3 procedural models
+
+478 indexed symbols,
+
+PROCESS VIEW
+
+‘Shared tags & signals «independent layout
+
+Flow is measured separately from motor
+
+24 source categories
+
+TK-101
+
+P-101
+
+v-101
+
+speed and valve travel
+
+Explore catalog 2
+
+‘Sample - 2026-09-08 00:00:00 UTC
+
+62%
+
+om*h
+
+65%
+
+SOURCE CATALOG
+
+AWVIO asc ceerknleg« Fn hk
+
+Oe See ee

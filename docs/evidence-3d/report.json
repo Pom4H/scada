@@ -1,0 +1,2540 @@
+{
+  "browser": "149.0.7827.0",
+  "viewport": [
+    1440,
+    960
+  ],
+  "cases": [
+    {
+      "name": "overview",
+      "options": {},
+      "metrics": {
+        "scenario": "normal",
+        "time": 1.2,
+        "selection": "all",
+        "view": "iso",
+        "triangles": 32614,
+        "calls": 260,
+        "assets": [
+          {
+            "id": "TK-101",
+            "metrics": {
+              "level": 62,
+              "liquidTop": 1.6440000000000001
+            },
+            "bounds": [
+              2.0149999757111074,
+              1.7999999523162842,
+              2.458286980539561
+            ],
+            "ports": [
+              {
+                "id": "OUT",
+                "position": [
+                  -2,
+                  0,
+                  0.48
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "P-101",
+            "metrics": {
+              "phase": 0.4200000000000015,
+              "rpm": 1450,
+              "flow": 24
+            },
+            "bounds": [
+              1.9649999757111072,
+              0.9900000095367432,
+              1.3249999982118608
+            ],
+            "ports": [
+              {
+                "id": "IN",
+                "position": [
+                  -0.95,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "OUT",
+                "position": [
+                  -0.25,
+                  0,
+                  1.35
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "V-101",
+            "metrics": {
+              "position": 65
+            },
+            "bounds": [
+              1.5299999991059305,
+              1.0899999876320363,
+              1.4499999994039534
+            ],
+            "ports": [
+              {
+                "id": "AB",
+                "position": [
+                  2.25,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "A",
+                "position": [
+                  3.75,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "B",
+                "position": [
+                  3,
+                  -0.75,
+                  0.65
+                ],
+                "gap": 0
+              }
+            ]
+          }
+        ],
+        "flows": [
+          {
+            "signal": "flow",
+            "value": 24,
+            "phase": 0.24000000000000532,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowAB",
+            "value": 24,
+            "phase": 0.24000000000000532,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowA",
+            "value": 14.399999999999999,
+            "phase": 0.14400000000000013,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowB",
+            "value": 9.600000000000001,
+            "phase": 0.09600000000000519,
+            "arrowsVisible": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "front",
+      "options": {
+        "view": "front"
+      },
+      "metrics": {
+        "scenario": "normal",
+        "time": 1.2,
+        "selection": "all",
+        "view": "front",
+        "triangles": 32614,
+        "calls": 260,
+        "assets": [
+          {
+            "id": "TK-101",
+            "metrics": {
+              "level": 62,
+              "liquidTop": 1.6440000000000001
+            },
+            "bounds": [
+              2.0149999757111074,
+              1.7999999523162842,
+              2.458286980539561
+            ],
+            "ports": [
+              {
+                "id": "OUT",
+                "position": [
+                  -2,
+                  0,
+                  0.48
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "P-101",
+            "metrics": {
+              "phase": 0.4200000000000015,
+              "rpm": 1450,
+              "flow": 24
+            },
+            "bounds": [
+              1.9649999757111072,
+              0.9900000095367432,
+              1.3249999982118608
+            ],
+            "ports": [
+              {
+                "id": "IN",
+                "position": [
+                  -0.95,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "OUT",
+                "position": [
+                  -0.25,
+                  0,
+                  1.35
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "V-101",
+            "metrics": {
+              "position": 65
+            },
+            "bounds": [
+              1.5299999991059305,
+              1.0899999876320363,
+              1.4499999994039534
+            ],
+            "ports": [
+              {
+                "id": "AB",
+                "position": [
+                  2.25,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "A",
+                "position": [
+                  3.75,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "B",
+                "position": [
+                  3,
+                  -0.75,
+                  0.65
+                ],
+                "gap": 0
+              }
+            ]
+          }
+        ],
+        "flows": [
+          {
+            "signal": "flow",
+            "value": 24,
+            "phase": 0.24000000000000532,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowAB",
+            "value": 24,
+            "phase": 0.24000000000000532,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowA",
+            "value": 14.399999999999999,
+            "phase": 0.14400000000000013,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowB",
+            "value": 9.600000000000001,
+            "phase": 0.09600000000000519,
+            "arrowsVisible": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "side",
+      "options": {
+        "view": "side"
+      },
+      "metrics": {
+        "scenario": "normal",
+        "time": 1.2,
+        "selection": "all",
+        "view": "side",
+        "triangles": 32614,
+        "calls": 260,
+        "assets": [
+          {
+            "id": "TK-101",
+            "metrics": {
+              "level": 62,
+              "liquidTop": 1.6440000000000001
+            },
+            "bounds": [
+              2.0149999757111074,
+              1.7999999523162842,
+              2.458286980539561
+            ],
+            "ports": [
+              {
+                "id": "OUT",
+                "position": [
+                  -2,
+                  0,
+                  0.48
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "P-101",
+            "metrics": {
+              "phase": 0.4200000000000015,
+              "rpm": 1450,
+              "flow": 24
+            },
+            "bounds": [
+              1.9649999757111072,
+              0.9900000095367432,
+              1.3249999982118608
+            ],
+            "ports": [
+              {
+                "id": "IN",
+                "position": [
+                  -0.95,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "OUT",
+                "position": [
+                  -0.25,
+                  0,
+                  1.35
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "V-101",
+            "metrics": {
+              "position": 65
+            },
+            "bounds": [
+              1.5299999991059305,
+              1.0899999876320363,
+              1.4499999994039534
+            ],
+            "ports": [
+              {
+                "id": "AB",
+                "position": [
+                  2.25,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "A",
+                "position": [
+                  3.75,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "B",
+                "position": [
+                  3,
+                  -0.75,
+                  0.65
+                ],
+                "gap": 0
+              }
+            ]
+          }
+        ],
+        "flows": [
+          {
+            "signal": "flow",
+            "value": 24,
+            "phase": 0.24000000000000532,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowAB",
+            "value": 24,
+            "phase": 0.24000000000000532,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowA",
+            "value": 14.399999999999999,
+            "phase": 0.14400000000000013,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowB",
+            "value": 9.600000000000001,
+            "phase": 0.09600000000000519,
+            "arrowsVisible": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "top",
+      "options": {
+        "view": "top"
+      },
+      "metrics": {
+        "scenario": "normal",
+        "time": 1.2,
+        "selection": "all",
+        "view": "top",
+        "triangles": 32614,
+        "calls": 260,
+        "assets": [
+          {
+            "id": "TK-101",
+            "metrics": {
+              "level": 62,
+              "liquidTop": 1.6440000000000001
+            },
+            "bounds": [
+              2.0149999757111074,
+              1.7999999523162842,
+              2.458286980539561
+            ],
+            "ports": [
+              {
+                "id": "OUT",
+                "position": [
+                  -2,
+                  0,
+                  0.48
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "P-101",
+            "metrics": {
+              "phase": 0.4200000000000015,
+              "rpm": 1450,
+              "flow": 24
+            },
+            "bounds": [
+              1.9649999757111072,
+              0.9900000095367432,
+              1.3249999982118608
+            ],
+            "ports": [
+              {
+                "id": "IN",
+                "position": [
+                  -0.95,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "OUT",
+                "position": [
+                  -0.25,
+                  0,
+                  1.35
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "V-101",
+            "metrics": {
+              "position": 65
+            },
+            "bounds": [
+              1.5299999991059305,
+              1.0899999876320363,
+              1.4499999994039534
+            ],
+            "ports": [
+              {
+                "id": "AB",
+                "position": [
+                  2.25,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "A",
+                "position": [
+                  3.75,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "B",
+                "position": [
+                  3,
+                  -0.75,
+                  0.65
+                ],
+                "gap": 0
+              }
+            ]
+          }
+        ],
+        "flows": [
+          {
+            "signal": "flow",
+            "value": 24,
+            "phase": 0.24000000000000532,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowAB",
+            "value": 24,
+            "phase": 0.24000000000000532,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowA",
+            "value": 14.399999999999999,
+            "phase": 0.14400000000000013,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowB",
+            "value": 9.600000000000001,
+            "phase": 0.09600000000000519,
+            "arrowsVisible": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "tank",
+      "options": {
+        "asset": "TK-101"
+      },
+      "metrics": {
+        "scenario": "normal",
+        "time": 1.2,
+        "selection": "TK-101",
+        "view": "iso",
+        "triangles": 9098,
+        "calls": 60,
+        "assets": [
+          {
+            "id": "TK-101",
+            "metrics": {
+              "level": 62,
+              "liquidTop": 1.6440000000000001
+            },
+            "bounds": [
+              2.0149999757111074,
+              1.7999999523162842,
+              2.458286980539561
+            ],
+            "ports": [
+              {
+                "id": "OUT",
+                "position": [
+                  -2,
+                  0,
+                  0.48
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "P-101",
+            "metrics": {
+              "phase": 0.4200000000000015,
+              "rpm": 1450,
+              "flow": 24
+            },
+            "bounds": [
+              1.9649999757111072,
+              0.9900000095367432,
+              1.3249999982118608
+            ],
+            "ports": [
+              {
+                "id": "IN",
+                "position": [
+                  -0.95,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "OUT",
+                "position": [
+                  -0.25,
+                  0,
+                  1.35
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "V-101",
+            "metrics": {
+              "position": 65
+            },
+            "bounds": [
+              1.5299999991059305,
+              1.0899999876320363,
+              1.4499999994039534
+            ],
+            "ports": [
+              {
+                "id": "AB",
+                "position": [
+                  2.25,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "A",
+                "position": [
+                  3.75,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "B",
+                "position": [
+                  3,
+                  -0.75,
+                  0.65
+                ],
+                "gap": 0
+              }
+            ]
+          }
+        ],
+        "flows": [
+          {
+            "signal": "flow",
+            "value": 24,
+            "phase": 0.24000000000000532,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowAB",
+            "value": 24,
+            "phase": 0.24000000000000532,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowA",
+            "value": 14.399999999999999,
+            "phase": 0.14400000000000013,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowB",
+            "value": 9.600000000000001,
+            "phase": 0.09600000000000519,
+            "arrowsVisible": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "tank-empty",
+      "options": {
+        "asset": "TK-101",
+        "scenario": "empty"
+      },
+      "metrics": {
+        "scenario": "empty",
+        "time": 1.2,
+        "selection": "TK-101",
+        "view": "iso",
+        "triangles": 8714,
+        "calls": 58,
+        "assets": [
+          {
+            "id": "TK-101",
+            "metrics": {
+              "level": 0,
+              "liquidTop": null
+            },
+            "bounds": [
+              2.0149999757111074,
+              1.7999999523162842,
+              2.458286980539561
+            ],
+            "ports": [
+              {
+                "id": "OUT",
+                "position": [
+                  -2,
+                  0,
+                  0.48
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "P-101",
+            "metrics": {
+              "phase": 0.4200000000000015,
+              "rpm": 1450,
+              "flow": 24
+            },
+            "bounds": [
+              1.9649999757111072,
+              0.9900000095367432,
+              1.3249999982118608
+            ],
+            "ports": [
+              {
+                "id": "IN",
+                "position": [
+                  -0.95,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "OUT",
+                "position": [
+                  -0.25,
+                  0,
+                  1.35
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "V-101",
+            "metrics": {
+              "position": 65
+            },
+            "bounds": [
+              1.5299999991059305,
+              1.0899999876320363,
+              1.4499999994039534
+            ],
+            "ports": [
+              {
+                "id": "AB",
+                "position": [
+                  2.25,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "A",
+                "position": [
+                  3.75,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "B",
+                "position": [
+                  3,
+                  -0.75,
+                  0.65
+                ],
+                "gap": 0
+              }
+            ]
+          }
+        ],
+        "flows": [
+          {
+            "signal": "flow",
+            "value": 24,
+            "phase": 0.24000000000000532,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowAB",
+            "value": 24,
+            "phase": 0.24000000000000532,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowA",
+            "value": 14.399999999999999,
+            "phase": 0.14400000000000013,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowB",
+            "value": 9.600000000000001,
+            "phase": 0.09600000000000519,
+            "arrowsVisible": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "tank-full",
+      "options": {
+        "asset": "TK-101",
+        "scenario": "full"
+      },
+      "metrics": {
+        "scenario": "full",
+        "time": 1.2,
+        "selection": "TK-101",
+        "view": "iso",
+        "triangles": 9098,
+        "calls": 60,
+        "assets": [
+          {
+            "id": "TK-101",
+            "metrics": {
+              "level": 100,
+              "liquidTop": 2.4800000000000004
+            },
+            "bounds": [
+              2.0149999757111074,
+              1.7999999523162842,
+              2.458286980539561
+            ],
+            "ports": [
+              {
+                "id": "OUT",
+                "position": [
+                  -2,
+                  0,
+                  0.48
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "P-101",
+            "metrics": {
+              "phase": 0.4200000000000015,
+              "rpm": 1450,
+              "flow": 24
+            },
+            "bounds": [
+              1.9649999757111072,
+              0.9900000095367432,
+              1.3249999982118608
+            ],
+            "ports": [
+              {
+                "id": "IN",
+                "position": [
+                  -0.95,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "OUT",
+                "position": [
+                  -0.25,
+                  0,
+                  1.35
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "V-101",
+            "metrics": {
+              "position": 65
+            },
+            "bounds": [
+              1.5299999991059305,
+              1.0899999876320363,
+              1.4499999994039534
+            ],
+            "ports": [
+              {
+                "id": "AB",
+                "position": [
+                  2.25,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "A",
+                "position": [
+                  3.75,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "B",
+                "position": [
+                  3,
+                  -0.75,
+                  0.65
+                ],
+                "gap": 0
+              }
+            ]
+          }
+        ],
+        "flows": [
+          {
+            "signal": "flow",
+            "value": 24,
+            "phase": 0.24000000000000532,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowAB",
+            "value": 24,
+            "phase": 0.24000000000000532,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowA",
+            "value": 14.399999999999999,
+            "phase": 0.14400000000000013,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowB",
+            "value": 9.600000000000001,
+            "phase": 0.09600000000000519,
+            "arrowsVisible": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "pump",
+      "options": {
+        "asset": "P-101"
+      },
+      "metrics": {
+        "scenario": "normal",
+        "time": 1.2,
+        "selection": "P-101",
+        "view": "iso",
+        "triangles": 10442,
+        "calls": 90,
+        "assets": [
+          {
+            "id": "TK-101",
+            "metrics": {
+              "level": 62,
+              "liquidTop": 1.6440000000000001
+            },
+            "bounds": [
+              2.0149999757111074,
+              1.7999999523162842,
+              2.458286980539561
+            ],
+            "ports": [
+              {
+                "id": "OUT",
+                "position": [
+                  -2,
+                  0,
+                  0.48
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "P-101",
+            "metrics": {
+              "phase": 0.4200000000000015,
+              "rpm": 1450,
+              "flow": 24
+            },
+            "bounds": [
+              1.9649999757111072,
+              0.9900000095367432,
+              1.3249999982118608
+            ],
+            "ports": [
+              {
+                "id": "IN",
+                "position": [
+                  -0.95,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "OUT",
+                "position": [
+                  -0.25,
+                  0,
+                  1.35
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "V-101",
+            "metrics": {
+              "position": 65
+            },
+            "bounds": [
+              1.5299999991059305,
+              1.0899999876320363,
+              1.4499999994039534
+            ],
+            "ports": [
+              {
+                "id": "AB",
+                "position": [
+                  2.25,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "A",
+                "position": [
+                  3.75,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "B",
+                "position": [
+                  3,
+                  -0.75,
+                  0.65
+                ],
+                "gap": 0
+              }
+            ]
+          }
+        ],
+        "flows": [
+          {
+            "signal": "flow",
+            "value": 24,
+            "phase": 0.24000000000000532,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowAB",
+            "value": 24,
+            "phase": 0.24000000000000532,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowA",
+            "value": 14.399999999999999,
+            "phase": 0.14400000000000013,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowB",
+            "value": 9.600000000000001,
+            "phase": 0.09600000000000519,
+            "arrowsVisible": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "pump-zero-flow",
+      "options": {
+        "asset": "P-101",
+        "scenario": "zero-flow"
+      },
+      "metrics": {
+        "scenario": "zero-flow",
+        "time": 1.2,
+        "selection": "P-101",
+        "view": "iso",
+        "triangles": 10442,
+        "calls": 90,
+        "assets": [
+          {
+            "id": "TK-101",
+            "metrics": {
+              "level": 62,
+              "liquidTop": 1.6440000000000001
+            },
+            "bounds": [
+              2.0149999757111074,
+              1.7999999523162842,
+              2.458286980539561
+            ],
+            "ports": [
+              {
+                "id": "OUT",
+                "position": [
+                  -2,
+                  0,
+                  0.48
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "P-101",
+            "metrics": {
+              "phase": 0.4200000000000015,
+              "rpm": 1450,
+              "flow": 0
+            },
+            "bounds": [
+              1.9649999757111072,
+              0.9900000095367432,
+              1.3249999982118608
+            ],
+            "ports": [
+              {
+                "id": "IN",
+                "position": [
+                  -0.95,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "OUT",
+                "position": [
+                  -0.25,
+                  0,
+                  1.35
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "V-101",
+            "metrics": {
+              "position": 65
+            },
+            "bounds": [
+              1.5299999991059305,
+              1.0899999876320363,
+              1.4499999994039534
+            ],
+            "ports": [
+              {
+                "id": "AB",
+                "position": [
+                  2.25,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "A",
+                "position": [
+                  3.75,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "B",
+                "position": [
+                  3,
+                  -0.75,
+                  0.65
+                ],
+                "gap": 0
+              }
+            ]
+          }
+        ],
+        "flows": [
+          {
+            "signal": "flow",
+            "value": 0,
+            "phase": 0,
+            "arrowsVisible": false
+          },
+          {
+            "signal": "flowAB",
+            "value": 0,
+            "phase": 0,
+            "arrowsVisible": false
+          },
+          {
+            "signal": "flowA",
+            "value": 0,
+            "phase": 0,
+            "arrowsVisible": false
+          },
+          {
+            "signal": "flowB",
+            "value": 0,
+            "phase": 0,
+            "arrowsVisible": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "pump-reverse",
+      "options": {
+        "asset": "P-101",
+        "scenario": "reverse"
+      },
+      "metrics": {
+        "scenario": "reverse",
+        "time": 1.2,
+        "selection": "P-101",
+        "view": "iso",
+        "triangles": 10442,
+        "calls": 90,
+        "assets": [
+          {
+            "id": "TK-101",
+            "metrics": {
+              "level": 62,
+              "liquidTop": 1.6440000000000001
+            },
+            "bounds": [
+              2.0149999757111074,
+              1.7999999523162842,
+              2.458286980539561
+            ],
+            "ports": [
+              {
+                "id": "OUT",
+                "position": [
+                  -2,
+                  0,
+                  0.48
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "P-101",
+            "metrics": {
+              "phase": 0.4200000000000015,
+              "rpm": 1450,
+              "flow": -12
+            },
+            "bounds": [
+              1.9649999757111072,
+              0.9900000095367432,
+              1.3249999982118608
+            ],
+            "ports": [
+              {
+                "id": "IN",
+                "position": [
+                  -0.95,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "OUT",
+                "position": [
+                  -0.25,
+                  0,
+                  1.35
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "V-101",
+            "metrics": {
+              "position": 65
+            },
+            "bounds": [
+              1.5299999991059305,
+              1.0899999876320363,
+              1.4499999994039534
+            ],
+            "ports": [
+              {
+                "id": "AB",
+                "position": [
+                  2.25,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "A",
+                "position": [
+                  3.75,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "B",
+                "position": [
+                  3,
+                  -0.75,
+                  0.65
+                ],
+                "gap": 0
+              }
+            ]
+          }
+        ],
+        "flows": [
+          {
+            "signal": "flow",
+            "value": -12,
+            "phase": 0.8799999999999972,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowAB",
+            "value": -12,
+            "phase": 0.8799999999999972,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowA",
+            "value": -7.199999999999999,
+            "phase": 0.9280000000000075,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowB",
+            "value": -4.800000000000001,
+            "phase": 0.9520000000000048,
+            "arrowsVisible": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "pump-stopped",
+      "options": {
+        "asset": "P-101",
+        "scenario": "stopped"
+      },
+      "metrics": {
+        "scenario": "stopped",
+        "time": 1.2,
+        "selection": "P-101",
+        "view": "iso",
+        "triangles": 10442,
+        "calls": 90,
+        "assets": [
+          {
+            "id": "TK-101",
+            "metrics": {
+              "level": 62,
+              "liquidTop": 1.6440000000000001
+            },
+            "bounds": [
+              2.0149999757111074,
+              1.7999999523162842,
+              2.458286980539561
+            ],
+            "ports": [
+              {
+                "id": "OUT",
+                "position": [
+                  -2,
+                  0,
+                  0.48
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "P-101",
+            "metrics": {
+              "phase": 0,
+              "rpm": 0,
+              "flow": 0
+            },
+            "bounds": [
+              1.9649999757111072,
+              0.9900000095367432,
+              1.3249999982118608
+            ],
+            "ports": [
+              {
+                "id": "IN",
+                "position": [
+                  -0.95,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "OUT",
+                "position": [
+                  -0.25,
+                  0,
+                  1.35
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "V-101",
+            "metrics": {
+              "position": 65
+            },
+            "bounds": [
+              1.5299999991059305,
+              1.0899999876320363,
+              1.4499999994039534
+            ],
+            "ports": [
+              {
+                "id": "AB",
+                "position": [
+                  2.25,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "A",
+                "position": [
+                  3.75,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "B",
+                "position": [
+                  3,
+                  -0.75,
+                  0.65
+                ],
+                "gap": 0
+              }
+            ]
+          }
+        ],
+        "flows": [
+          {
+            "signal": "flow",
+            "value": 0,
+            "phase": 0,
+            "arrowsVisible": false
+          },
+          {
+            "signal": "flowAB",
+            "value": 0,
+            "phase": 0,
+            "arrowsVisible": false
+          },
+          {
+            "signal": "flowA",
+            "value": 0,
+            "phase": 0,
+            "arrowsVisible": false
+          },
+          {
+            "signal": "flowB",
+            "value": 0,
+            "phase": 0,
+            "arrowsVisible": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "valve",
+      "options": {
+        "asset": "V-101"
+      },
+      "metrics": {
+        "scenario": "normal",
+        "time": 1.2,
+        "selection": "V-101",
+        "view": "iso",
+        "triangles": 8662,
+        "calls": 76,
+        "assets": [
+          {
+            "id": "TK-101",
+            "metrics": {
+              "level": 62,
+              "liquidTop": 1.6440000000000001
+            },
+            "bounds": [
+              2.0149999757111074,
+              1.7999999523162842,
+              2.458286980539561
+            ],
+            "ports": [
+              {
+                "id": "OUT",
+                "position": [
+                  -2,
+                  0,
+                  0.48
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "P-101",
+            "metrics": {
+              "phase": 0.4200000000000015,
+              "rpm": 1450,
+              "flow": 24
+            },
+            "bounds": [
+              1.9649999757111072,
+              0.9900000095367432,
+              1.3249999982118608
+            ],
+            "ports": [
+              {
+                "id": "IN",
+                "position": [
+                  -0.95,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "OUT",
+                "position": [
+                  -0.25,
+                  0,
+                  1.35
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "V-101",
+            "metrics": {
+              "position": 65
+            },
+            "bounds": [
+              1.5299999991059305,
+              1.0899999876320363,
+              1.4499999994039534
+            ],
+            "ports": [
+              {
+                "id": "AB",
+                "position": [
+                  2.25,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "A",
+                "position": [
+                  3.75,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "B",
+                "position": [
+                  3,
+                  -0.75,
+                  0.65
+                ],
+                "gap": 0
+              }
+            ]
+          }
+        ],
+        "flows": [
+          {
+            "signal": "flow",
+            "value": 24,
+            "phase": 0.24000000000000532,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowAB",
+            "value": 24,
+            "phase": 0.24000000000000532,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowA",
+            "value": 14.399999999999999,
+            "phase": 0.14400000000000013,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowB",
+            "value": 9.600000000000001,
+            "phase": 0.09600000000000519,
+            "arrowsVisible": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "valve-top",
+      "options": {
+        "asset": "V-101",
+        "view": "top"
+      },
+      "metrics": {
+        "scenario": "normal",
+        "time": 1.2,
+        "selection": "V-101",
+        "view": "top",
+        "triangles": 8662,
+        "calls": 76,
+        "assets": [
+          {
+            "id": "TK-101",
+            "metrics": {
+              "level": 62,
+              "liquidTop": 1.6440000000000001
+            },
+            "bounds": [
+              2.0149999757111074,
+              1.7999999523162842,
+              2.458286980539561
+            ],
+            "ports": [
+              {
+                "id": "OUT",
+                "position": [
+                  -2,
+                  0,
+                  0.48
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "P-101",
+            "metrics": {
+              "phase": 0.4200000000000015,
+              "rpm": 1450,
+              "flow": 24
+            },
+            "bounds": [
+              1.9649999757111072,
+              0.9900000095367432,
+              1.3249999982118608
+            ],
+            "ports": [
+              {
+                "id": "IN",
+                "position": [
+                  -0.95,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "OUT",
+                "position": [
+                  -0.25,
+                  0,
+                  1.35
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "V-101",
+            "metrics": {
+              "position": 65
+            },
+            "bounds": [
+              1.5299999991059305,
+              1.0899999876320363,
+              1.4499999994039534
+            ],
+            "ports": [
+              {
+                "id": "AB",
+                "position": [
+                  2.25,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "A",
+                "position": [
+                  3.75,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "B",
+                "position": [
+                  3,
+                  -0.75,
+                  0.65
+                ],
+                "gap": 0
+              }
+            ]
+          }
+        ],
+        "flows": [
+          {
+            "signal": "flow",
+            "value": 24,
+            "phase": 0.24000000000000532,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowAB",
+            "value": 24,
+            "phase": 0.24000000000000532,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowA",
+            "value": 14.399999999999999,
+            "phase": 0.14400000000000013,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowB",
+            "value": 9.600000000000001,
+            "phase": 0.09600000000000519,
+            "arrowsVisible": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "mismatch",
+      "options": {
+        "scenario": "mismatch"
+      },
+      "metrics": {
+        "scenario": "mismatch",
+        "time": 1.2,
+        "selection": "all",
+        "view": "iso",
+        "triangles": 32614,
+        "calls": 260,
+        "assets": [
+          {
+            "id": "TK-101",
+            "metrics": {
+              "level": 62,
+              "liquidTop": 1.6440000000000001
+            },
+            "bounds": [
+              2.0149999757111074,
+              1.7999999523162842,
+              2.458286980539561
+            ],
+            "ports": [
+              {
+                "id": "OUT",
+                "position": [
+                  -2,
+                  0,
+                  0.48
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "P-101",
+            "metrics": {
+              "phase": 0.4200000000000015,
+              "rpm": 1450,
+              "flow": 24
+            },
+            "bounds": [
+              1.9649999757111072,
+              0.9900000095367432,
+              1.3249999982118608
+            ],
+            "ports": [
+              {
+                "id": "IN",
+                "position": [
+                  -0.95,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "OUT",
+                "position": [
+                  -0.25,
+                  0,
+                  1.35
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "V-101",
+            "metrics": {
+              "position": 65
+            },
+            "bounds": [
+              1.5299999991059305,
+              1.0899999876320363,
+              1.4499999994039534
+            ],
+            "ports": [
+              {
+                "id": "AB",
+                "position": [
+                  2.25,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "A",
+                "position": [
+                  3.75,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "B",
+                "position": [
+                  3,
+                  -0.75,
+                  0.65
+                ],
+                "gap": 0
+              }
+            ]
+          }
+        ],
+        "flows": [
+          {
+            "signal": "flow",
+            "value": 24,
+            "phase": 0.24000000000000532,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowAB",
+            "value": 24,
+            "phase": 0.24000000000000532,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowA",
+            "value": 14.399999999999999,
+            "phase": 0.14400000000000013,
+            "arrowsVisible": true
+          },
+          {
+            "signal": "flowB",
+            "value": 9.600000000000001,
+            "phase": 0.09600000000000519,
+            "arrowsVisible": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "stale",
+      "options": {
+        "scenario": "stale"
+      },
+      "metrics": {
+        "scenario": "stale",
+        "time": 1.2,
+        "selection": "all",
+        "view": "iso",
+        "triangles": 31618,
+        "calls": 226,
+        "assets": [
+          {
+            "id": "TK-101",
+            "metrics": {
+              "level": null,
+              "liquidTop": null
+            },
+            "bounds": [
+              2.0149999757111074,
+              1.7999999523162842,
+              2.458286980539561
+            ],
+            "ports": [
+              {
+                "id": "OUT",
+                "position": [
+                  -2,
+                  0,
+                  0.48
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "P-101",
+            "metrics": {
+              "phase": 0,
+              "rpm": null,
+              "flow": null
+            },
+            "bounds": [
+              1.9649999757111072,
+              0.9900000095367432,
+              1.3249999982118608
+            ],
+            "ports": [
+              {
+                "id": "IN",
+                "position": [
+                  -0.95,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "OUT",
+                "position": [
+                  -0.25,
+                  0,
+                  1.35
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "V-101",
+            "metrics": {
+              "position": null
+            },
+            "bounds": [
+              1.5299999991059305,
+              1.0899999876320363,
+              1.4499999994039534
+            ],
+            "ports": [
+              {
+                "id": "AB",
+                "position": [
+                  2.25,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "A",
+                "position": [
+                  3.75,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "B",
+                "position": [
+                  3,
+                  -0.75,
+                  0.65
+                ],
+                "gap": 0
+              }
+            ]
+          }
+        ],
+        "flows": [
+          {
+            "signal": "flow",
+            "value": null,
+            "phase": 0,
+            "arrowsVisible": false
+          },
+          {
+            "signal": "flowAB",
+            "value": null,
+            "phase": 0,
+            "arrowsVisible": false
+          },
+          {
+            "signal": "flowA",
+            "value": null,
+            "phase": 0,
+            "arrowsVisible": false
+          },
+          {
+            "signal": "flowB",
+            "value": null,
+            "phase": 0,
+            "arrowsVisible": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "bad",
+      "options": {
+        "scenario": "bad"
+      },
+      "metrics": {
+        "scenario": "bad",
+        "time": 1.2,
+        "selection": "all",
+        "view": "iso",
+        "triangles": 31618,
+        "calls": 226,
+        "assets": [
+          {
+            "id": "TK-101",
+            "metrics": {
+              "level": null,
+              "liquidTop": null
+            },
+            "bounds": [
+              2.0149999757111074,
+              1.7999999523162842,
+              2.458286980539561
+            ],
+            "ports": [
+              {
+                "id": "OUT",
+                "position": [
+                  -2,
+                  0,
+                  0.48
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "P-101",
+            "metrics": {
+              "phase": 0,
+              "rpm": null,
+              "flow": null
+            },
+            "bounds": [
+              1.9649999757111072,
+              0.9900000095367432,
+              1.3249999982118608
+            ],
+            "ports": [
+              {
+                "id": "IN",
+                "position": [
+                  -0.95,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "OUT",
+                "position": [
+                  -0.25,
+                  0,
+                  1.35
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "V-101",
+            "metrics": {
+              "position": null
+            },
+            "bounds": [
+              1.5299999991059305,
+              1.0899999876320363,
+              1.4499999994039534
+            ],
+            "ports": [
+              {
+                "id": "AB",
+                "position": [
+                  2.25,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "A",
+                "position": [
+                  3.75,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "B",
+                "position": [
+                  3,
+                  -0.75,
+                  0.65
+                ],
+                "gap": 0
+              }
+            ]
+          }
+        ],
+        "flows": [
+          {
+            "signal": "flow",
+            "value": null,
+            "phase": 0,
+            "arrowsVisible": false
+          },
+          {
+            "signal": "flowAB",
+            "value": null,
+            "phase": 0,
+            "arrowsVisible": false
+          },
+          {
+            "signal": "flowA",
+            "value": null,
+            "phase": 0,
+            "arrowsVisible": false
+          },
+          {
+            "signal": "flowB",
+            "value": null,
+            "phase": 0,
+            "arrowsVisible": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "offline",
+      "options": {
+        "scenario": "offline"
+      },
+      "metrics": {
+        "scenario": "offline",
+        "time": 1.2,
+        "selection": "all",
+        "view": "iso",
+        "triangles": 31618,
+        "calls": 226,
+        "assets": [
+          {
+            "id": "TK-101",
+            "metrics": {
+              "level": null,
+              "liquidTop": null
+            },
+            "bounds": [
+              2.0149999757111074,
+              1.7999999523162842,
+              2.458286980539561
+            ],
+            "ports": [
+              {
+                "id": "OUT",
+                "position": [
+                  -2,
+                  0,
+                  0.48
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "P-101",
+            "metrics": {
+              "phase": 0,
+              "rpm": null,
+              "flow": null
+            },
+            "bounds": [
+              1.9649999757111072,
+              0.9900000095367432,
+              1.3249999982118608
+            ],
+            "ports": [
+              {
+                "id": "IN",
+                "position": [
+                  -0.95,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "OUT",
+                "position": [
+                  -0.25,
+                  0,
+                  1.35
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "V-101",
+            "metrics": {
+              "position": null
+            },
+            "bounds": [
+              1.5299999991059305,
+              1.0899999876320363,
+              1.4499999994039534
+            ],
+            "ports": [
+              {
+                "id": "AB",
+                "position": [
+                  2.25,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "A",
+                "position": [
+                  3.75,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "B",
+                "position": [
+                  3,
+                  -0.75,
+                  0.65
+                ],
+                "gap": 0
+              }
+            ]
+          }
+        ],
+        "flows": [
+          {
+            "signal": "flow",
+            "value": null,
+            "phase": 0,
+            "arrowsVisible": false
+          },
+          {
+            "signal": "flowAB",
+            "value": null,
+            "phase": 0,
+            "arrowsVisible": false
+          },
+          {
+            "signal": "flowA",
+            "value": null,
+            "phase": 0,
+            "arrowsVisible": false
+          },
+          {
+            "signal": "flowB",
+            "value": null,
+            "phase": 0,
+            "arrowsVisible": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "trip",
+      "options": {
+        "scenario": "trip"
+      },
+      "metrics": {
+        "scenario": "trip",
+        "time": 1.2,
+        "selection": "all",
+        "view": "iso",
+        "triangles": 32230,
+        "calls": 248,
+        "assets": [
+          {
+            "id": "TK-101",
+            "metrics": {
+              "level": 62,
+              "liquidTop": 1.6440000000000001
+            },
+            "bounds": [
+              2.0149999757111074,
+              1.7999999523162842,
+              2.458286980539561
+            ],
+            "ports": [
+              {
+                "id": "OUT",
+                "position": [
+                  -2,
+                  0,
+                  0.48
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "P-101",
+            "metrics": {
+              "phase": 0,
+              "rpm": 0,
+              "flow": 0
+            },
+            "bounds": [
+              1.9649999757111072,
+              0.9900000095367432,
+              1.3249999982118608
+            ],
+            "ports": [
+              {
+                "id": "IN",
+                "position": [
+                  -0.95,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "OUT",
+                "position": [
+                  -0.25,
+                  0,
+                  1.35
+                ],
+                "gap": 0
+              }
+            ]
+          },
+          {
+            "id": "V-101",
+            "metrics": {
+              "position": 65
+            },
+            "bounds": [
+              1.5299999991059305,
+              1.0899999876320363,
+              1.4499999994039534
+            ],
+            "ports": [
+              {
+                "id": "AB",
+                "position": [
+                  2.25,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "A",
+                "position": [
+                  3.75,
+                  0,
+                  0.65
+                ],
+                "gap": 0
+              },
+              {
+                "id": "B",
+                "position": [
+                  3,
+                  -0.75,
+                  0.65
+                ],
+                "gap": 0
+              }
+            ]
+          }
+        ],
+        "flows": [
+          {
+            "signal": "flow",
+            "value": 0,
+            "phase": 0,
+            "arrowsVisible": false
+          },
+          {
+            "signal": "flowAB",
+            "value": 0,
+            "phase": 0,
+            "arrowsVisible": false
+          },
+          {
+            "signal": "flowA",
+            "value": 0,
+            "phase": 0,
+            "arrowsVisible": false
+          },
+          {
+            "signal": "flowB",
+            "value": 0,
+            "phase": 0,
+            "arrowsVisible": false
+          }
+        ]
+      }
+    }
+  ],
+  "assertions": [
+    "18 deterministic state/view captures; named port transforms within 1e-8 m; <200k rendered triangles in every case",
+    "Tank 2D level changes with the shared measurement; unknown has hatching and three explicit 3D quality labels",
+    "Zero/reverse flow independent of drive rotation; unavailable and zero flow suppress flow arrows",
+    "Fixture transition preserves rotor phase; deterministic replay matches all metrics",
+    "390px layout has no horizontal overflow; visible controls at least 44×44 CSS px; catalog search returns results",
+    "Self-contained HTML starts and renders geometry"
+  ],
+  "ocr": [
+    {
+      "name": "overview",
+      "expected": [
+        "TK-101",
+        "P-101",
+        "V-101"
+      ],
+      "missing": []
+    },
+    {
+      "name": "trip",
+      "expected": [
+        "TRIP"
+      ],
+      "missing": []
+    },
+    {
+      "name": "offline",
+      "expected": [
+        "OFFLINE",
+        "UNKNOWN"
+      ],
+      "missing": []
+    }
+  ],
+  "errors": [],
+  "recording": {
+    "mimeType": "video/webm;codecs=vp9",
+    "frames": 109,
+    "worstFrameMs": 250,
+    "meanFrameMs": 55.50183486238531,
+    "scope": "Six-second 3D canvas capture under software rendering; excludes DOM overlays; not a production performance benchmark"
+  },
+  "status": "passed"
+}

@@ -1,0 +1,179 @@
+Equipment lab / 3D foundation
+
+FIXTURE - NO LIVE DATA
+
+scada.
+
+PROCESS / 01
+
+SPATIAL VIEW
+
+STATE EXPLORER
+
+Process overview
+
+[|r |e | me
+
+Water
+
+Test scenario
+
+transfer
+
+OFFLINE
+
+‘One asset model.
+
+Conditional cutaway » metres -Z up
+
+Two ways to see it.
+
+OFFLINE - SIGNALS UNAVAILABLE
+
+OFFLINE - SIGNALS UNAVAILABLE
+
+@ Overview
+
+03
+
+TK-101
+
+OFFLINE
+
+01
+
+Vertical tank
+
+TK-101
+
+unt
+
+OFFLINE
+
+P-101.
+
+UNKN
+
+OFFLINE
+
+UNKNOWN - OFFLINE
+
+level
+
+UNKNOWN
+
+TK-101
+
+Vertical tank
+
+our
+
+AB
+
+P-101
+
+OFFLINE
+
+1"
+
+P-101
+
+Centrifugal pump
+
+©
+
+‘our
+
+(Centrifugal pump
+
+UNKNOWN
+
+rpm
+
+flow
+
+UNKNOWN
+
+V-101
+
+Pa
+
+valve
+
+Three-way diverting
+
+OFFLINE
+
+V-101
+
+Three-way diverting valve
+
+position
+
+UNKNOWN
+
+Drag to orbit - Scroll to zoom
+
+‘command
+
+UNKNOWN
+
+FlowAB
+
+UNKNOWN
+
+MODEL LIBRARY
+
+flowA
+
+UNKNOWN
+
+> Play
+
+oi
+
+1.28 s Symbolic motion
+
+flows
+
+UNKNOWN
+
+3 procedural models
+
+478 indexed symbols,
+
+PROCESS VIEW
+
+‘Shared tags & signals «independent layout
+
+Flow is measured separately from motor
+
+24 source categories
+
+TK-101
+
+P-101
+
+v-101
+
+speed and valve travel
+
+Explore catalog 2
+
+‘Sample - 2026-09-08 00:00:00 UTC
+
+Li
+
+©
+
+UNKNOWN
+
+UNKNOWN
+
+UNKNOWN
+
+SOURCE CATALOG
+
+AWVIO asc ceerknleg« Fn hk
+
+Oe See ee
