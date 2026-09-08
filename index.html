@@ -8,6 +8,11 @@
   <title>SCADA — playground</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="./app.css" />
+  <style>
+    /* Prevent native WebKit select chrome from whitening the dark header. */
+    .project select { appearance: none; -webkit-appearance: none; border-radius: 0; padding: 5px 18px 5px 0; }
+    .project::after { content: "⌄"; margin-left: -21px; color: #91adba; pointer-events: none; }
+  </style>
 </head>
 <body>
   <div id="app">
