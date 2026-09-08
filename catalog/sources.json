@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "checked": "2026-09-08",
+  "sources": [
+    {
+      "id": "drawio",
+      "name": "draw.io P&ID stencils",
+      "url": "https://github.com/jgraph/drawio/tree/dev/src/main/webapp/stencils/pid",
+      "kind": "2D-symbol-index",
+      "licenseEvidence": "https://github.com/jgraph/drawio/blob/dev/LICENSE",
+      "observedLicense": "Apache-2.0 at repository root",
+      "integration": "478 symbol-name entries across 24 XML categories; searchable index committed. Geometry not imported.",
+      "status": "indexed"
+    },
+    {
+      "id": "dexpi",
+      "name": "DEXPI",
+      "url": "https://dexpi.org/specifications/",
+      "kind": "process-information-model",
+      "version": "Current landing page: 2.0; class references pinned to public P&ID 1.4",
+      "reference": "https://dexpi.org/static/pid_specification_1.4/reference/Equipment/index.html",
+      "licenseEvidence": "https://dexpi.org/static/pid_specification_1.4/#license",
+      "observedLicense": "P&ID 1.4 specification: CC BY 4.0",
+      "integration": "Semantic class and relationship references. No XML import/export or conformance claim.",
+      "status": "reference"
+    },
+    {
+      "id": "ifc",
+      "name": "buildingSMART IFC",
+      "url": "https://standards.buildingsmart.org/IFC/DEV/IFC4_3/HTML/lexical/IfcPump.html",
+      "kind": "BIM-information-model",
+      "version": "IFC 4.3 documentation; retrieved page identifies a development build",
+      "integration": "Reference for stable identity, object placement, multiple representations and physical equipment classes. No IFC parser implemented.",
+      "status": "reference"
+    },
+    {
+      "id": "symbol-factory",
+      "name": "Software Toolbox Symbol Factory Universal",
+      "url": "https://softwaretoolbox.com/symbol-factory-universal/",
+      "kind": "commercial-industrial-graphics",
+      "integration": "Breadth and animation-group reference for the roadmap. Vendor states commercial software embedding requires a special license. No assets copied.",
+      "status": "reference-only"
+    },
+    {
+      "id": "traceparts",
+      "name": "TraceParts",
+      "url": "https://info.traceparts.com/",
+      "kind": "manufacturer-CAD-catalogs",
+      "integration": "Candidate source for dimensionally realistic equipment and manufacturer metadata. Asset terms and redistribution permission must be checked per acquisition; no CAD model downloaded.",
+      "status": "reference-only"
+    }
+  ]
+}

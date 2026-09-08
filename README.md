@@ -1,6 +1,6 @@
 # SCADA playground
 
-[Open the editor](https://pom4h.github.io/scada/) · [DSL reference](docs/dsl.md) · [Architecture](docs/architecture.md)
+[Open the editor](https://pom4h.github.io/scada/) · [DSL reference](docs/dsl.md) · [Architecture](docs/architecture.md) · [Experimental 3D lab and catalog](docs/3d-foundation.md)
 
 A browser workbench for designing animated SCADA diagrams in TypeScript. Code, canvas and property inspector edit **one `scene.ts` document**. The playground is a static site; no account, backend, CDN or API key is required.
 
@@ -43,12 +43,14 @@ Open **http://localhost:4173/scada/**. These commands also work in Windows Power
 Bun can also run the scripts (`bun run build`, `bun run preview`); CI installs the pinned dependency tree using `package-lock.json` and `npm ci`.
 
 ```sh
-npm run check                       # build, strict TypeScript, core tests
+npm run check                       # build, strict TypeScript, core and 3D contract tests
 npx playwright install --with-deps chromium webkit
 npm run test:e2e                    # real browser interaction tests
 ```
 
 For browser runtimes that deliberately disallow HTTP navigation, `SCADA_INJECT=1` injects the same built assets into an opaque-origin Chromium page. It skips the two tests that require an HTTP origin. CI never uses this mode.
+
+The optional equipment lab runs with `npm run lab` on **http://127.0.0.1:4174/**. It demonstrates three procedural 3D components, shared 2D/3D signal state, and a searchable index of 478 P&ID symbol names. It is separate from the editor and uses synthetic data. See the [architecture and harness instructions](docs/3d-foundation.md) and [review evidence](docs/evidence-3d/README.md).
 
 ## What is included
 
