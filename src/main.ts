@@ -119,7 +119,7 @@ function renderInspector() {
   const root = $('inspector-body');
   const item = compiled?.scene.nodes.find(n => n.id === selected);
   const edge = compiled?.scene.links.find(l => l.id === selected);
-  const signature = item ? `${item.id}:${item.kind}` : selected;
+  const signature = item ? `${item.id}:${item.kind}` : (selected ?? "__empty__");
   if (inspectorFor !== signature || !root.childNodes.length) {
     inspectorFor = signature; root.replaceChildren();
     if (!item && !edge) {

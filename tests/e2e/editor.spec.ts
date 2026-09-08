@@ -100,3 +100,10 @@ test('shared source loads from a unicode-safe URL hash',async({page})=>{
  test.skip(!!process.env.SCADA_INJECT,'CI verifies navigation and hash on HTTP origins.');
  const s=booster.replace('opening: 76','opening: 33'),code=Buffer.from(s).toString('base64url');await page.goto('./#code='+code);await page.waitForFunction(()=>!!(window as any).__scada);expect((await api(page)).source).toBe(s);
 });
+
+test('deselect and deletion clear stale inspector controls',async({page})=>{
+ await choose(page,'V-101');await expect(page.locator('#field-opening')).toBeVisible();
+ await page.locator('#deselect').click();await expect(page.locator('.inspector-empty')).toBeVisible();await expect(page.locator('#field-opening')).toHaveCount(0);
+ await choose(page,'P-101');await page.locator('#delete-object').click();await expect(page.locator('.inspector-empty')).toBeVisible();await expect(page.locator('#field-rpm')).toHaveCount(0);
+ await page.locator('#undo').click();await choose(page,'P-101');await expect(page.locator('#field-rpm')).toBeVisible();
+});
