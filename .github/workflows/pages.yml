@@ -22,7 +22,7 @@ jobs:
       - run: npm run check
       - run: npx playwright install --with-deps chromium webkit
       - run: npm run test:e2e
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: browser-tests
@@ -67,7 +67,7 @@ jobs:
         run: node scripts/verify-live.mjs
         env:
           PLAYGROUND_URL: ${{ needs.deploy.outputs.page_url }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: live-pages-check
