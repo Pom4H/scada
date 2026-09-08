@@ -4,6 +4,7 @@ generated/
 .test/
 test-results/
 playwright-report/
+live-check/
 *.tgz
 *.zip
 .DS_Store
