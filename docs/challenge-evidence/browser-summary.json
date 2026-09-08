@@ -1,0 +1,114 @@
+{
+  "revision": "8e938beb46d9659458cd2c7bf43d9fafcbd700af",
+  "browser": "Chromium 149.0.7827.0",
+  "baselineStats": {
+    "startTime": "2026-09-08T16:22:34.229Z",
+    "duration": 26815.49,
+    "expected": 18,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "challengeStats": {
+    "startTime": "2026-09-08T16:27:41.557Z",
+    "duration": 18403.332000000002,
+    "expected": 3,
+    "skipped": 0,
+    "unexpected": 4,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "id": "B01",
+      "title": "B01 deleting a nested tap in the inspector preserves its visible pipe",
+      "project": "chromium",
+      "status": "failed",
+      "evidence": {}
+    },
+    {
+      "id": "B02",
+      "title": "B02 instrument collisions cannot be silently declared warning-free",
+      "project": "chromium",
+      "status": "failed",
+      "evidence": {}
+    },
+    {
+      "id": "B03",
+      "title": "B03 switching to another circuit starts a new trend history",
+      "project": "chromium",
+      "status": "failed",
+      "evidence": {
+        "trend-paths": {
+          "before": "M392.5 19.3L396.3 19.3L400.0 19.3",
+          "after": "M388.8 19.3L392.5 19.3L396.3 19.3L400.0 16.5"
+        }
+      }
+    },
+    {
+      "id": "B04",
+      "title": "B04 resuming after a long preview pause leaves a gap in the sampled trend",
+      "project": "chromium",
+      "status": "failed",
+      "evidence": {
+        "trend-path": "M320.9 19.3L324.6 19.3L328.3 19.3L396.3 19.3L400.0 19.3"
+      }
+    },
+    {
+      "id": "B05",
+      "title": "B05 120 parameter updates keep DOM identity and signed water movement",
+      "project": "chromium",
+      "status": "passed",
+      "evidence": {}
+    },
+    {
+      "id": "B06",
+      "title": "B06 loss of quality stops animation and creates a real trend gap",
+      "project": "chromium",
+      "status": "passed",
+      "evidence": {}
+    },
+    {
+      "id": "B07",
+      "title": "B07 measure geometry edits and parameter edits on a valid 48-element scene",
+      "project": "chromium",
+      "status": "passed",
+      "evidence": {
+        "editor-timings": {
+          "times": [
+            {
+              "kind": "initial",
+              "ms": 1083.699999999255
+            },
+            {
+              "kind": "parameter",
+              "ms": 36.30000000074506
+            },
+            {
+              "kind": "parameter",
+              "ms": 20.899999998509884
+            },
+            {
+              "kind": "parameter",
+              "ms": 16.600000001490116
+            },
+            {
+              "kind": "position",
+              "ms": 922.7000000029802
+            },
+            {
+              "kind": "position",
+              "ms": 930.7999999970198
+            },
+            {
+              "kind": "position",
+              "ms": 948.6000000014901
+            }
+          ],
+          "error": null,
+          "warnings": [],
+          "nodes": 1933
+        }
+      }
+    }
+  ]
+}

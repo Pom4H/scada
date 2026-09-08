@@ -1,0 +1,33 @@
+name: SCADA challenge
+on:
+  pull_request:
+    paths:
+      - 'challenges/**'
+      - 'scripts/challenge.mjs'
+      - 'playwright.challenge.config.ts'
+      - '.github/workflows/challenge.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  challenge:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium webkit
+      - name: Run all challenge suites, retaining real failures
+        run: npm run challenge
+      - uses: actions/upload-artifact@v7.0.1
+        if: always()
+        with:
+          name: scada-challenge
+          path: challenge-results/
+          retention-days: 14

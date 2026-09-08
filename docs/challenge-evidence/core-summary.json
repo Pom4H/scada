@@ -1,0 +1,61 @@
+{
+  "revision": "8e938beb46d9659458cd2c7bf43d9fafcbd700af",
+  "tests": [
+    {
+      "status": "failed",
+      "title": "C01 deleting a nested instrument preserves the process pipe"
+    },
+    {
+      "status": "failed",
+      "title": "C02 a nested connect can receive a second instrument"
+    },
+    {
+      "status": "failed",
+      "title": "C03 palette insertion aliases imports that collide with scalar constants"
+    },
+    {
+      "status": "failed",
+      "title": "C04 excessive nesting produces a bounded SourceError, not a parser stack overflow"
+    },
+    {
+      "status": "failed",
+      "title": "C05 unsupported topology reports unknown flow, distinct from measured zero"
+    },
+    {
+      "status": "failed",
+      "title": "C06 overlapping attached instruments produce an explicit layout warning"
+    },
+    {
+      "status": "passed",
+      "title": "C07 trip, dry tank and closed valve stop all connected flow immediately"
+    },
+    {
+      "status": "passed",
+      "title": "C08 bad or stale quality makes the whole connected flow unknown"
+    },
+    {
+      "status": "passed",
+      "title": "C09 201 signed RPM transitions preserve direction on every pipe"
+    },
+    {
+      "status": "passed",
+      "title": "C10 independent circuits isolate trip and unavailable telemetry"
+    },
+    {
+      "status": "passed",
+      "title": "C11 computed positions survive refused visual edits byte for byte"
+    },
+    {
+      "status": "passed",
+      "title": "C12 200 source edits preserve unrelated comments and remain recompilable"
+    },
+    {
+      "status": "passed",
+      "title": "C13 48 elements route without collisions, and element 49 is rejected"
+    },
+    {
+      "status": "passed",
+      "title": "C14 arbitrary code and prototype access are rejected without execution"
+    }
+  ]
+}

@@ -9,7 +9,11 @@
     "typecheck": "tsc --noEmit",
     "test": "node scripts/test.mjs",
     "test:e2e": "playwright test",
-    "check": "npm run build && npm run typecheck && npm test"
+    "check": "npm run build && npm run typecheck && npm test",
+    "challenge": "node scripts/challenge.mjs",
+    "challenge:core": "node scripts/challenge.mjs core",
+    "challenge:browser": "node scripts/challenge.mjs browser",
+    "challenge:bench": "node scripts/challenge.mjs bench"
   },
   "keywords": [],
   "author": "Roman Popov",
