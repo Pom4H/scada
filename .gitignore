@@ -5,6 +5,7 @@ generated/
 test-results/
 playwright-report/
 live-check/
+challenge-results/
 *.tgz
 *.zip
 .DS_Store
