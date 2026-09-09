@@ -1,0 +1,33 @@
+name: Review workspace
+on:
+  push:
+    branches: [feature/server-runs]
+    paths: [.github/workflows/review-workspace.yml]
+permissions:
+  contents: read
+jobs:
+  workspace:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Package reproducible review inputs (no credentials or git configuration)
+        run: |
+          mkdir -p /tmp/scada-review/toolchain
+          git archive HEAD | tar -x -C /tmp/scada-review
+          cp -a node_modules /tmp/scada-review/
+          cp "$(command -v node)" /tmp/scada-review/toolchain/node
+          printf '%s\n' "$(git rev-parse HEAD)" > /tmp/scada-review/REVIEW_HEAD
+          tar -czf /tmp/scada-review.tgz -C /tmp/scada-review .
+      - uses: actions/upload-artifact@v7.0.1
+        with:
+          name: review-workspace
+          path: /tmp/scada-review.tgz
+          retention-days: 1
