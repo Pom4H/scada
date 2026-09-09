@@ -101,11 +101,14 @@ export class ProjectWorkspace {
   }
   private apply(project: ProjectSnapshot, path: string) {
     if (!project.scenes.includes(path)) path = project.entry;
+    const openingScene = !this.applied || this.applied.id !== project.id || this.openedPath !== path;
     const source = project.files.find(f => f.path === path)!.content; compile(source);
     if (this.dirty) this.preserveDraft();
     this.applying = true;
     try { this.host.replaceSource(source); } finally { this.applying = false; }
     this.applied = project; this.incoming = null; this.openedPath = path; this.baseline = source; this.dirty = false;
+    // Use the existing active-view command; ordinary revision updates keep the user's camera.
+    if (openingScene) $<HTMLButtonElement>('fit').click();
     this.message = ''; this.render(); this.host.toast(`Открыт ${path} · Git ${project.revision.slice(0, 8)}`);
   }
   private async save() {

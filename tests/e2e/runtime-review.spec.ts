@@ -36,6 +36,15 @@ test.beforeEach(async ({page}) => {
   await page.locator('#server-token').fill(tokens.operator);await page.locator('#connect-server').click();
   await expect.poll(async()=>(await state(page)).source).toBe(text);
   await expect(page.locator('#project-sync')).toBeVisible();
+  // A newly delivered scene must fit, not inherit the starter project's viewport.
+  const fits = await page.locator('#scene').evaluate(svg => {
+    const viewport = svg.getBoundingClientRect();
+    return [...svg.querySelectorAll('[data-node]')].every(node => {
+      const bounds = node.getBoundingClientRect();
+      return bounds.left >= viewport.left - 1 && bounds.right <= viewport.right + 1 && bounds.top >= viewport.top - 1 && bounds.bottom <= viewport.bottom + 1;
+    });
+  });
+  expect(fits).toBe(true);
 });
 test.afterEach(async ({page},info) => {
   try {
@@ -68,10 +77,13 @@ test('server delivers allowlisted files; browser saves a CAS Git commit without 
 
 test('compatible Git hot reload retains a live run; incompatible update preserves and then detaches a draft',async({page})=>{
   const id=await run(page),moved=text.replace('x:325,y:188','x:345,y:188');
+  await page.locator('#zoom-in').click();
+  const camera=await page.evaluate(()=>(window as any).__scada.camera);
   const revision=await commit(moved);
   await expect.poll(async()=>(await state(page)).source).toBe(moved);
   expect((await state(page)).runId).toBe(id);expect((await state(page)).status).toBe('connected');
   await expect(page.locator('#project-revision')).toContainText(revision.slice(0,8));
+  expect(await page.evaluate(()=>(window as any).__scada.camera)).toEqual(camera);
   const draft=moved+'\n// Do not discard this local work';await page.evaluate(value=>(window as any).__scada.setSource(value),draft);
   const changed=moved.replace('rpm:1500','rpm:1100');await commit(changed);
   await expect(page.locator('#project-apply')).toBeVisible();expect((await state(page)).source).toBe(draft);
