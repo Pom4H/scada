@@ -2,7 +2,7 @@
 
 [Open the editor](https://pom4h.github.io/scada/) · [DSL reference](docs/dsl.md) · [Architecture](docs/architecture.md) · [Experimental 3D lab and catalog](docs/3d-foundation.md)
 
-A browser workbench for designing animated SCADA diagrams in TypeScript. Code, canvas and property inspector edit **one `scene.ts` document**. The editor works as a static site. The optional local Node server adds durable synthetic equipment runs, authenticated signals, history and replay. No hardware connection is included.
+A browser workbench for designing animated SCADA diagrams in TypeScript. Code, canvas and property inspector edit **one TS document per scene**. A server can also deliver a Git-backed project containing scenes and reference files. The editor works as a static site. The optional local Node server adds durable synthetic equipment runs, authenticated signals, history and replay. No hardware connection is included.
 
 ```ts
 import { tank, pump, valve, outlet, connect } from "@scada/core";
@@ -38,7 +38,7 @@ npm ci
 npm run dev
 ```
 
-Open **http://localhost:4173/scada/**. These commands also work in Windows PowerShell. Restart `npm run dev` after source changes; this intentionally small server has no hot-module reload.
+Open **http://localhost:4173/scada/**. These commands also work in Windows PowerShell. `npm run dev` watches source changes, preserves the last valid build on errors, and reloads the browser after a successful build.
 
 The runtime server requires Node 24 and its built-in SQLite module. CI installs the pinned dependency tree using `package-lock.json` and `npm ci`.
 
@@ -96,3 +96,17 @@ The project is checked with TypeScript 7. The browser-side DSL parser uses Micro
 Parameter and quality changes retain existing SVG nodes and animation phases. Routing is recalculated only when topology, positions or tap placement change. This cache is disposable; the only saved project is still `scene.ts`.
 
 MIT © Roman Popov. See [CONTRIBUTING](CONTRIBUTING.md) and [SECURITY](SECURITY.md).
+
+## Git projects and developer workflow
+
+An authenticated server can deliver the project files, scene and exact Git
+revision directly to the editor. Committed changes hot-reload through the same
+validated mechanism in development and production. Invalid releases preserve
+the last good version; active runs keep their original revision. Local drafts
+are never overwritten automatically. Optional operator commits use Git
+compare-and-swap and require explicit writable-server configuration.
+
+See [Git project setup, remote tracking and API](docs/git-projects.md),
+[reliability fixes, signal history and SDK](docs/review-fixes.md),
+[standalone project example](examples/git-project) and
+[external SDK consumer](examples/consumer).

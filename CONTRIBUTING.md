@@ -9,3 +9,5 @@ Keep authored project persistence source-only; server-run observations and check
 Report unsupported simulation topologies instead of guessing physics. The preview is a design workbench, not a certified operational control system.
 
 Equipment extensions must register metadata, installed behavior, 2D/3D representation and tests through the public hooks described in docs/architecture.md. New types must not add special cases to the compiler or central renderer. Runtime frames must never dispatch editor transactions. Run npm run test:runtime:e2e for end-to-end stream/replay/failure checks.
+
+Use `scope: "layout"` for purely visual fields. Add typed SDK consumer and metadata completion tests for extensions. Project updates must validate immutable Git objects before activation, preserve drafts and run revisions, and never execute source or hooks. `npm run check` includes the review regression suite and external consumer.

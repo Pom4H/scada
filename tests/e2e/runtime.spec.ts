@@ -105,7 +105,7 @@ test('recorded replay and comparison read history while the live run continues',
   await page.locator('#replay-live').click();
   await expect.poll(async()=>(await frame(page)).seq).toBeGreaterThan(paused);
   await page.locator('#compare-run').selectOption(reference.id);
-  const comparisonResponse=page.waitForResponse(response=>response.url().includes(`/api/runs/${reference.id}/history`));
+  const comparisonResponse=page.waitForResponse(response=>response.url().includes(`/api/runs/${reference.id}/trend`));
   await page.locator('#compare-history').click();expect((await comparisonResponse).ok()).toBe(true);
   expect((await state(page)).source).toBe(text);
   expect((await frame(page)).runId).toBe(active.id);
@@ -142,7 +142,7 @@ test('switching runs cannot combine histories or apply another project configura
   const before=(await state(page)).source;
   await page.evaluate(text=>(window as any).__scada.setSource(text),before.replace('rpm: 1500','rpm: 900'));
   await expect.poll(async()=>{
-    const s=await state(page);return s.runtime.status!=='live' && s.runtime.status!=='connected';
+    const s=await state(page);return s.runtime.status==='connected' && s.runtime.runId===null && s.runtime.frame===null;
   }).toBe(true);
   await page.locator('#undo').click();expect((await state(page)).source).toBe(before);
 });

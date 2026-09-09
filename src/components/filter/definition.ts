@@ -2,7 +2,7 @@ import { registerComponent } from '../../core';
 registerComponent('filter', {
   version: '1.0.0', label: 'Фильтр', prefix: 'FLT', width: 130, height: 100,
   fields: {
-    x: { label: 'X', default: 100, min: -3000, max: 6000 }, y: { label: 'Y', default: 100, min: -3000, max: 6000 },
+    x: { scope: 'layout', label: 'X', default: 100, min: -3000, max: 6000 }, y: { scope: 'layout', label: 'Y', default: 100, min: -3000, max: 6000 },
     resistance: { label: 'Сопротивление', default: .1, min: 0, max: 1, step: .01, unit: 'доля' },
     quality: { label: 'Качество', default: 'good', choices: ['good', 'stale', 'bad'] },
     alarm: { label: 'Состояние', default: 'none', choices: ['none', 'warning', 'trip'] },

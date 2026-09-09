@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "id": "pump-demo",
+  "entry": "scene.ts",
+  "scenes": ["scene.ts"],
+  "files": ["scene.ts", "README.md"]
+}

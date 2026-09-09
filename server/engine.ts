@@ -1,11 +1,12 @@
+import type { ProjectSnapshot } from '../src/runtime/project';
 import { createHash, randomUUID } from 'node:crypto';
 import { catalog, type Equipment, type Scene } from '../src/core';
 import { compile } from '../src/source';
-import type { CommandReceipt, CreateRun, EquipmentCommand, EquipmentState, NumericSignal, PublicEvent, RunDetail, RunSummary, RuntimeFrame, Signal } from '../src/runtime/protocol';
+import type { CommandReceipt, CreateRun, EquipmentCommand, EquipmentState, NumericSignal, PublicEvent, RunDetail, RunSummary, RuntimeFrame, Signal, HistoryRange, TrendSelection, TrendSeries } from '../src/runtime/protocol';
 import { configurationJSON } from '../src/runtime/protocol';
 import { BehaviorRegistry, quality, validateCommand, type BehaviorContext, type BehaviorOutput, type HiddenState, type Transport } from './behavior';
 import { installedBehaviors } from './models';
-import { RunStore } from './store';
+import { RunStore, StorageError } from './store';
 
 export const STEP_MS = 100;
 const unknownTransport = (): Transport => ({ flow: null, pressure: null, temperature: null });
@@ -26,12 +27,14 @@ const object = (value: unknown): Record<string, unknown> => {
 const ordered = (scene: Scene): Scene => ({ nodes: [...scene.nodes].sort((a, b) => a.id.localeCompare(b.id, 'en')), links: [...scene.links].sort((a, b) => a.id.localeCompare(b.id, 'en')) });
 const exactKeys = (value: Record<string, unknown>, allowed: string[]) => { for (const key of Object.keys(value)) if (!allowed.includes(key)) throw new RuntimeError(`Unknown field: ${key}`); };
 export function validateCreate(value: unknown): CreateRun {
-  const input = object(value); exactKeys(input, ['projectId', 'label', 'source', 'scenario', 'seed']);
+  const input = object(value); exactKeys(input, ['projectId', 'label', 'source', 'scenario', 'seed', 'projectRevision', 'projectEntry']);
   requiredString(input.projectId, 'projectId', 80); requiredString(input.source, 'source', 120000);
   if (!/^[\p{L}\p{N}_.-]+$/u.test(input.projectId as string)) throw new RuntimeError('Invalid projectId');
   if (input.label !== undefined) requiredString(input.label, 'label', 120);
   if (input.scenario !== 'normal' && input.scenario !== 'degradation') throw new RuntimeError('Unknown installed scenario');
   if (input.seed !== undefined && (!Number.isInteger(input.seed) || Number(input.seed) < 0 || Number(input.seed) > 0xffffffff)) throw new RuntimeError('seed must be a uint32');
+  if (input.projectRevision !== undefined && !/^[a-f0-9]{40,64}$/.test(requiredString(input.projectRevision, 'projectRevision', 64))) throw new RuntimeError('Invalid project revision');
+  if (input.projectEntry !== undefined) requiredString(input.projectEntry, 'projectEntry', 160);
   return input as unknown as CreateRun;
 }
 export function validateEquipmentCommand(value: unknown): EquipmentCommand {
@@ -43,8 +46,8 @@ export function validateEquipmentCommand(value: unknown): EquipmentCommand {
   return input as unknown as EquipmentCommand;
 }
 function summary(manifest: RunDetail): RunSummary {
-  const { id, projectId, label, status, seq, simTimeMs, createdAt, sourceHash, synthetic } = manifest;
-  return { id, projectId, label, status, seq, simTimeMs, createdAt, sourceHash, synthetic };
+  const { id, projectId, label, status, seq, simTimeMs, createdAt, sourceHash, synthetic, projectRevision, projectEntry } = manifest;
+  return { id, projectId, label, status, seq, simTimeMs, createdAt, sourceHash, synthetic, ...(projectRevision ? { projectRevision, projectEntry } : {}) };
 }
 export class RunEngine {
   readonly store: RunStore;
@@ -58,6 +61,8 @@ export class RunEngine {
         for (const node of scene.nodes) if (this.registry.get(node.kind).version !== persisted.manifest.behaviorVersions[node.kind]) throw new Error(`Behavior version mismatch for saved run ${persisted.manifest.id}: ${node.kind}`);
         const metadataVersions = persisted.manifest.initialConditions.metadataVersions as Record<string, string> | undefined;
         if (metadataVersions) for (const node of scene.nodes) if (metadataVersions[node.kind] !== catalog[node.kind].version) throw new Error(`Metadata version mismatch for saved run ${persisted.manifest.id}: ${node.kind}`);
+        // Identity v2 excludes declared layout fields. Exact source/provenance and frames stay intact.
+        persisted.manifest.sourceHash = createHash('sha256').update(configurationJSON(scene)).digest('hex');
         const checkpoint = persisted.checkpoint as Checkpoint;
         const frame = this.store.frame(persisted.manifest.id, checkpoint.seq);
         if (!frame) throw new Error(`Missing durable frame for run ${persisted.manifest.id}`);
@@ -65,16 +70,18 @@ export class RunEngine {
       }
     } catch (error) { this.store.close(); throw error; }
   }
+  validateProjectSource(source: string) { return compile(source).scene; }
   private require(id: string): ActiveRun { const run = this.runs.get(id); if (!run) throw new RuntimeError('Run not found', 404); return run; }
   list(projectId?: string): RunSummary[] { return [...this.runs.values()].filter(run => projectId === undefined || run.manifest.projectId === projectId).map(run => summary(run.manifest)); }
   get(id: string): { run: RunSummary; snapshot: RuntimeFrame } {
-    const run = this.require(id); return { run: summary(run.manifest), snapshot: { ...copy(run.frame), type: 'snapshot' } };
+    const run = this.require(id); return { run: summary(run.manifest), snapshot: { ...copy(run.frame), type: 'snapshot', runStatus: run.manifest.status } };
   }
+  project(id: string) { const manifest = this.require(id).manifest; return { project: manifest.projectSnapshot ? copy(manifest.projectSnapshot) : null, source: manifest.source, writable: false }; }
   research(id: string, after = -1, limit = 500) {
     const run = this.require(id);
     return { run: copy(run.manifest), hidden: copy(run.checkpoint.instances), checkpoint: { seq: run.checkpoint.seq, simTimeMs: run.checkpoint.simTimeMs, randomState: run.checkpoint.randomState }, assumptions: Object.fromEntries([...new Set(run.scene.nodes.map(node => node.kind))].map(kind => [kind, this.registry.get(kind).assumptions])), commands: this.store.commands(id, after, limit), events: this.store.researchEvents(id, after, limit) };
   }
-  create(value: CreateRun, options: { id?: string; epoch?: number } = {}): { run: RunSummary; snapshot: RuntimeFrame } {
+  create(value: CreateRun, options: { id?: string; epoch?: number; project?: ProjectSnapshot } = {}): { run: RunSummary; snapshot: RuntimeFrame } {
     const input = validateCreate(value);
     if (this.runs.size >= 100) throw new RuntimeError('Local demo limit: 100 saved runs', 409);
     const id = options.id ?? randomUUID();
@@ -88,7 +95,8 @@ export class RunEngine {
     for (const node of scene.nodes) { try { behaviorVersions[node.kind] = this.registry.get(node.kind).version; } catch (error) { throw new RuntimeError((error as Error).message); } }
     const sourceHash = createHash('sha256').update(configurationJSON(scene)).digest('hex');
     const configurationVersion = createHash('sha256').update(input.source).digest('hex');
-    const manifest: RunDetail = { id, projectId: input.projectId, label: input.label ?? input.projectId, status: 'running', seq: 0, simTimeMs: 0, createdAt: epoch, sourceHash, synthetic: true, source: input.source, configurationVersion, behaviorVersions, seed: input.seed ?? 1, initialConditions: {}, scenario: input.scenario };
+    const manifest: RunDetail = { id, projectId: input.projectId, label: input.label ?? input.projectId, status: 'running', seq: 0, simTimeMs: 0, createdAt: epoch, sourceHash, synthetic: true, source: input.source, configurationVersion, behaviorVersions, seed: input.seed ?? 1, initialConditions: {}, scenario: input.scenario, ...(input.projectRevision ? { projectRevision: input.projectRevision, projectEntry: input.projectEntry } : {}) };
+    if (options.project) manifest.projectSnapshot = copy(options.project);
     const checkpoint: Checkpoint = { seq: 0, simTimeMs: 0, randomState: (manifest.seed || 0x6d2b79f5) >>> 0, instances: Object.create(null), transport: Object.create(null), linkTransport: Object.create(null), topologyReported: false };
     const run = { manifest, checkpoint, scene } as ActiveRun;
     const events: PublicEvent[] = [], privateEvents: unknown[] = [];
@@ -187,16 +195,40 @@ export class RunEngine {
       const q = quality(from) === 'good' ? quality(to) : quality(from);
       flows[link.id] = numericSample(run.checkpoint.linkTransport[link.id]?.flow ?? null, 'm3/h', timestamp, q);
     }
-    return { type, runId: run.manifest.id, seq: run.checkpoint.seq, simTimeMs: run.checkpoint.simTimeMs, timestamp, equipment, flows, events };
+    return { type, runStatus: run.manifest.status, runId: run.manifest.id, seq: run.checkpoint.seq, simTimeMs: run.checkpoint.simTimeMs, timestamp, equipment, flows, events };
   }
   private publish(run: ActiveRun): void {
     this.runs.set(run.manifest.id, run);
     for (const listener of this.listeners.get(run.manifest.id) ?? []) { try { listener(copy(run.frame)); } catch { /* A failed subscriber never affects the durable run. */ } }
   }
-  stepAll(): void { for (const id of this.runs.keys()) if (this.require(id).manifest.status === 'running') this.step(id); }
+  stepAll(onError: (error: unknown, id: string) => void = () => {}): void {
+    for (const id of this.runs.keys()) {
+      if (this.require(id).manifest.status !== 'running') continue;
+      try { this.step(id); }
+      catch (error) {
+        // A shared storage outage cannot be described as an equipment/model fault.
+        if (error instanceof StorageError) throw error;
+        this.fail(id); onError(error, id);
+      }
+    }
+  }
+  private fail(id: string) {
+    const previous = this.require(id);
+    const run: ActiveRun = { scene: previous.scene, manifest: copy(previous.manifest), checkpoint: copy(previous.checkpoint), frame: copy(previous.frame) };
+    run.checkpoint.seq++; run.manifest.seq = run.checkpoint.seq; run.manifest.status = 'failed';
+    run.frame.seq = run.checkpoint.seq; run.frame.type = 'update'; run.frame.runStatus = 'failed';
+    for (const item of Object.values(run.frame.equipment)) {
+      item.facts.mode = 'unknown';
+      for (const signal of Object.values(item.signals)) { signal.value = null; signal.quality = 'bad'; }
+    }
+    for (const signal of Object.values(run.frame.flows)) { signal.value = null; signal.quality = 'bad'; }
+    run.frame.events = [{ id: `${id}:${run.frame.seq}:0`, seq: run.frame.seq, simTimeMs: run.frame.simTimeMs, timestamp: run.frame.timestamp, type: 'run.failed', message: 'Прогон остановлен из-за ошибки модели. Другие прогоны продолжаются.' }];
+    // Never invoke the failing behavior again to construct its failure frame.
+    this.store.persist(run.manifest, run.checkpoint, run.frame, []); this.publish(run);
+  }
   complete(id: string): { run: RunSummary; snapshot: RuntimeFrame } {
     const previous = this.require(id);
-    if (previous.manifest.status === 'completed') return this.get(id);
+    if (previous.manifest.status !== 'running') return this.get(id);
     const run: ActiveRun = { scene: previous.scene, manifest: copy(previous.manifest), checkpoint: copy(previous.checkpoint), frame: previous.frame };
     run.checkpoint.seq++; run.manifest.seq = run.checkpoint.seq; run.manifest.status = 'completed';
     const events: PublicEvent[] = [{ id: `${id}:${run.checkpoint.seq}:0`, seq: run.checkpoint.seq, simTimeMs: run.checkpoint.simTimeMs, timestamp: run.manifest.createdAt + run.checkpoint.simTimeMs, type: 'run.completed', message: 'Запись сценария завершена' }];
@@ -245,10 +277,29 @@ export class RunEngine {
     this.store.persist(run.manifest, run.checkpoint, run.frame, privateEvents, { id: command.commandId, payload, receipt }); this.publish(run);
     return receipt;
   }
-  history(id: string, after = 0, limit = 500) {
+  history(id: string, after = 0, limit = 500, range?: HistoryRange) {
     this.require(id);
     if (!Number.isSafeInteger(after) || after < -1 || !Number.isSafeInteger(limit) || limit < 1 || limit > 1000) throw new RuntimeError('Invalid history range');
-    return this.store.history(id, after, limit);
+    if (range) this.validateRange(range);
+    return this.store.history(id, after, limit, range);
+  }
+  private validateRange(range: HistoryRange) {
+    if (![range.fromMs, range.toMs, range.untilSeq].every(n => Number.isSafeInteger(n) && n >= 0) || range.toMs < range.fromMs) throw new RuntimeError('Invalid history time range');
+  }
+  trend(id: string, selection: TrendSelection, range: HistoryRange, maxPoints = 1000): TrendSeries {
+    this.validateRange(range);
+    if (!Number.isInteger(maxPoints) || maxPoints < 4 || maxPoints > 2000) throw new RuntimeError('Invalid trend point budget');
+    const run = this.require(id); let path: string, unit: string;
+    if (selection.linkId && !selection.equipmentId) {
+      if (!run.scene.links.some(link => link.id === selection.linkId) || selection.signal !== 'flow') throw new RuntimeError('Unknown flow channel');
+      path = `$.flows.${JSON.stringify(selection.linkId)}`; unit = 'm3/h';
+    } else {
+      const node = run.scene.nodes.find(node => node.id === selection.equipmentId);
+      const field = node && catalog[node.kind].signals?.[selection.signal];
+      if (!node || selection.linkId || !field || field.type !== 'number') throw new RuntimeError('Unknown numeric signal');
+      path = `$.equipment.${JSON.stringify(node.id)}.signals.${JSON.stringify(selection.signal)}`; unit = field.unit;
+    }
+    return { unit, fromMs: range.fromMs, toMs: range.toMs, points: this.store.trend(id, path, range, maxPoints) };
   }
   replay(id: string, seq: number): RuntimeFrame {
     this.require(id);

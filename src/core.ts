@@ -6,7 +6,7 @@ export type Point = { x: number; y: number };
 export type Direction = 'left' | 'right' | 'up' | 'down';
 export type Kind = string;
 export type Value = string | number | boolean;
-export interface Field { label: string; min?: number; max?: number; step?: number; unit?: string; choices?: readonly string[]; default: Value }
+export interface Field { scope?: 'layout' | 'behavior'; label: string; min?: number; max?: number; step?: number; unit?: string; choices?: readonly string[]; default: Value }
 export interface PortSpec extends Point { direction: Direction; role: 'in' | 'out' }
 export interface CommandDefinition { label: string; valueType?: 'number' | 'boolean' | 'string'; min?: number; max?: number; choices?: readonly string[] }
 export interface SignalDefinition { label: string; type: Signal['type']; unit: string }
@@ -16,7 +16,7 @@ const common: Record<string, Field> = {
   quality: { label: 'Качество', default: 'good', choices: ['good', 'stale', 'bad'] },
   alarm: { label: 'Состояние', default: 'none', choices: ['none', 'warning', 'trip'] },
 };
-const pos = { x: num('X', 100, -3000, 6000), y: num('Y', 100, -3000, 6000) };
+const pos = { x: { ...num('X', 100, -3000, 6000), scope: 'layout' as const }, y: { ...num('Y', 100, -3000, 6000), scope: 'layout' as const } };
 const left = (y: number): PortSpec => ({ x: 0, y, direction: 'left', role: 'in' });
 const right = (x: number, y: number): PortSpec => ({ x, y, direction: 'right', role: 'out' });
 export const catalog: Record<Kind, Definition> = {
@@ -29,6 +29,7 @@ export const catalog: Record<Kind, Definition> = {
   pressure: { label: 'Манометр', width: 66, height: 90, instrument: true, fields: { value: num('Давление', 5.8, 0, 16, .1, 'бар'), at: num('Точка отвода', .6, .1, .9, .05), offset: num('Отступ', 100, 80, 240, 10), ...common }, ports: {} },
   temperature: { label: 'Термометр', width: 70, height: 70, instrument: true, fields: { value: num('Температура', 72, -40, 150, 1, '°C'), at: num('Точка отвода', .5, .1, .9, .05), offset: num('Отступ', 95, 80, 240, 10), ...common }, ports: {} },
 };
+for (const kind of ['pressure', 'temperature']) for (const key of ['at', 'offset']) catalog[kind].fields[key].scope = 'layout';
 const numericSignal = (label: string, unit: string): SignalDefinition => ({ label, type: 'number', unit });
 for (const definition of Object.values(catalog)) definition.version = '1.0.0';
 catalog.tank.signals = { level: numericSignal('Уровень', '%') };

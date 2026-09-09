@@ -1,0 +1,6 @@
+{
+  "name": "scada-external-consumer-smoke",
+  "private": true,
+  "type": "module",
+  "description": "Separate-package smoke test of the TS-aware SCADA SDK entrypoints."
+}

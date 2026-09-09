@@ -38,3 +38,11 @@ The existing `@scada/core` factories remain valid. `runtime({server, project, ru
 - Independent QA: `tests/runtime-contract.test.ts`, `tests/e2e/runtime*.spec.ts`, `scripts/runtime-qa*.mjs`, `playwright.runtime.config.ts`; independent acceptance and evidence. Production defects return to their owners.
 
 Agents do not commit or modify another owner's files. Root integrates all changes in one feature branch and PR.
+
+## Revisioned projects and freshness
+
+Server frames now include `runStatus: running | completed | failed`.
+Readers accept its absence for older providers; terminal events or the known run
+summary supply the fallback. A heartbeat does not establish measurement freshness.
+See [runtime reliability and history ranges](review-fixes.md) and the
+[authenticated Git project API](git-projects.md#authenticated-api).

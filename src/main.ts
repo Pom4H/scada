@@ -10,6 +10,8 @@ import { catalog, type Kind, type Endpoint, type Value } from './core';
 import { compile, patchFields, applyChanges, editable, removeObject, appendEquipment, appendConnection, appendTap, formatSource, SourceError, type Compiled, type Change } from './source';
 import { SceneView, el } from './view';
 import './visual-components';
+import { ProjectWorkspace } from './runtime/project-workspace';
+import { dslCompletions } from './completion';
 import { RuntimeWorkspace } from './runtime/workspace';
 import type { SceneView3D } from './view3d';
 import type { RuntimeFrame } from './runtime/protocol';
@@ -20,6 +22,7 @@ const $ = <T extends HTMLElement = HTMLElement>(id: string): T => { const e = do
 const svg = document.getElementById('scene') as unknown as SVGSVGElement;
 const sceneView = new SceneView(svg);
 let spatialView: SceneView3D | null = null, spatialMode = false, runtimeUI: RuntimeWorkspace | undefined;
+let projectUI: ProjectWorkspace | undefined;
 let displayedRuntime: RuntimeFrame | null = null;
 sceneView.onSelect = id => select(id);
 async function setSpatial(enabled: boolean) {
@@ -41,7 +44,7 @@ async function setSpatial(enabled: boolean) {
 function runtimeLabel() {
   if (currentError) return;
   if (!displayedRuntime) { $('preview-state').textContent = 'Предпросмотр'; $('live-dot').style.background = sceneView.paused ? '#91a7af' : '#32a881'; return; }
-  const offline = Object.values(displayedRuntime.flows).some(signal => signal.quality === 'offline');
+  const offline = [...Object.values(displayedRuntime.flows), ...Object.values(displayedRuntime.equipment).flatMap(e => Object.values(e.signals))].some(signal => signal.quality !== 'good');
   $('preview-state').textContent = offline ? 'Сигналы недоступны' : runtimeUI?.mode === 'replay' ? 'Сервер · запись' : 'Сервер · эфир';
   $('live-dot').style.background = offline ? '#cb9945' : runtimeUI?.mode === 'replay' ? '#8270a5' : '#32a881';
 }
@@ -67,16 +70,15 @@ function decodeShared(): string | null {
 }
 let stored: string | null = null;
 try { stored = localStorage.getItem(STORAGE_KEY); } catch { /* Storage can be unavailable in a private WebView. */ }
-const initial = decodeShared() ?? stored ?? booster;
+const sharedInitial = decodeShared();
+const initial = sharedInitial ?? stored ?? booster;
 const editor = new EditorView({ parent: $('editor'), state: EditorState.create({ doc: initial, extensions: [
   lineNumbers(), foldGutter(), highlightActiveLine(), highlightActiveLineGutter(), drawSelection(),
   history({ newGroupDelay: 800, joinToEvent: (transaction, adjacent) => adjacent || transaction.isUserEvent('input.type.drag') || transaction.isUserEvent('input.type.inspector') }),
   javascript({ typescript: true }), syntaxHighlighting(HighlightStyle.define([{ tag: tags.keyword, color: '#91639f' }, { tag: [tags.function(tags.variableName), tags.definition(tags.variableName)], color: '#317894' }, { tag: tags.string, color: '#428675' }, { tag: tags.number, color: '#b67a3e' }, { tag: tags.comment, color: '#8b9d9f', fontStyle: 'italic' }, { tag: tags.variableName, color: '#415f72' }, { tag: tags.propertyName, color: '#547c91' }])), bracketMatching(), indentOnInput(), closeBrackets(),
   autocompletion({ override: [context => {
     const word = context.matchBefore(/[\w-]*/); if (!word || (word.from === word.to && !context.explicit)) return null;
-    const options = [...Object.keys(catalog), 'component', 'runtime', 'connect', 'tap'].map(label => ({ label, type: 'function', detail: '@scada/core' }));
-    for (const name of ['x', 'y', 'rpm', 'opening', 'level', 'quality', 'alarm', 'temperature', 'vibration', 'at', 'offset', 'value']) options.push({ label: name, type: 'property', detail: 'DSL' });
-    for (const n of compiled?.scene.nodes ?? []) if (n.variable) options.push({ label: n.variable, type: 'variable', detail: n.id });
+    const options = dslCompletions(context.state.doc.toString(), context.pos, compiled?.scene);
     return { from: word.from, options };
   }] }),
   keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap, ...foldKeymap, indentWithTab, { key: 'Mod-s', run: () => { saveTS(); return true; } }]),
@@ -125,7 +127,8 @@ function refresh(persist: boolean) {
       editor.dispatch(setDiagnostics(editor.state, currentError ? [{ from: Math.min(currentError.from, editor.state.doc.length), to: Math.min(currentError.to, editor.state.doc.length), severity: 'error', message: currentError.message }] : []));
     });
   }
-  runtimeUI?.sourceChanged(currentError ? null : compiled); runtimeLabel();
+  runtimeUI?.sourceChanged(currentError ? null : compiled, projectUI?.applying);
+  if (persist) projectUI?.changed(); runtimeLabel();
   updateDiagnostics(); renderInspector();
   $('connect-mode').toggleAttribute('disabled', spatialMode || !!currentError); $('add').toggleAttribute('disabled', !!currentError);
 }
@@ -368,7 +371,8 @@ window.addEventListener('hashchange', () => {
   const shared = decodeShared();
   if (shared !== null && shared !== source()) { clearConnect(); select(null); replaceSource(shared); sceneView.fit(); }
 });
-runtimeUI = new RuntimeWorkspace({ source, compiled: () => compiled, selected: () => selected, replaceSource, display: displayRuntime, toast });
+runtimeUI = new RuntimeWorkspace({ source, compiled: () => compiled, selected: () => selected, replaceSource, display: displayRuntime, toast, connected: runId => projectUI!.connected(runId), provenance: () => projectUI?.provenance() });
+projectUI = new ProjectWorkspace(runtimeUI, { source, replaceSource, toast, initialDraft: !!stored || sharedInitial !== null });
 refresh(false); sceneView.fit();
 // A small inspection API makes deterministic browser regression tests possible.
 // Mutations still go through the one CodeMirror document, never the rendered model.
@@ -385,4 +389,4 @@ Object.defineProperty(window, '__scada', { value: {
   get flows() { return Object.fromEntries(sceneView.flows); }, get camera() { return { ...sceneView.camera }; },
   setSource: (text: string) => replaceSource(text), fit: () => sceneView.fit(), select: (id: string) => select(id), undo: () => undo(editor), redo: () => redo(editor),
 }, writable: false });
-window.addEventListener('pagehide', e => { if (!e.persisted) { sceneView.dispose(); spatialView?.dispose(); runtimeUI?.dispose(); } });
+window.addEventListener('pagehide', e => { if (!e.persisted) { sceneView.dispose(); spatialView?.dispose(); runtimeUI?.dispose(); projectUI?.dispose(); } });

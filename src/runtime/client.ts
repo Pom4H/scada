@@ -1,6 +1,6 @@
-import type { CommandReceipt, CreateRun, EquipmentCommand, HistoryPage, RunSummary, RuntimeConfig, RuntimeFrame, Signal } from './protocol';
+import type { CommandReceipt, CreateRun, EquipmentCommand, HistoryPage, RunSummary, RuntimeConfig, RuntimeFrame, Signal, HistoryRange, TrendSelection, TrendSeries } from './protocol';
 
-export type ConnectionStatus = 'disconnected' | 'connecting' | 'connected' | 'reconnecting' | 'error';
+export type ConnectionStatus = 'disconnected' | 'connecting' | 'connected' | 'stale' | 'reconnecting' | 'error';
 const record = (v: unknown): v is Record<string, unknown> => v !== null && typeof v === 'object' && !Array.isArray(v);
 function signal(v: unknown): v is Signal {
   if (!record(v) || !['good', 'stale', 'bad', 'offline'].includes(String(v.quality)) || typeof v.unit !== 'string' || typeof v.timestamp !== 'number' || !Number.isFinite(v.timestamp)) return false;
@@ -9,13 +9,15 @@ function signal(v: unknown): v is Signal {
 /** Validate the wire before allowing it into a view; unknown is never coerced to zero. */
 export function isFrame(v: unknown): v is RuntimeFrame {
   if (!record(v) || !['snapshot', 'update'].includes(String(v.type)) || typeof v.runId !== 'string' || !Number.isSafeInteger(v.seq) || Number(v.seq) < 0 || !Number.isFinite(v.simTimeMs) || !Number.isFinite(v.timestamp) || !record(v.equipment) || !record(v.flows) || !Array.isArray(v.events)) return false;
+  if (v.runStatus !== undefined && !['running', 'completed', 'failed'].includes(String(v.runStatus))) return false;
   if (Object.keys(v.equipment).length > 48 || Object.keys(v.flows).length > 144) return false;
   return Object.values(v.flows).every(s => signal(s) && s.type === 'number') && Object.entries(v.equipment).every(([id, e]) => record(e) && e.positionId === id && typeof e.instanceId === 'string' && record(e.facts) && typeof e.facts.mode === 'string' && ['none', 'warning', 'trip'].includes(String(e.facts.alarm)) && record(e.signals) && Object.values(e.signals).every(signal)) && v.events.every(e => record(e) && typeof e.id === 'string' && typeof e.type === 'string' && typeof e.message === 'string' && Number.isSafeInteger(e.seq) && Number.isFinite(e.simTimeMs) && Number.isFinite(e.timestamp));
 }
-export function offlineFrame(frame: RuntimeFrame): RuntimeFrame {
+export function offlineFrame(frame: RuntimeFrame, quality: 'offline' | 'stale' | 'bad' = 'offline'): RuntimeFrame {
   const copy = structuredClone(frame);
-  for (const e of Object.values(copy.equipment)) for (const s of Object.values(e.signals)) { s.value = null; s.quality = 'offline'; }
-  for (const s of Object.values(copy.flows)) { s.value = null; s.quality = 'offline'; }
+  for (const e of Object.values(copy.equipment)) for (const s of Object.values(e.signals)) { s.value = null; s.quality = quality; }
+  for (const s of Object.values(copy.flows)) { s.value = null; s.quality = quality; }
+  for (const e of Object.values(copy.equipment)) e.facts.mode = 'unknown';
   return copy;
 }
 export function validateDestination(config: RuntimeConfig): RuntimeConfig {
@@ -26,7 +28,7 @@ export function validateDestination(config: RuntimeConfig): RuntimeConfig {
   return { ...config, server: url.href.replace(/\/$/, '') };
 }
 function isRun(value: unknown): value is RunSummary {
-  return record(value) && typeof value.id === 'string' && /^[a-zA-Z0-9_-]{1,80}$/.test(value.id) && typeof value.projectId === 'string' && typeof value.label === 'string' && value.label.length <= 120 && ['running', 'completed'].includes(String(value.status)) && Number.isSafeInteger(value.seq) && Number(value.seq) >= 0 && Number.isFinite(value.simTimeMs) && Number.isFinite(value.createdAt) && typeof value.sourceHash === 'string' && /^[a-f0-9]{64}$/.test(value.sourceHash) && value.synthetic === true;
+  return record(value) && typeof value.id === 'string' && /^[a-zA-Z0-9_-]{1,80}$/.test(value.id) && typeof value.projectId === 'string' && typeof value.label === 'string' && value.label.length <= 120 && ['running', 'completed', 'failed'].includes(String(value.status)) && Number.isSafeInteger(value.seq) && Number(value.seq) >= 0 && Number.isFinite(value.simTimeMs) && Number.isFinite(value.createdAt) && typeof value.sourceHash === 'string' && /^[a-f0-9]{64}$/.test(value.sourceHash) && value.synthetic === true;
 }
 export class RuntimeClient {
   config: RuntimeConfig | null = null;
@@ -40,6 +42,31 @@ export class RuntimeClient {
   private requests = new Set<AbortController>();
   private retry: ReturnType<typeof setTimeout> | undefined;
   private retryCount = 0;
+  private freshnessTimer: ReturnType<typeof setInterval> | undefined;
+  private lastProgressAt = 0;
+  private lastModelTime = -1;
+  private terminal = false;
+  constructor(private options: { freshnessMs?: number; transportTimeoutMs?: number } = {}) {}
+  /** Detach a run without destroying an authenticated server session. */
+  unsubscribe() {
+    this.generation++; this.stream?.abort(); this.stream = null; clearTimeout(this.retry);
+    clearInterval(this.freshnessTimer); this.freshnessTimer = undefined;
+    this.frame = null;
+    if (this.config) { delete this.config.run; this.setStatus('connected'); }
+  }
+  private acceptProgress(frame: RuntimeFrame) {
+    if (frame.runStatus !== undefined) this.terminal = frame.runStatus !== 'running';
+    else if (frame.events.some(e => e.type === 'run.completed' || e.type === 'run.failed')) this.terminal = true;
+    if (frame.simTimeMs > this.lastModelTime) { this.lastModelTime = frame.simTimeMs; this.lastProgressAt = performance.now(); }
+  }
+  private fresh() { return this.terminal || performance.now() - this.lastProgressAt <= (this.options.freshnessMs ?? 2500); }
+  private checkFreshness() {
+    if (!this.frame || this.fresh() || this.status === 'reconnecting' || this.status === 'disconnected') return;
+    if (this.status !== 'stale') {
+      this.setStatus('stale', 'Данные не обновляются. Соединение открыто, но модельное время не движется.');
+      this.onFrame(offlineFrame(this.frame, 'stale'));
+    }
+  }
   private setStatus(status: ConnectionStatus, message = '') { this.status = status; this.onStatus(status, message); }
   async connect(config: RuntimeConfig, token: string): Promise<RunSummary[]> {
     const destination = validateDestination(config), credential = token.trim();
@@ -51,6 +78,7 @@ export class RuntimeClient {
   }
   disconnect() {
     this.generation++; this.stream?.abort(); this.stream = null; clearTimeout(this.retry);
+    clearInterval(this.freshnessTimer); this.freshnessTimer = undefined;
     for (const request of this.requests) request.abort(); this.requests.clear();
     this.token = ''; this.config = null; this.setStatus('disconnected');
   }
@@ -80,20 +108,35 @@ export class RuntimeClient {
   run(id: string) { return this.detail(`/api/runs/${encodeURIComponent(id)}`); }
   complete(id: string) { return this.detail(`/api/runs/${encodeURIComponent(id)}/complete`, {}); }
   command(id: string, command: EquipmentCommand) { return this.request<CommandReceipt>(`/api/runs/${encodeURIComponent(id)}/commands`, command); }
-  history(id: string, after: number) { return this.request<HistoryPage>(`/api/runs/${encodeURIComponent(id)}/history?after=${after}&limit=500`); }
+  history(id: string, after: number, range?: HistoryRange) {
+    const query = new URLSearchParams({ after: String(after), limit: '500' });
+    if (range) for (const [key, value] of Object.entries(range)) query.set(key, String(value));
+    return this.request<HistoryPage>(`/api/runs/${encodeURIComponent(id)}/history?${query}`);
+  }
+  async trend(id: string, selection: TrendSelection, range: HistoryRange) {
+    const query = new URLSearchParams({ ...Object.fromEntries(Object.entries(range).map(([k, v]) => [k, String(v)])), ...selection, maxPoints: '1000' });
+    const series = await this.request<TrendSeries>(`/api/runs/${encodeURIComponent(id)}/trend?${query}`);
+    if (typeof series.unit !== 'string' || !Number.isFinite(series.fromMs) || !Number.isFinite(series.toMs) || !Array.isArray(series.points) || series.points.length > 2000 || !series.points.every(p => Number.isSafeInteger(p.seq) && Number.isFinite(p.simTimeMs) && (p.value === null || typeof p.value === 'number' && Number.isFinite(p.value)))) throw new Error('Некорректный обзор истории.');
+    return series;
+  }
   replay(id: string, seq: number) { return this.request<RuntimeFrame>(`/api/runs/${encodeURIComponent(id)}/replay?seq=${seq}`); }
   research(id: string) { return this.request<unknown>(`/api/runs/${encodeURIComponent(id)}/research`); }
-  subscribe(runId: string, initial: RuntimeFrame) {
+  subscribe(runId: string, initial: RuntimeFrame, status: 'running' | 'completed' | 'failed' = 'running') {
     if (!isFrame(initial) || initial.runId !== runId) throw new Error('Некорректный снимок прогона.');
     this.generation++; this.stream?.abort(); clearTimeout(this.retry); this.retryCount = 0;
-    this.config = { ...this.config!, run: runId }; this.frame = initial; this.onFrame(initial);
+    this.config = { ...this.config!, run: runId }; this.frame = initial;
+    this.lastProgressAt = performance.now(); this.lastModelTime = initial.simTimeMs;
+    this.acceptProgress({ ...initial, runStatus: initial.runStatus ?? status });
+    clearInterval(this.freshnessTimer);
+    this.freshnessTimer = setInterval(() => this.checkFreshness(), Math.min(500, this.options.freshnessMs ?? 2500));
+    this.onFrame(initial);
     void this.consume(this.generation, runId);
   }
   private async consume(generation: number, runId: string) {
     if (!this.config || generation !== this.generation) return;
     const controller = new AbortController(); this.stream = controller;
     let watchdog: ReturnType<typeof setTimeout>;
-    const touch = () => { clearTimeout(watchdog); watchdog = setTimeout(() => controller.abort(), 15_000); }; touch();
+    const touch = () => { clearTimeout(watchdog); watchdog = setTimeout(() => controller.abort(), this.options.transportTimeoutMs ?? 15_000); }; touch();
     try {
       const response = await fetch(`${this.config.server}/api/runs/${encodeURIComponent(runId)}/events?after=${this.frame?.seq ?? -1}`, { headers: { Authorization: `Bearer ${this.token}`, Accept: 'text/event-stream' }, signal: controller.signal, credentials: 'omit', redirect: 'error', cache: 'no-store' });
       if (!response.ok || !response.body) throw new Error(`Поток: HTTP ${response.status}`);
@@ -113,8 +156,11 @@ export class RuntimeClient {
           if (first && frame.type !== 'snapshot') throw new Error('Ожидался начальный снимок.');
           if (!first && frame.seq <= (this.frame?.seq ?? -1)) continue;
           if (!first && frame.seq !== this.frame!.seq + 1) throw new Error('Пропуск обновления: получаем новый снимок.');
+          if (frame.simTimeMs < this.lastModelTime) throw new Error('Модельное время пошло назад.');
           if (first && frame.seq < (this.frame?.seq ?? -1)) throw new Error('Сервер прислал устаревший снимок.');
-          first = false; this.frame = frame; this.retryCount = 0; this.setStatus('connected'); this.onFrame(frame);
+          first = false; this.frame = frame; this.retryCount = 0; this.acceptProgress(frame);
+          if (this.fresh()) { this.setStatus('connected'); this.onFrame(frame); }
+          else { this.setStatus('stale', 'Данные не обновляются.'); this.onFrame(offlineFrame(frame, 'stale')); }
         }
       }
     } catch (error) {

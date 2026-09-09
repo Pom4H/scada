@@ -3,6 +3,8 @@ import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
 import { readFile, realpath } from 'node:fs/promises';
 import { extname, resolve, sep } from 'node:path';
 import { RunEngine, RuntimeError, STEP_MS, validateCreate, validateEquipmentCommand } from './engine';
+import { GitProject, ProjectError, type GitProjectOptions } from './project';
+import type { ProjectSave } from '../src/runtime/project';
 import type { RuntimeFrame } from '../src/runtime/protocol';
 
 export interface Tokens { view: string; operator: string; research: string }
@@ -15,6 +17,7 @@ export interface ServerOptions {
   allowedOrigins?: string[];
   autoTick?: boolean;
   onError?: (error: unknown) => void;
+  project?: GitProjectOptions;
 }
 const digest = (value: string) => createHash('sha256').update(value).digest();
 const json = (res: ServerResponse, status: number, value: unknown) => { res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }); res.end(JSON.stringify(value)); };
@@ -51,8 +54,13 @@ export async function startServer(options: ServerOptions = {}) {
   const origins = new Set(options.allowedOrigins ?? []);
   for (const origin of origins) { const parsed = new URL(origin); if (!['http:', 'https:'].includes(parsed.protocol) || parsed.origin !== origin) throw new Error('allowedOrigins must contain exact HTTP(S) origins'); }
   const engine = new RunEngine(options.dataPath ?? resolve('data/runs.sqlite'));
+  let project: GitProject | undefined;
+  try { if (options.project) project = await new GitProject(options.project, source => {
+    const scene = engine.validateProjectSource(source);
+    for (const node of scene.nodes) engine.registry.get(node.kind);
+  }).start(); } catch (error) { engine.close(); throw error; }
   const root = resolve(options.staticDir ?? 'dist');
-  const streams = new Set<ServerResponse>(); let closed = false;
+  const streams = new Set<ServerResponse>(); let closed = false, storageHealthy = true;
   const onError = options.onError ?? (error => console.error('SCADA runtime error:', error instanceof Error ? error.message : error));
   let serverOrigin = '';
   const mime: Record<string, string> = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.json': 'application/json', '.png': 'image/png', '.webm': 'video/webm', '.wasm': 'application/wasm' };
@@ -67,7 +75,7 @@ export async function startServer(options: ServerOptions = {}) {
       if (req.method === 'OPTIONS') {
         res.writeHead(204, { 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Authorization, Content-Type', 'Access-Control-Max-Age': '600' }).end(); return;
       }
-      if (url.pathname === '/api/health' && req.method === 'GET') { json(res, 200, { status: 'ok', synthetic: true, stepMs: STEP_MS }); return; }
+      if (url.pathname === '/api/health' && req.method === 'GET') { json(res, storageHealthy ? 200 : 503, { status: storageHealthy ? 'ok' : 'storage-unavailable', synthetic: true, stepMs: STEP_MS }); return; }
       if (url.pathname.startsWith('/api/')) {
         const header = req.headers.authorization;
         if (!header?.startsWith('Bearer ') || header.length > 4096) throw new RuntimeError('Access token required', 401);
@@ -76,15 +84,39 @@ export async function startServer(options: ServerOptions = {}) {
         for (const credential of credentials) if (timingSafeEqual(supplied, credential.hash)) role = credential.role;
         if (!role) throw new RuntimeError('Invalid access token', 401);
         const operator = () => { if (role === 'view') throw new RuntimeError('Operator access required', 403); };
+        if (url.pathname === '/api/session' && req.method === 'GET') { json(res, 200, { role, projects: !!project }); return; }
+        if (url.pathname === '/api/projects' && req.method === 'GET') { json(res, 200, { projects: project?.list() ?? [] }); return; }
+        const projectMatch = /^\/api\/projects\/([^/]+)$/.exec(url.pathname);
+        if (projectMatch) {
+          let projectId: string;
+          try { projectId = decodeURIComponent(projectMatch[1]); } catch { throw new RuntimeError('Invalid project ID'); }
+          if (req.method === 'GET') { const result = project?.get(projectId) ?? { project: null, writable: false }; json(res, 200, result.project?.revision === url.searchParams.get('knownRevision') ? { ...result, project: null, unchanged: true } : result); return; }
+          if (req.method === 'POST') { operator(); if (!project) throw new RuntimeError('Git project is not configured', 404); json(res, 200, await project.save(projectId, await body(req) as ProjectSave)); return; }
+          throw new RuntimeError('Method not allowed', 405);
+        }
         if (url.pathname === '/api/runs' && req.method === 'GET') { json(res, 200, { runs: engine.list(url.searchParams.get('projectId') ?? undefined) }); return; }
-        if (url.pathname === '/api/runs' && req.method === 'POST') { operator(); json(res, 201, engine.create(validateCreate(await body(req)))); return; }
-        const match = /^\/api\/runs\/([a-zA-Z0-9_-]{1,80})(?:\/(events|commands|history|replay|research|complete))?$/.exec(url.pathname);
+        if (url.pathname === '/api/runs' && req.method === 'POST') {
+          operator(); const input = validateCreate(await body(req));
+          if (input.projectRevision) {
+            const snapshot = project?.get(input.projectId).project;
+            if (!snapshot || snapshot.revision !== input.projectRevision || !input.projectEntry || !snapshot.scenes.includes(input.projectEntry) || snapshot.files.find(f => f.path === input.projectEntry)?.content !== input.source) throw new RuntimeError('Git project revision or source changed; reload the project or create an unversioned draft run', 409);
+            json(res, 201, engine.create(input, { project: snapshot }));
+          } else json(res, 201, engine.create(input));
+          return;
+        }
+        const match = /^\/api\/runs\/([a-zA-Z0-9_-]{1,80})(?:\/(events|commands|history|replay|research|complete|project|trend))?$/.exec(url.pathname);
         if (!match) throw new RuntimeError('Endpoint not found', 404);
         const [, id, action] = match;
         if (!action && req.method === 'GET') { json(res, 200, engine.get(id)); return; }
+        if (action === 'project' && req.method === 'GET') { json(res, 200, engine.project(id)); return; }
         if (action === 'complete' && req.method === 'POST') { operator(); json(res, 200, engine.complete(id)); return; }
         if (action === 'commands' && req.method === 'POST') { operator(); json(res, 200, engine.command(id, validateEquipmentCommand(await body(req)))); return; }
-        if (action === 'history' && req.method === 'GET') { json(res, 200, engine.history(id, integer(url.searchParams.get('after'), 0, -1), integer(url.searchParams.get('limit'), 500, 1, 1000))); return; }
+        if ((action === 'history' || action === 'trend') && req.method === 'GET') {
+          const range = { fromMs: integer(url.searchParams.get('fromMs'), 0, 0), toMs: integer(url.searchParams.get('toMs'), Number.MAX_SAFE_INTEGER-1, 0), untilSeq: integer(url.searchParams.get('untilSeq'), engine.get(id).run.seq, 0) };
+          if (action === 'history') json(res, 200, engine.history(id, integer(url.searchParams.get('after'), 0, -1), integer(url.searchParams.get('limit'), 500, 1, 1000), range));
+          else json(res, 200, engine.trend(id, { equipmentId: url.searchParams.get('equipmentId') ?? undefined, linkId: url.searchParams.get('linkId') ?? undefined, signal: url.searchParams.get('signal') ?? 'flow' }, range, integer(url.searchParams.get('maxPoints'), 1000, 4, 2000)));
+          return;
+        }
         if (action === 'replay' && req.method === 'GET') {
           if (!url.searchParams.has('seq')) throw new RuntimeError('Replay requires seq');
           json(res, 200, engine.replay(id, integer(url.searchParams.get('seq'), 0, 0))); return;
@@ -120,20 +152,20 @@ export async function startServer(options: ServerOptions = {}) {
       res.end(req.method === 'HEAD' ? undefined : data);
     } catch (error) {
       if (res.headersSent) { res.destroy(); return; }
-      if (error instanceof RuntimeError) json(res, error.status, { error: error.message });
+      if (error instanceof RuntimeError || error instanceof ProjectError) json(res, error.status, { error: error.message });
       else { onError(error); json(res, 500, { error: 'Internal runtime error' }); }
     }
   });
   server.requestTimeout = 15000; server.headersTimeout = 10000;
   try { await new Promise<void>((accept, reject) => { server.once('error', reject); server.listen(port, host, () => { server.off('error', reject); accept(); }); }); }
-  catch (error) { engine.close(); throw error; }
+  catch (error) { await project?.close(); engine.close(); throw error; }
   const address = server.address() as { address: string; port: number };
   const urlHost = host === '0.0.0.0' || host === '::' ? '127.0.0.1' : host.includes(':') ? `[${host}]` : host;
   serverOrigin = `http://${urlHost}:${address.port}`;
-  const timer = options.autoTick === false ? undefined : setInterval(() => { try { engine.stepAll(); } catch (error) { onError(error); } }, STEP_MS);
+  const timer = options.autoTick === false ? undefined : setInterval(() => { try { engine.stepAll(onError); storageHealthy = true; } catch (error) { storageHealthy = false; for (const stream of streams) stream.destroy(); onError(error); } }, STEP_MS);
   timer?.unref();
   return {
-    server, engine, tokens, url: serverOrigin,
-    async close() { if (closed) return; closed = true; if (timer) clearInterval(timer); for (const stream of streams) stream.destroy(); await new Promise<void>((accept, reject) => server.close(error => error ? reject(error) : accept())); engine.close(); },
+    server, engine, project, tokens, url: serverOrigin,
+    async close() { if (closed) return; closed = true; if (timer) clearInterval(timer); await project?.close(); for (const stream of streams) stream.destroy(); await new Promise<void>((accept, reject) => server.close(error => error ? reject(error) : accept())); engine.close(); },
   };
 }
