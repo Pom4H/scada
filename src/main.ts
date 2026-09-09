@@ -9,12 +9,46 @@ import { setDiagnostics } from '@codemirror/lint';
 import { catalog, type Kind, type Endpoint, type Value } from './core';
 import { compile, patchFields, applyChanges, editable, removeObject, appendEquipment, appendConnection, appendTap, formatSource, SourceError, type Compiled, type Change } from './source';
 import { SceneView, el } from './view';
+import './visual-components';
+import { ProjectWorkspace } from './runtime/project-workspace';
+import { dslCompletions } from './completion';
+import { RuntimeWorkspace } from './runtime/workspace';
+import type { SceneView3D } from './view3d';
+import type { RuntimeFrame } from './runtime/protocol';
 import { examples, booster } from './examples';
 import standaloneCode from '../generated/runtime';
 import './style.css';
 const $ = <T extends HTMLElement = HTMLElement>(id: string): T => { const e = document.getElementById(id); if (!e) throw new Error(`Missing UI element: ${id}`); return e as T; };
 const svg = document.getElementById('scene') as unknown as SVGSVGElement;
 const sceneView = new SceneView(svg);
+let spatialView: SceneView3D | null = null, spatialMode = false, runtimeUI: RuntimeWorkspace | undefined;
+let projectUI: ProjectWorkspace | undefined;
+let displayedRuntime: RuntimeFrame | null = null;
+sceneView.onSelect = id => select(id);
+async function setSpatial(enabled: boolean) {
+  if (enabled && !spatialView) {
+    try {
+      $('scene3d').hidden = false;
+      const { SceneView3D } = await import('./view3d');
+      spatialView = new SceneView3D($('scene3d'));
+      spatialView.onSelect = id => select(id);
+      if (compiled) spatialView.render(compiled.scene);
+      spatialView.setRuntime(displayedRuntime); spatialView.select(selected); spatialView.paused = sceneView.paused;
+    } catch (error) { $('scene3d').hidden = true; toast(`3D недоступен: ${error instanceof Error ? error.message : error}`); return; }
+  }
+  spatialMode = enabled; svg.style.display = enabled ? 'none' : ''; $('scene3d').hidden = !enabled;
+  $('view-2d').setAttribute('aria-pressed', String(!enabled)); $('view-3d').setAttribute('aria-pressed', String(enabled));
+  $('connect-mode').toggleAttribute('disabled', enabled || !!currentError);
+  if (enabled) { clearConnect(); spatialView!.fit(); }
+}
+function runtimeLabel() {
+  if (currentError) return;
+  if (!displayedRuntime) { $('preview-state').textContent = 'Предпросмотр'; $('live-dot').style.background = sceneView.paused ? '#91a7af' : '#32a881'; return; }
+  const offline = [...Object.values(displayedRuntime.flows), ...Object.values(displayedRuntime.equipment).flatMap(e => Object.values(e.signals))].some(signal => signal.quality !== 'good');
+  $('preview-state').textContent = offline ? 'Сигналы недоступны' : runtimeUI?.mode === 'replay' ? 'Сервер · запись' : 'Сервер · эфир';
+  $('live-dot').style.background = offline ? '#cb9945' : runtimeUI?.mode === 'replay' ? '#8270a5' : '#32a881';
+}
+function displayRuntime(frame: RuntimeFrame | null) { displayedRuntime = frame; sceneView.setRuntime(frame); spatialView?.setRuntime(frame); runtimeLabel(); }
 const workspace = document.querySelector<HTMLElement>('.workspace')!;
 const STORAGE_KEY = 'scada.source.v1';
 let compiled: Compiled | null = null, currentError: SourceError | null = null, selected: string | null = null;
@@ -36,16 +70,15 @@ function decodeShared(): string | null {
 }
 let stored: string | null = null;
 try { stored = localStorage.getItem(STORAGE_KEY); } catch { /* Storage can be unavailable in a private WebView. */ }
-const initial = decodeShared() ?? stored ?? booster;
+const sharedInitial = decodeShared();
+const initial = sharedInitial ?? stored ?? booster;
 const editor = new EditorView({ parent: $('editor'), state: EditorState.create({ doc: initial, extensions: [
   lineNumbers(), foldGutter(), highlightActiveLine(), highlightActiveLineGutter(), drawSelection(),
   history({ newGroupDelay: 800, joinToEvent: (transaction, adjacent) => adjacent || transaction.isUserEvent('input.type.drag') || transaction.isUserEvent('input.type.inspector') }),
   javascript({ typescript: true }), syntaxHighlighting(HighlightStyle.define([{ tag: tags.keyword, color: '#91639f' }, { tag: [tags.function(tags.variableName), tags.definition(tags.variableName)], color: '#317894' }, { tag: tags.string, color: '#428675' }, { tag: tags.number, color: '#b67a3e' }, { tag: tags.comment, color: '#8b9d9f', fontStyle: 'italic' }, { tag: tags.variableName, color: '#415f72' }, { tag: tags.propertyName, color: '#547c91' }])), bracketMatching(), indentOnInput(), closeBrackets(),
   autocompletion({ override: [context => {
     const word = context.matchBefore(/[\w-]*/); if (!word || (word.from === word.to && !context.explicit)) return null;
-    const options = [...Object.keys(catalog), 'connect', 'tap'].map(label => ({ label, type: 'function', detail: '@scada/core' }));
-    for (const name of ['x', 'y', 'rpm', 'opening', 'level', 'quality', 'alarm', 'temperature', 'vibration', 'at', 'offset', 'value']) options.push({ label: name, type: 'property', detail: 'DSL' });
-    for (const n of compiled?.scene.nodes ?? []) if (n.variable) options.push({ label: n.variable, type: 'variable', detail: n.id });
+    const options = dslCompletions(context.state.doc.toString(), context.pos, compiled?.scene);
     return { from: word.from, options };
   }] }),
   keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap, ...foldKeymap, indentWithTab, { key: 'Mod-s', run: () => { saveTS(); return true; } }]),
@@ -67,7 +100,9 @@ function refresh(persist: boolean) {
   const text = source();
   try {
     compiled = compile(text); currentError = null;
-    sceneView.render(compiled.scene);
+    const channel = JSON.stringify([compiled.scene.nodes.map(n => [n.id, n.kind]), compiled.scene.links.map(l => l.id)]);
+    if (channel !== trendChannel) { historySamples.length = 0; trendSVG.replaceChildren(); trendChannel = channel; }
+    sceneView.render(compiled.scene); spatialView?.render(compiled.scene);
     if (selected && !compiled.objects.has(selected) && !compiled.scene.links.some(l => l.id === selected)) { selected = null; inspectorFor = null; }
     sceneView.select(selected);
     $('error-banner').hidden = true; $('preview-state').textContent = 'Предпросмотр';
@@ -92,8 +127,10 @@ function refresh(persist: boolean) {
       editor.dispatch(setDiagnostics(editor.state, currentError ? [{ from: Math.min(currentError.from, editor.state.doc.length), to: Math.min(currentError.to, editor.state.doc.length), severity: 'error', message: currentError.message }] : []));
     });
   }
+  runtimeUI?.sourceChanged(currentError ? null : compiled, projectUI?.applying);
+  if (persist) projectUI?.changed(); runtimeLabel();
   updateDiagnostics(); renderInspector();
-  $('connect-mode').toggleAttribute('disabled', !!currentError); $('add').toggleAttribute('disabled', !!currentError);
+  $('connect-mode').toggleAttribute('disabled', spatialMode || !!currentError); $('add').toggleAttribute('disabled', !!currentError);
 }
 function updateDiagnostics() {
   const messages: string[] = [];
@@ -108,7 +145,7 @@ function updateDiagnostics() {
 }
 function setTab(tab: string) { workspace.dataset.tab = tab; document.querySelectorAll<HTMLButtonElement>('button[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === tab))); editor.requestMeasure(); }
 function select(id: string | null, reveal = false) {
-  selected = id; sceneView.select(id); inspectorFor = null; renderInspector();
+  selected = id; sceneView.select(id); spatialView?.select(id); inspectorFor = null; renderInspector(); runtimeUI?.selectionChanged();
   if (id) workspace.classList.remove('no-inspector');
   if (reveal && id && compiled?.objects.has(id)) {
     const span = compiled.objects.get(id)!.span;
@@ -138,7 +175,10 @@ function renderInspector() {
         if (definition.choices) {
           const input = document.createElement('select'); input.id = `field-${name}`; input.dataset.field = name;
           for (const choice of definition.choices) { const option = document.createElement('option'); option.value = choice; option.textContent = choice; input.append(option); }
-          input.addEventListener('change', () => safely(() => updateFields(item.id, { [name]: input.value }, 'input.type.inspector', 'full'))); row.append(input);
+          input.addEventListener('change', () => safely(() => updateFields(item.id, { [name]: typeof definition.default === 'number' ? Number(input.value) : typeof definition.default === 'boolean' ? input.value === 'true' : input.value }, 'input.type.inspector', 'full'))); row.append(input);
+        } else if (typeof definition.default !== 'number') {
+          const input = document.createElement('input'); input.type = typeof definition.default === 'boolean' ? 'checkbox' : 'text'; input.id = `field-${name}`; input.dataset.field = name;
+          input.addEventListener('change', () => safely(() => updateFields(item.id, { [name]: input.type === 'checkbox' ? input.checked : input.value }, 'input.type.inspector', 'full'))); row.append(input);
         } else {
           const number = document.createElement('input'); number.type = 'number'; number.id = `field-${name}`; number.dataset.field = name; number.min = String(definition.min); number.max = String(definition.max); number.step = String(definition.step ?? 1);
           number.addEventListener('change', () => { safely(() => { if (!number.value.trim() || !number.checkValidity()) throw new Error(`${definition.label}: ${definition.min}…${definition.max}`); updateFields(item.id, { [name]: Number(number.value) }, 'input.type.inspector', 'full'); }); syncInspector(); }); row.append(number);
@@ -169,7 +209,8 @@ function syncInspector() {
   $('inspector-body').querySelectorAll<HTMLInputElement | HTMLSelectElement>('[data-field]').forEach(input => {
     const key = input.dataset.field!;
     input.disabled = !!currentError || !editable(compiled!, item.id, key);
-    if (document.activeElement !== input) input.value = String(item.props[key]);
+    if (input instanceof HTMLInputElement && input.type === 'checkbox') input.checked = Boolean(item.props[key]);
+    else if (document.activeElement !== input) input.value = String(item.props[key]);
   });
   $('inspector-body').querySelectorAll<HTMLElement>('[data-locked]').forEach(n => n.hidden = editable(compiled!, item.id, n.dataset.locked!));
 }
@@ -229,11 +270,12 @@ svg.addEventListener('keydown', event => { if ((event.key === 'Enter' || event.k
 
 $('deselect').addEventListener('click', () => select(null));
 $('connect-mode').addEventListener('click', () => { if (connecting) clearConnect(); else { connecting = 'choose'; svg.classList.add('connecting'); $('connect-mode').setAttribute('aria-pressed', 'true'); $('hint').textContent = 'Выберите выходной порт, затем входной. Escape — отмена.'; } });
-$('zoom-in').addEventListener('click', () => sceneView.zoom(.8)); $('zoom-out').addEventListener('click', () => sceneView.zoom(1.25)); $('fit').addEventListener('click', () => sceneView.fit());
+$('zoom-in').addEventListener('click', () => (spatialMode ? spatialView! : sceneView).zoom(.8)); $('zoom-out').addEventListener('click', () => (spatialMode ? spatialView! : sceneView).zoom(1.25)); $('fit').addEventListener('click', () => (spatialMode ? spatialView! : sceneView).fit());
+$('view-2d').onclick = () => { void setSpatial(false); }; $('view-3d').onclick = () => { void setSpatial(true); };
 $('toggle-code').addEventListener('click', () => { workspace.classList.toggle('no-code'); editor.requestMeasure(); });
 $('toggle-inspector').addEventListener('click', () => workspace.classList.toggle('no-inspector'));
 function updatePause() { $('pause').textContent = sceneView.paused ? '▷' : 'Ⅱ'; $('pause').setAttribute('aria-pressed', String(sceneView.paused)); $('pause').title = sceneView.paused ? 'Продолжить анимацию' : 'Пауза анимации'; $('live-dot').style.background = sceneView.paused ? '#91a7af' : '#32a881'; }
-$('pause').addEventListener('click', () => { sceneView.paused = !sceneView.paused; updatePause(); }); updatePause();
+$('pause').addEventListener('click', () => { sceneView.paused = !sceneView.paused; if (spatialView) spatialView.paused = sceneView.paused; if (sceneView.paused && !runtimeUI?.active) historySamples.push({ at: performance.now(), value: null }); updatePause(); runtimeLabel(); }); updatePause();
 $('undo').addEventListener('click', () => { undo(editor); }); $('redo').addEventListener('click', () => { redo(editor); });
 $('format').addEventListener('click', () => safely(() => replaceSource(formatSource(source()))));
 $('diagnostics-button').addEventListener('click', () => $('diagnostics').hidden = !$('diagnostics').hidden);
@@ -280,7 +322,7 @@ $('file').addEventListener('change', async () => {
   try { if (file.size > 250_000) throw new Error('Файл слишком велик.'); const text = await file.text(); compile(text); if (source() !== initial && !confirm('Заменить текущий проект?')) return; fileName = file.name.endsWith('.ts') ? file.name : 'scene.ts'; clearConnect(); select(null); replaceSource(text); sceneView.fit(); toast(`Открыт ${fileName}`); } catch (error) { toast(error instanceof Error ? error.message : String(error)); } finally { input.value = ''; }
 });
 $('share').addEventListener('click', async () => {
-  try { const bytes = new TextEncoder().encode(source()); let binary = ''; bytes.forEach(byte => binary += String.fromCharCode(byte)); const code = btoa(binary).replace(/\+/g, '-').replace(/\//g, '_'); const url = new URL(location.href); url.hash = `code=${code}`; if (url.href.length > 80_000) throw new Error('Для такого проекта используйте экспорт .ts.'); await navigator.clipboard.writeText(url.href); toast('Ссылка с исходным кодом скопирована.'); } catch (error) { toast('Не удалось скопировать ссылку: ' + (error instanceof Error ? error.message : error)); }
+  try { const bytes = new TextEncoder().encode(runtimeUI?.shareSource() ?? source()); let binary = ''; bytes.forEach(byte => binary += String.fromCharCode(byte)); const code = btoa(binary).replace(/\+/g, '-').replace(/\//g, '_'); const url = new URL(location.href); url.hash = `code=${code}`; if (url.href.length > 80_000) throw new Error('Для такого проекта используйте экспорт .ts.'); await navigator.clipboard.writeText(url.href); toast('Ссылка с исходным кодом скопирована.'); } catch (error) { toast('Не удалось скопировать ссылку: ' + (error instanceof Error ? error.message : error)); }
 });
 $('export').addEventListener('click', () => safely(() => {
   const model = compile(source()).scene;
@@ -294,7 +336,8 @@ window.addEventListener('keydown', event => {
   if (typing) return;
   if (event.key === 'Escape') { clearConnect(); select(null); }
   if (event.code === 'Space') { spaceHeld = true; event.preventDefault(); }
-  if (event.key.toLowerCase() === 'f') sceneView.fit();
+  if (event.key.toLowerCase() === 'f') (spatialMode ? spatialView! : sceneView).fit();
+  if (spatialMode && (/^Arrow/.test(event.key) || event.key === 'Delete' || event.key === 'Backspace')) return;
   if (event.key === 'Delete' || event.key === 'Backspace') { event.preventDefault(); safely(deleteSelected); }
   if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z') { event.preventDefault(); event.shiftKey ? redo(editor) : undo(editor); }
   if (selected && /^Arrow/.test(event.key)) {
@@ -306,9 +349,10 @@ window.addEventListener('keydown', event => {
 window.addEventListener('keyup', e => { if (e.code === 'Space') spaceHeld = false; }); window.addEventListener('blur', () => { spaceHeld = false; endDrag(); });
 const trendSVG = document.getElementById('trend') as unknown as SVGSVGElement;
 const historySamples: { at: number; value: number | null }[] = [];
-let trendAt = 0, readoutAt = 0;
+let trendAt = 0, readoutAt = 0, trendChannel = '';
 sceneView.onFrame = () => {
   const now = performance.now();
+  if (runtimeUI?.active) return;
   if (now - readoutAt > 100) {
     readoutAt = now; const first = sceneView.scene.nodes.find(n => n.kind === 'flowmeter') ?? sceneView.scene.nodes.find(n => n.kind === 'pump'); const q = first ? sceneView.flows.get(first.id) : null;
     $('flow-readout').textContent = q == null ? '—' : `${q > 0 ? '+' : ''}${q.toFixed(1)}`;
@@ -327,12 +371,22 @@ window.addEventListener('hashchange', () => {
   const shared = decodeShared();
   if (shared !== null && shared !== source()) { clearConnect(); select(null); replaceSource(shared); sceneView.fit(); }
 });
+runtimeUI = new RuntimeWorkspace({ source, compiled: () => compiled, selected: () => selected, replaceSource, display: displayRuntime, toast, connected: runId => projectUI!.connected(runId), provenance: () => projectUI?.provenance() });
+projectUI = new ProjectWorkspace(runtimeUI, { source, replaceSource, toast, initialDraft: !!stored || sharedInitial !== null });
 refresh(false); sceneView.fit();
 // A small inspection API makes deterministic browser regression tests possible.
 // Mutations still go through the one CodeMirror document, never the rendered model.
 Object.defineProperty(window, '__scada', { value: {
   get source() { return source(); }, get scene() { return compiled ? structuredClone(compiled.scene) : undefined; }, get error() { return currentError?.message ?? null; }, get warnings() { return sceneView.warnings; },
+  get view3d() { return spatialView?.inspect() ?? null; },
+  runtime: { get status() { return runtimeUI!.status; }, get frame() { return runtimeUI!.displayedFrame ? structuredClone(runtimeUI!.displayedFrame) : null; }, get liveFrame() { return runtimeUI!.frame ? structuredClone(runtimeUI!.frame) : null; }, get runId() { return runtimeUI!.runId; }, get mode() { return runtimeUI!.mode; },
+    connect: (config: import('./runtime/protocol').RuntimeConfig, token: string) => runtimeUI!.connect(config, token), disconnect: () => runtimeUI!.disconnect(),
+    createRun: (scenario: 'normal' | 'degradation') => runtimeUI!.createRun(scenario), selectRun: (id: string) => runtimeUI!.selectRun(id),
+    command: (id: string, name: string, value?: number | string | boolean) => runtimeUI!.command(id, name, value),
+    loadHistory: () => runtimeUI!.loadHistory(), replay: (seq: number) => runtimeUI!.replay(seq), live: () => runtimeUI!.live(),
+    shareSource: () => runtimeUI!.shareSource(),
+  },
   get flows() { return Object.fromEntries(sceneView.flows); }, get camera() { return { ...sceneView.camera }; },
   setSource: (text: string) => replaceSource(text), fit: () => sceneView.fit(), select: (id: string) => select(id), undo: () => undo(editor), redo: () => redo(editor),
 }, writable: false });
-window.addEventListener('pagehide', e => { if (!e.persisted) sceneView.dispose(); });
+window.addEventListener('pagehide', e => { if (!e.persisted) { sceneView.dispose(); spatialView?.dispose(); runtimeUI?.dispose(); projectUI?.dispose(); } });

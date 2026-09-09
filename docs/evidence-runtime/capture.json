@@ -1,0 +1,3565 @@
+{
+  "measuredAt": "2026-09-08T22:16:05.852Z",
+  "revision": "720e1bfd74288c706db872367e06d76023c22ccb",
+  "workingTreeDirty": true,
+  "node": "v24.19.0",
+  "browser": "149.0.7827.0",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "logicalCpus": 8,
+  "platform": "linux x64",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "sourceSha256": "ea9115ffa5d00a85170baaf5a1a4f89232a6ffbddacfb434119f18cc16e43c52",
+  "sourceUnchanged": true,
+  "synthetic": true,
+  "liveRuns": 2,
+  "activeRun": "ff8b6564-05d7-470a-a1b7-8f9082abaffb",
+  "referenceRun": "0a0eaa38-ab26-45f2-bbf1-a2902e073273",
+  "validation": {
+    "initialPump": {
+      "positionId": "P-101",
+      "instanceId": "P-101@1",
+      "facts": {
+        "mode": "running",
+        "alarm": "none"
+      },
+      "signals": {
+        "rpm": {
+          "type": "number",
+          "value": 1500,
+          "unit": "rpm",
+          "timestamp": 1788905712221,
+          "quality": "good"
+        },
+        "flow": {
+          "type": "number",
+          "value": 9.120000000000001,
+          "unit": "m3/h",
+          "timestamp": 1788905712221,
+          "quality": "good"
+        },
+        "temperature": {
+          "type": "number",
+          "value": 48,
+          "unit": "°C",
+          "timestamp": 1788905712221,
+          "quality": "good"
+        },
+        "vibration": {
+          "type": "number",
+          "value": 1.805675208158791,
+          "unit": "mm/s",
+          "timestamp": 1788905712221,
+          "quality": "good"
+        }
+      }
+    },
+    "degradedPump": {
+      "positionId": "P-101",
+      "instanceId": "P-101@1",
+      "facts": {
+        "mode": "running",
+        "alarm": "warning"
+      },
+      "signals": {
+        "rpm": {
+          "type": "number",
+          "value": 1500,
+          "unit": "rpm",
+          "timestamp": 1788905718821,
+          "quality": "good"
+        },
+        "flow": {
+          "type": "number",
+          "value": 5.941679999999998,
+          "unit": "m3/h",
+          "timestamp": 1788905718821,
+          "quality": "good"
+        },
+        "temperature": {
+          "type": "number",
+          "value": 52.92116068743143,
+          "unit": "°C",
+          "timestamp": 1788905718821,
+          "quality": "good"
+        },
+        "vibration": {
+          "type": "number",
+          "value": 5.051704421434553,
+          "unit": "mm/s",
+          "timestamp": 1788905718821,
+          "quality": "good"
+        }
+      }
+    },
+    "servicedPump": {
+      "positionId": "P-101",
+      "instanceId": "P-101@1",
+      "facts": {
+        "mode": "running",
+        "alarm": "none"
+      },
+      "signals": {
+        "rpm": {
+          "type": "number",
+          "value": 1500,
+          "unit": "rpm",
+          "timestamp": 1788905748121,
+          "quality": "good"
+        },
+        "flow": {
+          "type": "number",
+          "value": 9.120000000000001,
+          "unit": "m3/h",
+          "timestamp": 1788905748121,
+          "quality": "good"
+        },
+        "temperature": {
+          "type": "number",
+          "value": 75.86335278486591,
+          "unit": "°C",
+          "timestamp": 1788905748121,
+          "quality": "good"
+        },
+        "vibration": {
+          "type": "number",
+          "value": 1.7652269250899553,
+          "unit": "mm/s",
+          "timestamp": 1788905748121,
+          "quality": "good"
+        }
+      }
+    },
+    "replacedPump": {
+      "positionId": "P-101",
+      "instanceId": "P-101@2",
+      "facts": {
+        "mode": "running",
+        "alarm": "none"
+      },
+      "signals": {
+        "rpm": {
+          "type": "number",
+          "value": 1500,
+          "unit": "rpm",
+          "timestamp": 1788905749321,
+          "quality": "good"
+        },
+        "flow": {
+          "type": "number",
+          "value": 9.120000000000001,
+          "unit": "m3/h",
+          "timestamp": 1788905749321,
+          "quality": "good"
+        },
+        "temperature": {
+          "type": "number",
+          "value": 48,
+          "unit": "°C",
+          "timestamp": 1788905749321,
+          "quality": "good"
+        },
+        "vibration": {
+          "type": "number",
+          "value": 1.8048901608400048,
+          "unit": "mm/s",
+          "timestamp": 1788905749321,
+          "quality": "good"
+        }
+      }
+    },
+    "completedSeq": 400
+  },
+  "recording": "Actual Chromium viewport video, Playwright WebM; MP4 is a direct H.264 transcode. Recorder cadence is not a device FPS benchmark.",
+  "mp4": true,
+  "svgCadence": {
+    "samples": [
+      16.699999999999818,
+      16.700000000000273,
+      16.59999999999991,
+      16.699999999999818,
+      16.700000000000273,
+      16.699999999999818,
+      16.59999999999991,
+      16.700000000000273,
+      16.59999999999991,
+      16.699999999999818,
+      16.700000000000273,
+      16.59999999999991,
+      16.699999999999818,
+      16.600000000000364,
+      16.699999999999818,
+      16.699999999999818,
+      16.600000000000364,
+      16.699999999999818,
+      16.699999999999818,
+      16.600000000000364,
+      16.699999999999818,
+      16.699999999999818,
+      16.700000000000273,
+      16.59999999999991,
+      16.699999999999818,
+      16.700000000000273,
+      16.699999999999818,
+      16.59999999999991,
+      16.600000000000364,
+      16.699999999999818,
+      16.699999999999818,
+      16.600000000000364,
+      16.699999999999818,
+      16.699999999999818,
+      16.600000000000364,
+      16.699999999999818,
+      16.699999999999818,
+      16.700000000000273,
+      16.59999999999991,
+      16.699999999999818,
+      16.600000000000364,
+      16.799999999999727,
+      16.59999999999991,
+      16.600000000000364,
+      16.699999999999818,
+      16.59999999999991,
+      16.800000000000182,
+      16.59999999999991,
+      16.59999999999991,
+      16.800000000000182,
+      16.59999999999991,
+      16.699999999999818,
+      16.700000000000273,
+      16.59999999999991,
+      16.699999999999818,
+      16.700000000000273,
+      16.59999999999991,
+      16.699999999999818,
+      16.600000000000364,
+      16.699999999999818,
+      16.699999999999818,
+      16.700000000000273,
+      16.59999999999991,
+      16.699999999999818,
+      16.600000000000364,
+      16.699999999999818,
+      16.699999999999818,
+      16.600000000000364,
+      16.699999999999818,
+      16.699999999999818,
+      16.600000000000364,
+      16.699999999999818,
+      16.699999999999818,
+      16.600000000000364,
+      16.699999999999818,
+      16.59999999999991,
+      16.700000000000273,
+      16.699999999999818,
+      16.59999999999991,
+      16.700000000000273,
+      16.699999999999818,
+      16.699999999999818,
+      16.600000000000364,
+      16.699999999999818,
+      16.699999999999818,
+      16.600000000000364,
+      16.699999999999818,
+      16.59999999999991,
+      16.700000000000273,
+      16.59999999999991
+    ],
+    "medianMs": 16.699999999999818,
+    "p95Ms": 16.700000000000273,
+    "maxMs": 16.800000000000182
+  },
+  "threeCadence": {
+    "samples": [
+      199.90000000000146,
+      16.69999999999709,
+      316.6000000000022,
+      233.39999999999782,
+      250,
+      216.60000000000218,
+      466.7000000000007,
+      333.2999999999993,
+      383.2999999999993,
+      200,
+      399.90000000000146,
+      50.099999999998545,
+      100,
+      116.70000000000073,
+      33.29999999999927,
+      116.59999999999854,
+      116.70000000000073,
+      99.90000000000146,
+      133.39999999999782,
+      116.70000000000073,
+      150,
+      100,
+      149.90000000000146,
+      83.39999999999782,
+      66.70000000000073,
+      66.60000000000218,
+      66.69999999999709,
+      66.60000000000218,
+      83.39999999999782,
+      50,
+      66.70000000000073,
+      100,
+      49.900000000001455,
+      50.099999999998545,
+      66.60000000000218,
+      100,
+      66.69999999999709,
+      83.30000000000291,
+      83.29999999999927,
+      50.099999999998545,
+      50,
+      83.20000000000073,
+      83.40000000000146,
+      83.29999999999927,
+      66.70000000000073,
+      50,
+      83.29999999999927,
+      83.29999999999927,
+      33.400000000001455,
+      66.59999999999854,
+      66.70000000000073,
+      100,
+      16.700000000000728,
+      66.59999999999854,
+      66.59999999999854,
+      66.70000000000073,
+      50,
+      50.10000000000218,
+      50,
+      66.59999999999854,
+      50,
+      83.29999999999927,
+      16.700000000000728,
+      133.29999999999927,
+      16.700000000000728,
+      16.599999999998545,
+      83.40000000000146,
+      66.69999999999709,
+      66.60000000000582,
+      50,
+      50,
+      83.29999999999563,
+      33.30000000000291,
+      116.69999999999709,
+      33.400000000001455,
+      66.69999999999709,
+      16.60000000000582,
+      33.299999999995634,
+      66.70000000000437,
+      83.39999999999418,
+      66.5,
+      50.10000000000582,
+      66.69999999999709,
+      99.90000000000146,
+      50.099999999998545,
+      83.30000000000291,
+      50,
+      66.59999999999854,
+      33.299999999995634,
+      16.80000000000291
+    ],
+    "medianMs": 66.70000000000073,
+    "p95Ms": 316.6000000000022,
+    "maxMs": 466.7000000000007
+  },
+  "stages": [
+    {
+      "name": "editor-2d",
+      "frame": {
+        "type": "update",
+        "runId": "ff8b6564-05d7-470a-a1b7-8f9082abaffb",
+        "seq": 61,
+        "simTimeMs": 6100,
+        "timestamp": 1788905715921,
+        "equipment": {
+          "F-101": {
+            "positionId": "F-101",
+            "instanceId": "F-101@1",
+            "facts": {
+              "mode": "ready",
+              "alarm": "none"
+            },
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 8.18976,
+                "unit": "m3/h",
+                "timestamp": 1788905715921,
+                "quality": "good"
+              }
+            }
+          },
+          "HX-101": {
+            "positionId": "HX-101",
+            "instanceId": "HX-101@1",
+            "facts": {
+              "mode": "ready",
+              "alarm": "none"
+            },
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 8.18976,
+                "unit": "m3/h",
+                "timestamp": 1788905715921,
+                "quality": "good"
+              },
+              "temperature": {
+                "type": "number",
+                "value": 72,
+                "unit": "°C",
+                "timestamp": 1788905715921,
+                "quality": "good"
+              }
+            }
+          },
+          "OUT": {
+            "positionId": "OUT",
+            "instanceId": "OUT@1",
+            "facts": {
+              "mode": "ready",
+              "alarm": "none"
+            },
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 8.18976,
+                "unit": "m3/h",
+                "timestamp": 1788905715921,
+                "quality": "good"
+              }
+            }
+          },
+          "P-101": {
+            "positionId": "P-101",
+            "instanceId": "P-101@1",
+            "facts": {
+              "mode": "running",
+              "alarm": "none"
+            },
+            "signals": {
+              "rpm": {
+                "type": "number",
+                "value": 1500,
+                "unit": "rpm",
+                "timestamp": 1788905715921,
+                "quality": "good"
+              },
+              "flow": {
+                "type": "number",
+                "value": 8.18976,
+                "unit": "m3/h",
+                "timestamp": 1788905715921,
+                "quality": "good"
+              },
+              "temperature": {
+                "type": "number",
+                "value": 48.531957696825444,
+                "unit": "°C",
+                "timestamp": 1788905715921,
+                "quality": "good"
+              },
+              "vibration": {
+                "type": "number",
+                "value": 2.778380773440003,
+                "unit": "mm/s",
+                "timestamp": 1788905715921,
+                "quality": "good"
+              }
+            }
+          },
+          "PT-101": {
+            "positionId": "PT-101",
+            "instanceId": "PT-101@1",
+            "facts": {
+              "mode": "measuring",
+              "alarm": "none"
+            },
+            "signals": {
+              "value": {
+                "type": "number",
+                "value": 4.358384,
+                "unit": "bar",
+                "timestamp": 1788905715921,
+                "quality": "good"
+              }
+            }
+          },
+          "T-101": {
+            "positionId": "T-101",
+            "instanceId": "T-101@1",
+            "facts": {
+              "mode": "available",
+              "alarm": "none"
+            },
+            "signals": {
+              "level": {
+                "type": "number",
+                "value": 63.86082120000005,
+                "unit": "%",
+                "timestamp": 1788905715921,
+                "quality": "good"
+              }
+            }
+          },
+          "TT-101": {
+            "positionId": "TT-101",
+            "instanceId": "TT-101@1",
+            "facts": {
+              "mode": "measuring",
+              "alarm": "none"
+            },
+            "signals": {
+              "value": {
+                "type": "number",
+                "value": 72,
+                "unit": "°C",
+                "timestamp": 1788905715921,
+                "quality": "good"
+              }
+            }
+          },
+          "V-101": {
+            "positionId": "V-101",
+            "instanceId": "V-101@1",
+            "facts": {
+              "mode": "ready",
+              "alarm": "none"
+            },
+            "signals": {
+              "opening": {
+                "type": "number",
+                "value": 76,
+                "unit": "%",
+                "timestamp": 1788905715921,
+                "quality": "good"
+              },
+              "flow": {
+                "type": "number",
+                "value": 8.18976,
+                "unit": "m3/h",
+                "timestamp": 1788905715921,
+                "quality": "good"
+              }
+            }
+          }
+        },
+        "flows": {
+          "F-101.outlet:V-101.inlet": {
+            "type": "number",
+            "value": 8.18976,
+            "unit": "m3/h",
+            "timestamp": 1788905715921,
+            "quality": "good"
+          },
+          "HX-101.outlet:OUT.inlet": {
+            "type": "number",
+            "value": 8.18976,
+            "unit": "m3/h",
+            "timestamp": 1788905715921,
+            "quality": "good"
+          },
+          "P-101.outlet:F-101.inlet": {
+            "type": "number",
+            "value": 8.18976,
+            "unit": "m3/h",
+            "timestamp": 1788905715921,
+            "quality": "good"
+          },
+          "T-101.outlet:P-101.inlet": {
+            "type": "number",
+            "value": 8.18976,
+            "unit": "m3/h",
+            "timestamp": 1788905715921,
+            "quality": "good"
+          },
+          "V-101.outlet:HX-101.inlet": {
+            "type": "number",
+            "value": 8.18976,
+            "unit": "m3/h",
+            "timestamp": 1788905715921,
+            "quality": "good"
+          }
+        },
+        "events": []
+      },
+      "three": null,
+      "overflow": false,
+      "sourceHash": "ea9115ffa5d00a85170baaf5a1a4f89232a6ffbddacfb434119f18cc16e43c52"
+    },
+    {
+      "name": "degradation-2d",
+      "frame": {
+        "type": "update",
+        "runId": "ff8b6564-05d7-470a-a1b7-8f9082abaffb",
+        "seq": 152,
+        "simTimeMs": 15200,
+        "timestamp": 1788905725021,
+        "equipment": {
+          "F-101": {
+            "positionId": "F-101",
+            "instanceId": "F-101@1",
+            "facts": {
+              "mode": "ready",
+              "alarm": "none"
+            },
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 0.3648,
+                "unit": "m3/h",
+                "timestamp": 1788905725021,
+                "quality": "good"
+              }
+            }
+          },
+          "HX-101": {
+            "positionId": "HX-101",
+            "instanceId": "HX-101@1",
+            "facts": {
+              "mode": "ready",
+              "alarm": "none"
+            },
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 0.3648,
+                "unit": "m3/h",
+                "timestamp": 1788905725021,
+                "quality": "good"
+              },
+              "temperature": {
+                "type": "number",
+                "value": 72,
+                "unit": "°C",
+                "timestamp": 1788905725021,
+                "quality": "good"
+              }
+            }
+          },
+          "OUT": {
+            "positionId": "OUT",
+            "instanceId": "OUT@1",
+            "facts": {
+              "mode": "ready",
+              "alarm": "none"
+            },
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 0.3648,
+                "unit": "m3/h",
+                "timestamp": 1788905725021,
+                "quality": "good"
+              }
+            }
+          },
+          "P-101": {
+            "positionId": "P-101",
+            "instanceId": "P-101@1",
+            "facts": {
+              "mode": "running",
+              "alarm": "trip"
+            },
+            "signals": {
+              "rpm": {
+                "type": "number",
+                "value": 1500,
+                "unit": "rpm",
+                "timestamp": 1788905725021,
+                "quality": "good"
+              },
+              "flow": {
+                "type": "number",
+                "value": 0.3648,
+                "unit": "m3/h",
+                "timestamp": 1788905725021,
+                "quality": "good"
+              },
+              "temperature": {
+                "type": "number",
+                "value": 72.61450859749607,
+                "unit": "°C",
+                "timestamp": 1788905725021,
+                "quality": "good"
+              },
+              "vibration": {
+                "type": "number",
+                "value": 12.76287149174139,
+                "unit": "mm/s",
+                "timestamp": 1788905725021,
+                "quality": "good"
+              }
+            }
+          },
+          "PT-101": {
+            "positionId": "PT-101",
+            "instanceId": "PT-101@1",
+            "facts": {
+              "mode": "measuring",
+              "alarm": "none"
+            },
+            "signals": {
+              "value": {
+                "type": "number",
+                "value": 0.5763199999999999,
+                "unit": "bar",
+                "timestamp": 1788905725021,
+                "quality": "good"
+              }
+            }
+          },
+          "T-101": {
+            "positionId": "T-101",
+            "instanceId": "T-101@1",
+            "facts": {
+              "mode": "available",
+              "alarm": "none"
+            },
+            "signals": {
+              "level": {
+                "type": "number",
+                "value": 63.74951666666671,
+                "unit": "%",
+                "timestamp": 1788905725021,
+                "quality": "good"
+              }
+            }
+          },
+          "TT-101": {
+            "positionId": "TT-101",
+            "instanceId": "TT-101@1",
+            "facts": {
+              "mode": "measuring",
+              "alarm": "none"
+            },
+            "signals": {
+              "value": {
+                "type": "number",
+                "value": 72,
+                "unit": "°C",
+                "timestamp": 1788905725021,
+                "quality": "good"
+              }
+            }
+          },
+          "V-101": {
+            "positionId": "V-101",
+            "instanceId": "V-101@1",
+            "facts": {
+              "mode": "ready",
+              "alarm": "none"
+            },
+            "signals": {
+              "opening": {
+                "type": "number",
+                "value": 76,
+                "unit": "%",
+                "timestamp": 1788905725021,
+                "quality": "good"
+              },
+              "flow": {
+                "type": "number",
+                "value": 0.3648,
+                "unit": "m3/h",
+                "timestamp": 1788905725021,
+                "quality": "good"
+              }
+            }
+          }
+        },
+        "flows": {
+          "F-101.outlet:V-101.inlet": {
+            "type": "number",
+            "value": 0.3648,
+            "unit": "m3/h",
+            "timestamp": 1788905725021,
+            "quality": "good"
+          },
+          "HX-101.outlet:OUT.inlet": {
+            "type": "number",
+            "value": 0.3648,
+            "unit": "m3/h",
+            "timestamp": 1788905725021,
+            "quality": "good"
+          },
+          "P-101.outlet:F-101.inlet": {
+            "type": "number",
+            "value": 0.3648,
+            "unit": "m3/h",
+            "timestamp": 1788905725021,
+            "quality": "good"
+          },
+          "T-101.outlet:P-101.inlet": {
+            "type": "number",
+            "value": 0.3648,
+            "unit": "m3/h",
+            "timestamp": 1788905725021,
+            "quality": "good"
+          },
+          "V-101.outlet:HX-101.inlet": {
+            "type": "number",
+            "value": 0.3648,
+            "unit": "m3/h",
+            "timestamp": 1788905725021,
+            "quality": "good"
+          }
+        },
+        "events": []
+      },
+      "three": null,
+      "overflow": false,
+      "sourceHash": "ea9115ffa5d00a85170baaf5a1a4f89232a6ffbddacfb434119f18cc16e43c52"
+    },
+    {
+      "name": "editor-3d",
+      "frame": {
+        "type": "update",
+        "runId": "ff8b6564-05d7-470a-a1b7-8f9082abaffb",
+        "seq": 352,
+        "simTimeMs": 35200,
+        "timestamp": 1788905745021,
+        "equipment": {
+          "F-101": {
+            "positionId": "F-101",
+            "instanceId": "F-101@1",
+            "facts": {
+              "mode": "ready",
+              "alarm": "none"
+            },
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 0.3648,
+                "unit": "m3/h",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              }
+            }
+          },
+          "HX-101": {
+            "positionId": "HX-101",
+            "instanceId": "HX-101@1",
+            "facts": {
+              "mode": "ready",
+              "alarm": "none"
+            },
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 0.3648,
+                "unit": "m3/h",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              },
+              "temperature": {
+                "type": "number",
+                "value": 72,
+                "unit": "°C",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              }
+            }
+          },
+          "OUT": {
+            "positionId": "OUT",
+            "instanceId": "OUT@1",
+            "facts": {
+              "mode": "ready",
+              "alarm": "none"
+            },
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 0.3648,
+                "unit": "m3/h",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              }
+            }
+          },
+          "P-101": {
+            "positionId": "P-101",
+            "instanceId": "P-101@1",
+            "facts": {
+              "mode": "running",
+              "alarm": "trip"
+            },
+            "signals": {
+              "rpm": {
+                "type": "number",
+                "value": 1500,
+                "unit": "rpm",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              },
+              "flow": {
+                "type": "number",
+                "value": 0.3648,
+                "unit": "m3/h",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              },
+              "temperature": {
+                "type": "number",
+                "value": 92.62662670090232,
+                "unit": "°C",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              },
+              "vibration": {
+                "type": "number",
+                "value": 12.82109672933817,
+                "unit": "mm/s",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              }
+            }
+          },
+          "PT-101": {
+            "positionId": "PT-101",
+            "instanceId": "PT-101@1",
+            "facts": {
+              "mode": "measuring",
+              "alarm": "none"
+            },
+            "signals": {
+              "value": {
+                "type": "number",
+                "value": 0.5763199999999999,
+                "unit": "bar",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              }
+            }
+          },
+          "T-101": {
+            "positionId": "T-101",
+            "instanceId": "T-101@1",
+            "facts": {
+              "mode": "available",
+              "alarm": "none"
+            },
+            "signals": {
+              "level": {
+                "type": "number",
+                "value": 63.72925000000005,
+                "unit": "%",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              }
+            }
+          },
+          "TT-101": {
+            "positionId": "TT-101",
+            "instanceId": "TT-101@1",
+            "facts": {
+              "mode": "measuring",
+              "alarm": "none"
+            },
+            "signals": {
+              "value": {
+                "type": "number",
+                "value": 72,
+                "unit": "°C",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              }
+            }
+          },
+          "V-101": {
+            "positionId": "V-101",
+            "instanceId": "V-101@1",
+            "facts": {
+              "mode": "ready",
+              "alarm": "none"
+            },
+            "signals": {
+              "opening": {
+                "type": "number",
+                "value": 76,
+                "unit": "%",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              },
+              "flow": {
+                "type": "number",
+                "value": 0.3648,
+                "unit": "m3/h",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              }
+            }
+          }
+        },
+        "flows": {
+          "F-101.outlet:V-101.inlet": {
+            "type": "number",
+            "value": 0.3648,
+            "unit": "m3/h",
+            "timestamp": 1788905745021,
+            "quality": "good"
+          },
+          "HX-101.outlet:OUT.inlet": {
+            "type": "number",
+            "value": 0.3648,
+            "unit": "m3/h",
+            "timestamp": 1788905745021,
+            "quality": "good"
+          },
+          "P-101.outlet:F-101.inlet": {
+            "type": "number",
+            "value": 0.3648,
+            "unit": "m3/h",
+            "timestamp": 1788905745021,
+            "quality": "good"
+          },
+          "T-101.outlet:P-101.inlet": {
+            "type": "number",
+            "value": 0.3648,
+            "unit": "m3/h",
+            "timestamp": 1788905745021,
+            "quality": "good"
+          },
+          "V-101.outlet:HX-101.inlet": {
+            "type": "number",
+            "value": 0.3648,
+            "unit": "m3/h",
+            "timestamp": 1788905745021,
+            "quality": "good"
+          }
+        },
+        "events": []
+      },
+      "three": {
+        "runId": "ff8b6564-05d7-470a-a1b7-8f9082abaffb",
+        "seq": 352,
+        "triangles": 30778,
+        "calls": 312,
+        "equipment": [
+          {
+            "id": "T-101",
+            "instanceId": "T-101@1",
+            "signals": {
+              "level": {
+                "type": "number",
+                "value": 63.72925000000005,
+                "unit": "%",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              }
+            },
+            "alarm": "none",
+            "metrics": {
+              "level": 63.72925000000005,
+              "liquidTop": 1.6820435000000011
+            },
+            "ports": {
+              "outlet": [
+                1.5,
+                -2.5,
+                0.48
+              ]
+            }
+          },
+          {
+            "id": "P-101",
+            "instanceId": "P-101@1",
+            "signals": {
+              "rpm": {
+                "type": "number",
+                "value": 1500,
+                "unit": "rpm",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              },
+              "flow": {
+                "type": "number",
+                "value": 0.3648,
+                "unit": "m3/h",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              },
+              "temperature": {
+                "type": "number",
+                "value": 92.62662670090232,
+                "unit": "°C",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              },
+              "vibration": {
+                "type": "number",
+                "value": 12.82109672933817,
+                "unit": "mm/s",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              }
+            },
+            "alarm": "trip",
+            "metrics": {
+              "phase": 0.7033879310344817,
+              "rpm": 1500,
+              "flow": 0.3648
+            },
+            "ports": {
+              "inlet": [
+                2.3,
+                -3.38,
+                0.65
+              ],
+              "outlet": [
+                3,
+                -3.38,
+                1.35
+              ]
+            }
+          },
+          {
+            "id": "F-101",
+            "instanceId": "F-101@1",
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 0.3648,
+                "unit": "m3/h",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              }
+            },
+            "alarm": "none",
+            "metrics": {},
+            "ports": {
+              "inlet": [
+                6.0636363636363635,
+                -2.06,
+                0.75
+              ],
+              "outlet": [
+                6.9363636363636365,
+                -2.06,
+                0.75
+              ]
+            }
+          },
+          {
+            "id": "V-101",
+            "instanceId": "V-101@1",
+            "signals": {
+              "opening": {
+                "type": "number",
+                "value": 76,
+                "unit": "%",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              },
+              "flow": {
+                "type": "number",
+                "value": 0.3648,
+                "unit": "m3/h",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              }
+            },
+            "alarm": "none",
+            "metrics": {
+              "opening": 76
+            },
+            "ports": {
+              "inlet": [
+                7.422727272727273,
+                -1.42,
+                0.75
+              ],
+              "outlet": [
+                8.877272727272727,
+                -1.42,
+                0.75
+              ]
+            }
+          },
+          {
+            "id": "HX-101",
+            "instanceId": "HX-101@1",
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 0.3648,
+                "unit": "m3/h",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              },
+              "temperature": {
+                "type": "number",
+                "value": 72,
+                "unit": "°C",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              }
+            },
+            "alarm": "none",
+            "metrics": {},
+            "ports": {
+              "inlet": [
+                9.877272727272727,
+                -1.59,
+                0.75
+              ],
+              "outlet": [
+                11.422727272727274,
+                -1.59,
+                0.75
+              ]
+            }
+          },
+          {
+            "id": "OUT",
+            "instanceId": "OUT@1",
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 0.3648,
+                "unit": "m3/h",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              }
+            },
+            "alarm": "none",
+            "metrics": {},
+            "ports": {
+              "inlet": [
+                13.225,
+                -2.24,
+                0.75
+              ]
+            }
+          },
+          {
+            "id": "PT-101",
+            "instanceId": "PT-101@1",
+            "signals": {
+              "value": {
+                "type": "number",
+                "value": 0.5763199999999999,
+                "unit": "bar",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              }
+            },
+            "alarm": "none",
+            "metrics": {},
+            "ports": {}
+          },
+          {
+            "id": "TT-101",
+            "instanceId": "TT-101@1",
+            "signals": {
+              "value": {
+                "type": "number",
+                "value": 72,
+                "unit": "°C",
+                "timestamp": 1788905745021,
+                "quality": "good"
+              }
+            },
+            "alarm": "none",
+            "metrics": {},
+            "ports": {}
+          }
+        ],
+        "flows": [
+          {
+            "id": "T-101.outlet:P-101.inlet",
+            "phase": 0.022698160000002465,
+            "value": 0.3648
+          },
+          {
+            "id": "P-101.outlet:F-101.inlet",
+            "phase": 0.022698160000002465,
+            "value": 0.3648
+          },
+          {
+            "id": "F-101.outlet:V-101.inlet",
+            "phase": 0.022698160000002465,
+            "value": 0.3648
+          },
+          {
+            "id": "V-101.outlet:HX-101.inlet",
+            "phase": 0.022698160000002465,
+            "value": 0.3648
+          },
+          {
+            "id": "HX-101.outlet:OUT.inlet",
+            "phase": 0.022698160000002465,
+            "value": 0.3648
+          }
+        ]
+      },
+      "overflow": false,
+      "sourceHash": "ea9115ffa5d00a85170baaf5a1a4f89232a6ffbddacfb434119f18cc16e43c52"
+    },
+    {
+      "name": "maintenance-3d",
+      "frame": {
+        "type": "update",
+        "runId": "ff8b6564-05d7-470a-a1b7-8f9082abaffb",
+        "seq": 365,
+        "simTimeMs": 36400,
+        "timestamp": 1788905746221,
+        "equipment": {
+          "F-101": {
+            "positionId": "F-101",
+            "instanceId": "F-101@1",
+            "facts": {
+              "mode": "ready",
+              "alarm": "none"
+            },
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 0,
+                "unit": "m3/h",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              }
+            }
+          },
+          "HX-101": {
+            "positionId": "HX-101",
+            "instanceId": "HX-101@1",
+            "facts": {
+              "mode": "ready",
+              "alarm": "none"
+            },
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 0,
+                "unit": "m3/h",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              },
+              "temperature": {
+                "type": "number",
+                "value": 72,
+                "unit": "°C",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              }
+            }
+          },
+          "OUT": {
+            "positionId": "OUT",
+            "instanceId": "OUT@1",
+            "facts": {
+              "mode": "ready",
+              "alarm": "none"
+            },
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 0,
+                "unit": "m3/h",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              }
+            }
+          },
+          "P-101": {
+            "positionId": "P-101",
+            "instanceId": "P-101@1",
+            "facts": {
+              "mode": "maintenance",
+              "alarm": "none"
+            },
+            "signals": {
+              "rpm": {
+                "type": "number",
+                "value": 0,
+                "unit": "rpm",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              },
+              "flow": {
+                "type": "number",
+                "value": 0,
+                "unit": "m3/h",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              },
+              "temperature": {
+                "type": "number",
+                "value": 88.24945901491577,
+                "unit": "°C",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              },
+              "vibration": {
+                "type": "number",
+                "value": 0,
+                "unit": "mm/s",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              }
+            }
+          },
+          "PT-101": {
+            "positionId": "PT-101",
+            "instanceId": "PT-101@1",
+            "facts": {
+              "mode": "measuring",
+              "alarm": "none"
+            },
+            "signals": {
+              "value": {
+                "type": "number",
+                "value": 0.4,
+                "unit": "bar",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              }
+            }
+          },
+          "T-101": {
+            "positionId": "T-101",
+            "instanceId": "T-101@1",
+            "facts": {
+              "mode": "available",
+              "alarm": "none"
+            },
+            "signals": {
+              "level": {
+                "type": "number",
+                "value": 63.728591333333384,
+                "unit": "%",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              }
+            }
+          },
+          "TT-101": {
+            "positionId": "TT-101",
+            "instanceId": "TT-101@1",
+            "facts": {
+              "mode": "measuring",
+              "alarm": "none"
+            },
+            "signals": {
+              "value": {
+                "type": "number",
+                "value": 72,
+                "unit": "°C",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              }
+            }
+          },
+          "V-101": {
+            "positionId": "V-101",
+            "instanceId": "V-101@1",
+            "facts": {
+              "mode": "ready",
+              "alarm": "none"
+            },
+            "signals": {
+              "opening": {
+                "type": "number",
+                "value": 76,
+                "unit": "%",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              },
+              "flow": {
+                "type": "number",
+                "value": 0,
+                "unit": "m3/h",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              }
+            }
+          }
+        },
+        "flows": {
+          "F-101.outlet:V-101.inlet": {
+            "type": "number",
+            "value": 0,
+            "unit": "m3/h",
+            "timestamp": 1788905746221,
+            "quality": "good"
+          },
+          "HX-101.outlet:OUT.inlet": {
+            "type": "number",
+            "value": 0,
+            "unit": "m3/h",
+            "timestamp": 1788905746221,
+            "quality": "good"
+          },
+          "P-101.outlet:F-101.inlet": {
+            "type": "number",
+            "value": 0,
+            "unit": "m3/h",
+            "timestamp": 1788905746221,
+            "quality": "good"
+          },
+          "T-101.outlet:P-101.inlet": {
+            "type": "number",
+            "value": 0,
+            "unit": "m3/h",
+            "timestamp": 1788905746221,
+            "quality": "good"
+          },
+          "V-101.outlet:HX-101.inlet": {
+            "type": "number",
+            "value": 0,
+            "unit": "m3/h",
+            "timestamp": 1788905746221,
+            "quality": "good"
+          }
+        },
+        "events": []
+      },
+      "three": {
+        "runId": "ff8b6564-05d7-470a-a1b7-8f9082abaffb",
+        "seq": 365,
+        "triangles": 30138,
+        "calls": 272,
+        "equipment": [
+          {
+            "id": "T-101",
+            "instanceId": "T-101@1",
+            "signals": {
+              "level": {
+                "type": "number",
+                "value": 63.728591333333384,
+                "unit": "%",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              }
+            },
+            "alarm": "none",
+            "metrics": {
+              "level": 63.728591333333384,
+              "liquidTop": 1.6820290093333348
+            },
+            "ports": {
+              "outlet": [
+                1.5,
+                -2.5,
+                0.48
+              ]
+            }
+          },
+          {
+            "id": "P-101",
+            "instanceId": "P-101@1",
+            "signals": {
+              "rpm": {
+                "type": "number",
+                "value": 0,
+                "unit": "rpm",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              },
+              "flow": {
+                "type": "number",
+                "value": 0,
+                "unit": "m3/h",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              },
+              "temperature": {
+                "type": "number",
+                "value": 88.24945901491577,
+                "unit": "°C",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              },
+              "vibration": {
+                "type": "number",
+                "value": 0,
+                "unit": "mm/s",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              }
+            },
+            "alarm": "none",
+            "metrics": {
+              "phase": 0.9577803903451698,
+              "rpm": 40.685404311198084,
+              "flow": 0
+            },
+            "ports": {
+              "inlet": [
+                2.3,
+                -3.38,
+                0.65
+              ],
+              "outlet": [
+                3,
+                -3.38,
+                1.35
+              ]
+            }
+          },
+          {
+            "id": "F-101",
+            "instanceId": "F-101@1",
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 0,
+                "unit": "m3/h",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              }
+            },
+            "alarm": "none",
+            "metrics": {},
+            "ports": {
+              "inlet": [
+                6.0636363636363635,
+                -2.06,
+                0.75
+              ],
+              "outlet": [
+                6.9363636363636365,
+                -2.06,
+                0.75
+              ]
+            }
+          },
+          {
+            "id": "V-101",
+            "instanceId": "V-101@1",
+            "signals": {
+              "opening": {
+                "type": "number",
+                "value": 76,
+                "unit": "%",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              },
+              "flow": {
+                "type": "number",
+                "value": 0,
+                "unit": "m3/h",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              }
+            },
+            "alarm": "none",
+            "metrics": {
+              "opening": 76
+            },
+            "ports": {
+              "inlet": [
+                7.422727272727273,
+                -1.42,
+                0.75
+              ],
+              "outlet": [
+                8.877272727272727,
+                -1.42,
+                0.75
+              ]
+            }
+          },
+          {
+            "id": "HX-101",
+            "instanceId": "HX-101@1",
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 0,
+                "unit": "m3/h",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              },
+              "temperature": {
+                "type": "number",
+                "value": 72,
+                "unit": "°C",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              }
+            },
+            "alarm": "none",
+            "metrics": {},
+            "ports": {
+              "inlet": [
+                9.877272727272727,
+                -1.59,
+                0.75
+              ],
+              "outlet": [
+                11.422727272727274,
+                -1.59,
+                0.75
+              ]
+            }
+          },
+          {
+            "id": "OUT",
+            "instanceId": "OUT@1",
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 0,
+                "unit": "m3/h",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              }
+            },
+            "alarm": "none",
+            "metrics": {},
+            "ports": {
+              "inlet": [
+                13.225,
+                -2.24,
+                0.75
+              ]
+            }
+          },
+          {
+            "id": "PT-101",
+            "instanceId": "PT-101@1",
+            "signals": {
+              "value": {
+                "type": "number",
+                "value": 0.4,
+                "unit": "bar",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              }
+            },
+            "alarm": "none",
+            "metrics": {},
+            "ports": {}
+          },
+          {
+            "id": "TT-101",
+            "instanceId": "TT-101@1",
+            "signals": {
+              "value": {
+                "type": "number",
+                "value": 72,
+                "unit": "°C",
+                "timestamp": 1788905746221,
+                "quality": "good"
+              }
+            },
+            "alarm": "none",
+            "metrics": {},
+            "ports": {}
+          }
+        ],
+        "flows": [
+          {
+            "id": "T-101.outlet:P-101.inlet",
+            "phase": 0.024638531200002367,
+            "value": 0
+          },
+          {
+            "id": "P-101.outlet:F-101.inlet",
+            "phase": 0.024638531200002367,
+            "value": 0
+          },
+          {
+            "id": "F-101.outlet:V-101.inlet",
+            "phase": 0.024638531200002367,
+            "value": 0
+          },
+          {
+            "id": "V-101.outlet:HX-101.inlet",
+            "phase": 0.024638531200002367,
+            "value": 0
+          },
+          {
+            "id": "HX-101.outlet:OUT.inlet",
+            "phase": 0.024638531200002367,
+            "value": 0
+          }
+        ]
+      },
+      "overflow": false,
+      "sourceHash": "ea9115ffa5d00a85170baaf5a1a4f89232a6ffbddacfb434119f18cc16e43c52"
+    },
+    {
+      "name": "history-comparison",
+      "frame": {
+        "type": "update",
+        "runId": "ff8b6564-05d7-470a-a1b7-8f9082abaffb",
+        "seq": 13,
+        "simTimeMs": 1300,
+        "timestamp": 1788905711121,
+        "equipment": {
+          "F-101": {
+            "positionId": "F-101",
+            "instanceId": "F-101@1",
+            "facts": {
+              "mode": "ready",
+              "alarm": "none"
+            },
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 9.120000000000001,
+                "unit": "m3/h",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              }
+            }
+          },
+          "HX-101": {
+            "positionId": "HX-101",
+            "instanceId": "HX-101@1",
+            "facts": {
+              "mode": "ready",
+              "alarm": "none"
+            },
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 9.120000000000001,
+                "unit": "m3/h",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              },
+              "temperature": {
+                "type": "number",
+                "value": 72,
+                "unit": "°C",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              }
+            }
+          },
+          "OUT": {
+            "positionId": "OUT",
+            "instanceId": "OUT@1",
+            "facts": {
+              "mode": "ready",
+              "alarm": "none"
+            },
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 9.120000000000001,
+                "unit": "m3/h",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              }
+            }
+          },
+          "P-101": {
+            "positionId": "P-101",
+            "instanceId": "P-101@1",
+            "facts": {
+              "mode": "running",
+              "alarm": "none"
+            },
+            "signals": {
+              "rpm": {
+                "type": "number",
+                "value": 1500,
+                "unit": "rpm",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              },
+              "flow": {
+                "type": "number",
+                "value": 9.120000000000001,
+                "unit": "m3/h",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              },
+              "temperature": {
+                "type": "number",
+                "value": 48,
+                "unit": "°C",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              },
+              "vibration": {
+                "type": "number",
+                "value": 1.8169978875666857,
+                "unit": "mm/s",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              }
+            }
+          },
+          "PT-101": {
+            "positionId": "PT-101",
+            "instanceId": "PT-101@1",
+            "facts": {
+              "mode": "measuring",
+              "alarm": "none"
+            },
+            "signals": {
+              "value": {
+                "type": "number",
+                "value": 4.808,
+                "unit": "bar",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              }
+            }
+          },
+          "T-101": {
+            "positionId": "T-101",
+            "instanceId": "T-101@1",
+            "facts": {
+              "mode": "available",
+              "alarm": "none"
+            },
+            "signals": {
+              "level": {
+                "type": "number",
+                "value": 63.98100000000001,
+                "unit": "%",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              }
+            }
+          },
+          "TT-101": {
+            "positionId": "TT-101",
+            "instanceId": "TT-101@1",
+            "facts": {
+              "mode": "measuring",
+              "alarm": "none"
+            },
+            "signals": {
+              "value": {
+                "type": "number",
+                "value": 72,
+                "unit": "°C",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              }
+            }
+          },
+          "V-101": {
+            "positionId": "V-101",
+            "instanceId": "V-101@1",
+            "facts": {
+              "mode": "ready",
+              "alarm": "none"
+            },
+            "signals": {
+              "opening": {
+                "type": "number",
+                "value": 76,
+                "unit": "%",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              },
+              "flow": {
+                "type": "number",
+                "value": 9.120000000000001,
+                "unit": "m3/h",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              }
+            }
+          }
+        },
+        "flows": {
+          "F-101.outlet:V-101.inlet": {
+            "type": "number",
+            "value": 9.120000000000001,
+            "unit": "m3/h",
+            "timestamp": 1788905711121,
+            "quality": "good"
+          },
+          "HX-101.outlet:OUT.inlet": {
+            "type": "number",
+            "value": 9.120000000000001,
+            "unit": "m3/h",
+            "timestamp": 1788905711121,
+            "quality": "good"
+          },
+          "P-101.outlet:F-101.inlet": {
+            "type": "number",
+            "value": 9.120000000000001,
+            "unit": "m3/h",
+            "timestamp": 1788905711121,
+            "quality": "good"
+          },
+          "T-101.outlet:P-101.inlet": {
+            "type": "number",
+            "value": 9.120000000000001,
+            "unit": "m3/h",
+            "timestamp": 1788905711121,
+            "quality": "good"
+          },
+          "V-101.outlet:HX-101.inlet": {
+            "type": "number",
+            "value": 9.120000000000001,
+            "unit": "m3/h",
+            "timestamp": 1788905711121,
+            "quality": "good"
+          }
+        },
+        "events": []
+      },
+      "three": {
+        "runId": "ff8b6564-05d7-470a-a1b7-8f9082abaffb",
+        "seq": 13,
+        "triangles": 30778,
+        "calls": 312,
+        "equipment": [
+          {
+            "id": "T-101",
+            "instanceId": "T-101@1",
+            "signals": {
+              "level": {
+                "type": "number",
+                "value": 63.98100000000001,
+                "unit": "%",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              }
+            },
+            "alarm": "none",
+            "metrics": {
+              "level": 63.682991333333405,
+              "liquidTop": 1.6810258093333352
+            },
+            "ports": {
+              "outlet": [
+                1.5,
+                -2.5,
+                0.48
+              ]
+            }
+          },
+          {
+            "id": "P-101",
+            "instanceId": "P-101@1",
+            "signals": {
+              "rpm": {
+                "type": "number",
+                "value": 1500,
+                "unit": "rpm",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              },
+              "flow": {
+                "type": "number",
+                "value": 9.120000000000001,
+                "unit": "m3/h",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              },
+              "temperature": {
+                "type": "number",
+                "value": 48,
+                "unit": "°C",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              },
+              "vibration": {
+                "type": "number",
+                "value": 1.8169978875666857,
+                "unit": "mm/s",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              }
+            },
+            "alarm": "none",
+            "metrics": {
+              "phase": 0.6180683674838567,
+              "rpm": 1474.6362083184122,
+              "flow": 8.965787779649432
+            },
+            "ports": {
+              "inlet": [
+                2.3,
+                -3.38,
+                0.65
+              ],
+              "outlet": [
+                3,
+                -3.38,
+                1.35
+              ]
+            }
+          },
+          {
+            "id": "F-101",
+            "instanceId": "F-101@1",
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 9.120000000000001,
+                "unit": "m3/h",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              }
+            },
+            "alarm": "none",
+            "metrics": {},
+            "ports": {
+              "inlet": [
+                6.0636363636363635,
+                -2.06,
+                0.75
+              ],
+              "outlet": [
+                6.9363636363636365,
+                -2.06,
+                0.75
+              ]
+            }
+          },
+          {
+            "id": "V-101",
+            "instanceId": "V-101@1",
+            "signals": {
+              "opening": {
+                "type": "number",
+                "value": 76,
+                "unit": "%",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              },
+              "flow": {
+                "type": "number",
+                "value": 9.120000000000001,
+                "unit": "m3/h",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              }
+            },
+            "alarm": "none",
+            "metrics": {
+              "opening": 76
+            },
+            "ports": {
+              "inlet": [
+                7.422727272727273,
+                -1.42,
+                0.75
+              ],
+              "outlet": [
+                8.877272727272727,
+                -1.42,
+                0.75
+              ]
+            }
+          },
+          {
+            "id": "HX-101",
+            "instanceId": "HX-101@1",
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 9.120000000000001,
+                "unit": "m3/h",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              },
+              "temperature": {
+                "type": "number",
+                "value": 72,
+                "unit": "°C",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              }
+            },
+            "alarm": "none",
+            "metrics": {},
+            "ports": {
+              "inlet": [
+                9.877272727272727,
+                -1.59,
+                0.75
+              ],
+              "outlet": [
+                11.422727272727274,
+                -1.59,
+                0.75
+              ]
+            }
+          },
+          {
+            "id": "OUT",
+            "instanceId": "OUT@1",
+            "signals": {
+              "flow": {
+                "type": "number",
+                "value": 9.120000000000001,
+                "unit": "m3/h",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              }
+            },
+            "alarm": "none",
+            "metrics": {},
+            "ports": {
+              "inlet": [
+                13.225,
+                -2.24,
+                0.75
+              ]
+            }
+          },
+          {
+            "id": "PT-101",
+            "instanceId": "PT-101@1",
+            "signals": {
+              "value": {
+                "type": "number",
+                "value": 4.808,
+                "unit": "bar",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              }
+            },
+            "alarm": "none",
+            "metrics": {},
+            "ports": {}
+          },
+          {
+            "id": "TT-101",
+            "instanceId": "TT-101@1",
+            "signals": {
+              "value": {
+                "type": "number",
+                "value": 72,
+                "unit": "°C",
+                "timestamp": 1788905711121,
+                "quality": "good"
+              }
+            },
+            "alarm": "none",
+            "metrics": {},
+            "ports": {}
+          }
+        ],
+        "flows": [
+          {
+            "id": "T-101.outlet:P-101.inlet",
+            "phase": 0.16838949120000302,
+            "value": 9.120000000000001
+          },
+          {
+            "id": "P-101.outlet:F-101.inlet",
+            "phase": 0.16838949120000302,
+            "value": 9.120000000000001
+          },
+          {
+            "id": "F-101.outlet:V-101.inlet",
+            "phase": 0.16838949120000302,
+            "value": 9.120000000000001
+          },
+          {
+            "id": "V-101.outlet:HX-101.inlet",
+            "phase": 0.16838949120000302,
+            "value": 9.120000000000001
+          },
+          {
+            "id": "HX-101.outlet:OUT.inlet",
+            "phase": 0.16838949120000302,
+            "value": 9.120000000000001
+          }
+        ]
+      },
+      "overflow": false,
+      "sourceHash": "ea9115ffa5d00a85170baaf5a1a4f89232a6ffbddacfb434119f18cc16e43c52"
+    }
+  ],
+  "mobileCheck": {
+    "width": 390,
+    "scrollWidth": 390,
+    "frame": {
+      "type": "snapshot",
+      "runId": "ff8b6564-05d7-470a-a1b7-8f9082abaffb",
+      "seq": 400,
+      "simTimeMs": 39700,
+      "timestamp": 1788905749521,
+      "equipment": {
+        "F-101": {
+          "positionId": "F-101",
+          "instanceId": "F-101@1",
+          "facts": {
+            "mode": "ready",
+            "alarm": "none"
+          },
+          "signals": {
+            "flow": {
+              "type": "number",
+              "value": 9.120000000000001,
+              "unit": "m3/h",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            }
+          }
+        },
+        "HX-101": {
+          "positionId": "HX-101",
+          "instanceId": "HX-101@1",
+          "facts": {
+            "mode": "ready",
+            "alarm": "none"
+          },
+          "signals": {
+            "flow": {
+              "type": "number",
+              "value": 9.120000000000001,
+              "unit": "m3/h",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            },
+            "temperature": {
+              "type": "number",
+              "value": 72,
+              "unit": "°C",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            }
+          }
+        },
+        "OUT": {
+          "positionId": "OUT",
+          "instanceId": "OUT@1",
+          "facts": {
+            "mode": "ready",
+            "alarm": "none"
+          },
+          "signals": {
+            "flow": {
+              "type": "number",
+              "value": 9.120000000000001,
+              "unit": "m3/h",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            }
+          }
+        },
+        "P-101": {
+          "positionId": "P-101",
+          "instanceId": "P-101@2",
+          "facts": {
+            "mode": "running",
+            "alarm": "none"
+          },
+          "signals": {
+            "rpm": {
+              "type": "number",
+              "value": 1500,
+              "unit": "rpm",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            },
+            "flow": {
+              "type": "number",
+              "value": 9.120000000000001,
+              "unit": "m3/h",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            },
+            "temperature": {
+              "type": "number",
+              "value": 48,
+              "unit": "°C",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            },
+            "vibration": {
+              "type": "number",
+              "value": 1.834484279807657,
+              "unit": "mm/s",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            }
+          }
+        },
+        "PT-101": {
+          "positionId": "PT-101",
+          "instanceId": "PT-101@1",
+          "facts": {
+            "mode": "measuring",
+            "alarm": "none"
+          },
+          "signals": {
+            "value": {
+              "type": "number",
+              "value": 4.808,
+              "unit": "bar",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            }
+          }
+        },
+        "T-101": {
+          "positionId": "T-101",
+          "instanceId": "T-101@1",
+          "facts": {
+            "mode": "available",
+            "alarm": "none"
+          },
+          "signals": {
+            "level": {
+              "type": "number",
+              "value": 63.682991333333405,
+              "unit": "%",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            }
+          }
+        },
+        "TT-101": {
+          "positionId": "TT-101",
+          "instanceId": "TT-101@1",
+          "facts": {
+            "mode": "measuring",
+            "alarm": "none"
+          },
+          "signals": {
+            "value": {
+              "type": "number",
+              "value": 72,
+              "unit": "°C",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            }
+          }
+        },
+        "V-101": {
+          "positionId": "V-101",
+          "instanceId": "V-101@1",
+          "facts": {
+            "mode": "ready",
+            "alarm": "none"
+          },
+          "signals": {
+            "opening": {
+              "type": "number",
+              "value": 76,
+              "unit": "%",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            },
+            "flow": {
+              "type": "number",
+              "value": 9.120000000000001,
+              "unit": "m3/h",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            }
+          }
+        }
+      },
+      "flows": {
+        "F-101.outlet:V-101.inlet": {
+          "type": "number",
+          "value": 9.120000000000001,
+          "unit": "m3/h",
+          "timestamp": 1788905749521,
+          "quality": "good"
+        },
+        "HX-101.outlet:OUT.inlet": {
+          "type": "number",
+          "value": 9.120000000000001,
+          "unit": "m3/h",
+          "timestamp": 1788905749521,
+          "quality": "good"
+        },
+        "P-101.outlet:F-101.inlet": {
+          "type": "number",
+          "value": 9.120000000000001,
+          "unit": "m3/h",
+          "timestamp": 1788905749521,
+          "quality": "good"
+        },
+        "T-101.outlet:P-101.inlet": {
+          "type": "number",
+          "value": 9.120000000000001,
+          "unit": "m3/h",
+          "timestamp": 1788905749521,
+          "quality": "good"
+        },
+        "V-101.outlet:HX-101.inlet": {
+          "type": "number",
+          "value": 9.120000000000001,
+          "unit": "m3/h",
+          "timestamp": 1788905749521,
+          "quality": "good"
+        }
+      },
+      "events": [
+        {
+          "id": "ff8b6564-05d7-470a-a1b7-8f9082abaffb:400:0",
+          "seq": 400,
+          "simTimeMs": 39700,
+          "timestamp": 1788905749521,
+          "type": "run.completed",
+          "message": "Запись сценария завершена"
+        }
+      ]
+    },
+    "three": {
+      "runId": "ff8b6564-05d7-470a-a1b7-8f9082abaffb",
+      "seq": 400,
+      "triangles": 30778,
+      "calls": 312,
+      "equipment": [
+        {
+          "id": "T-101",
+          "instanceId": "T-101@1",
+          "signals": {
+            "level": {
+              "type": "number",
+              "value": 63.682991333333405,
+              "unit": "%",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            }
+          },
+          "alarm": "none",
+          "metrics": {
+            "level": 63.682991333333405,
+            "liquidTop": 1.6810258093333352
+          },
+          "ports": {
+            "outlet": [
+              1.5,
+              -2.5,
+              0.48
+            ]
+          }
+        },
+        {
+          "id": "P-101",
+          "instanceId": "P-101@2",
+          "signals": {
+            "rpm": {
+              "type": "number",
+              "value": 1500,
+              "unit": "rpm",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            },
+            "flow": {
+              "type": "number",
+              "value": 9.120000000000001,
+              "unit": "m3/h",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            },
+            "temperature": {
+              "type": "number",
+              "value": 48,
+              "unit": "°C",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            },
+            "vibration": {
+              "type": "number",
+              "value": 1.834484279807657,
+              "unit": "mm/s",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            }
+          },
+          "alarm": "none",
+          "metrics": {
+            "phase": 0,
+            "rpm": 1500,
+            "flow": 9.120000000000001
+          },
+          "ports": {
+            "inlet": [
+              2.3,
+              -3.38,
+              0.65
+            ],
+            "outlet": [
+              3,
+              -3.38,
+              1.35
+            ]
+          }
+        },
+        {
+          "id": "F-101",
+          "instanceId": "F-101@1",
+          "signals": {
+            "flow": {
+              "type": "number",
+              "value": 9.120000000000001,
+              "unit": "m3/h",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            }
+          },
+          "alarm": "none",
+          "metrics": {},
+          "ports": {
+            "inlet": [
+              6.0636363636363635,
+              -2.06,
+              0.75
+            ],
+            "outlet": [
+              6.9363636363636365,
+              -2.06,
+              0.75
+            ]
+          }
+        },
+        {
+          "id": "V-101",
+          "instanceId": "V-101@1",
+          "signals": {
+            "opening": {
+              "type": "number",
+              "value": 76,
+              "unit": "%",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            },
+            "flow": {
+              "type": "number",
+              "value": 9.120000000000001,
+              "unit": "m3/h",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            }
+          },
+          "alarm": "none",
+          "metrics": {
+            "opening": 76
+          },
+          "ports": {
+            "inlet": [
+              7.422727272727273,
+              -1.42,
+              0.75
+            ],
+            "outlet": [
+              8.877272727272727,
+              -1.42,
+              0.75
+            ]
+          }
+        },
+        {
+          "id": "HX-101",
+          "instanceId": "HX-101@1",
+          "signals": {
+            "flow": {
+              "type": "number",
+              "value": 9.120000000000001,
+              "unit": "m3/h",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            },
+            "temperature": {
+              "type": "number",
+              "value": 72,
+              "unit": "°C",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            }
+          },
+          "alarm": "none",
+          "metrics": {},
+          "ports": {
+            "inlet": [
+              9.877272727272727,
+              -1.59,
+              0.75
+            ],
+            "outlet": [
+              11.422727272727274,
+              -1.59,
+              0.75
+            ]
+          }
+        },
+        {
+          "id": "OUT",
+          "instanceId": "OUT@1",
+          "signals": {
+            "flow": {
+              "type": "number",
+              "value": 9.120000000000001,
+              "unit": "m3/h",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            }
+          },
+          "alarm": "none",
+          "metrics": {},
+          "ports": {
+            "inlet": [
+              13.225,
+              -2.24,
+              0.75
+            ]
+          }
+        },
+        {
+          "id": "PT-101",
+          "instanceId": "PT-101@1",
+          "signals": {
+            "value": {
+              "type": "number",
+              "value": 4.808,
+              "unit": "bar",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            }
+          },
+          "alarm": "none",
+          "metrics": {},
+          "ports": {}
+        },
+        {
+          "id": "TT-101",
+          "instanceId": "TT-101@1",
+          "signals": {
+            "value": {
+              "type": "number",
+              "value": 72,
+              "unit": "°C",
+              "timestamp": 1788905749521,
+              "quality": "good"
+            }
+          },
+          "alarm": "none",
+          "metrics": {},
+          "ports": {}
+        }
+      ],
+      "flows": [
+        {
+          "id": "T-101.outlet:P-101.inlet",
+          "phase": 0,
+          "value": 9.120000000000001
+        },
+        {
+          "id": "P-101.outlet:F-101.inlet",
+          "phase": 0,
+          "value": 9.120000000000001
+        },
+        {
+          "id": "F-101.outlet:V-101.inlet",
+          "phase": 0,
+          "value": 9.120000000000001
+        },
+        {
+          "id": "V-101.outlet:HX-101.inlet",
+          "phase": 0,
+          "value": 9.120000000000001
+        },
+        {
+          "id": "HX-101.outlet:OUT.inlet",
+          "phase": 0,
+          "value": 9.120000000000001
+        }
+      ]
+    },
+    "buttons": [
+      {
+        "id": "import",
+        "label": "Открыть",
+        "width": 64.28125,
+        "height": 27
+      },
+      {
+        "id": "save",
+        "label": "↓ .ts",
+        "width": 39.4375,
+        "height": 40
+      },
+      {
+        "id": "export",
+        "label": "↓ HTML",
+        "width": 55.984375,
+        "height": 40
+      },
+      {
+        "id": "share",
+        "label": "Поделиться",
+        "width": 76.828125,
+        "height": 25
+      },
+      {
+        "id": "help",
+        "label": "?",
+        "width": 20.390625,
+        "height": 27
+      },
+      {
+        "id": "connect-server",
+        "label": "Отключиться",
+        "width": 112.234375,
+        "height": 36
+      },
+      {
+        "id": "save-runtime",
+        "label": "В TS",
+        "width": 46.5,
+        "height": 32
+      },
+      {
+        "id": "",
+        "label": "Код",
+        "width": 130,
+        "height": 37
+      },
+      {
+        "id": "",
+        "label": "Схема",
+        "width": 130,
+        "height": 37
+      },
+      {
+        "id": "",
+        "label": "Свойства",
+        "width": 130,
+        "height": 37
+      },
+      {
+        "id": "pause",
+        "label": "▷",
+        "width": 25.234375,
+        "height": 27.59375
+      },
+      {
+        "id": "add",
+        "label": "+ Элемент",
+        "width": 76.859375,
+        "height": 27
+      },
+      {
+        "id": "connect-mode",
+        "label": "Соединить",
+        "width": 77.171875,
+        "height": 27
+      },
+      {
+        "id": "view-2d",
+        "label": "2D",
+        "width": 25.25,
+        "height": 32
+      },
+      {
+        "id": "view-3d",
+        "label": "3D",
+        "width": 25.25,
+        "height": 32
+      },
+      {
+        "id": "zoom-out",
+        "label": "−",
+        "width": 23.21875,
+        "height": 27
+      },
+      {
+        "id": "fit",
+        "label": "Вписать",
+        "width": 61.578125,
+        "height": 27
+      },
+      {
+        "id": "zoom-in",
+        "label": "+",
+        "width": 23.21875,
+        "height": 27
+      },
+      {
+        "id": "",
+        "label": "T-10164 %",
+        "width": 70,
+        "height": 44
+      },
+      {
+        "id": "",
+        "label": "P-1011500 об/мин",
+        "width": 73.609375,
+        "height": 44
+      },
+      {
+        "id": "",
+        "label": "F-1019.1 м³/ч",
+        "width": 70,
+        "height": 44
+      },
+      {
+        "id": "",
+        "label": "V-10176.0 %",
+        "width": 70,
+        "height": 44
+      },
+      {
+        "id": "",
+        "label": "HX-10172.0 °C",
+        "width": 70,
+        "height": 44
+      },
+      {
+        "id": "",
+        "label": "OUT9.1 м³/ч",
+        "width": 70,
+        "height": 44
+      },
+      {
+        "id": "",
+        "label": "PT-1014.8 бар",
+        "width": 70,
+        "height": 44
+      },
+      {
+        "id": "",
+        "label": "TT-10172.0 °C",
+        "width": 70,
+        "height": 44
+      },
+      {
+        "id": "create-run",
+        "label": "Новый прогон",
+        "width": 101.046875,
+        "height": 36
+      },
+      {
+        "id": "refresh-runs",
+        "label": "↻",
+        "width": 28.390625,
+        "height": 36
+      },
+      {
+        "id": "complete-run",
+        "label": "Завершить запись",
+        "width": 117.359375,
+        "height": 36
+      },
+      {
+        "id": "",
+        "label": "Запустить",
+        "width": 74.546875,
+        "height": 36
+      },
+      {
+        "id": "",
+        "label": "Остановить",
+        "width": 82.09375,
+        "height": 36
+      },
+      {
+        "id": "",
+        "label": "Задать обороты",
+        "width": 105.078125,
+        "height": 36
+      },
+      {
+        "id": "service-equipment",
+        "label": "Обслужить",
+        "width": 79.078125,
+        "height": 36
+      },
+      {
+        "id": "replace-equipment",
+        "label": "Заменить",
+        "width": 71,
+        "height": 36
+      },
+      {
+        "id": "history-load",
+        "label": "История",
+        "width": 63.796875,
+        "height": 36
+      },
+      {
+        "id": "replay-play",
+        "label": "Воспроизвести",
+        "width": 99.171875,
+        "height": 36
+      },
+      {
+        "id": "replay-live",
+        "label": "В эфир",
+        "width": 56.9375,
+        "height": 36
+      },
+      {
+        "id": "compare-history",
+        "label": "Сравнить",
+        "width": 70.109375,
+        "height": 36
+      },
+      {
+        "id": "diagnostics-button",
+        "label": "Нет ошибок",
+        "width": 69.5,
+        "height": 18
+      }
+    ]
+  },
+  "filterCheck": {
+    "frame": {
+      "type": "update",
+      "runId": "f1e60d73-9e07-4462-a27e-9f4965532f61",
+      "seq": 38,
+      "simTimeMs": 3800,
+      "timestamp": 1788905765832,
+      "equipment": {
+        "F-101": {
+          "positionId": "F-101",
+          "instanceId": "F-101@1",
+          "facts": {
+            "mode": "ready",
+            "alarm": "none"
+          },
+          "signals": {
+            "flow": {
+              "type": "number",
+              "value": 6.840000000000001,
+              "unit": "m3/h",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            }
+          }
+        },
+        "FLT-101": {
+          "positionId": "FLT-101",
+          "instanceId": "FLT-101@1",
+          "facts": {
+            "mode": "filtering",
+            "alarm": "none"
+          },
+          "signals": {
+            "flow": {
+              "type": "number",
+              "value": 6.840000000000001,
+              "unit": "m3/h",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            },
+            "differentialPressure": {
+              "type": "number",
+              "value": 0.28500000000000003,
+              "unit": "bar",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            }
+          }
+        },
+        "HX-101": {
+          "positionId": "HX-101",
+          "instanceId": "HX-101@1",
+          "facts": {
+            "mode": "ready",
+            "alarm": "none"
+          },
+          "signals": {
+            "flow": {
+              "type": "number",
+              "value": 6.840000000000001,
+              "unit": "m3/h",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            },
+            "temperature": {
+              "type": "number",
+              "value": 72,
+              "unit": "°C",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            }
+          }
+        },
+        "OUT": {
+          "positionId": "OUT",
+          "instanceId": "OUT@1",
+          "facts": {
+            "mode": "ready",
+            "alarm": "none"
+          },
+          "signals": {
+            "flow": {
+              "type": "number",
+              "value": 6.840000000000001,
+              "unit": "m3/h",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            }
+          }
+        },
+        "P-101": {
+          "positionId": "P-101",
+          "instanceId": "P-101@1",
+          "facts": {
+            "mode": "running",
+            "alarm": "none"
+          },
+          "signals": {
+            "rpm": {
+              "type": "number",
+              "value": 1500,
+              "unit": "rpm",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            },
+            "flow": {
+              "type": "number",
+              "value": 6.840000000000001,
+              "unit": "m3/h",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            },
+            "temperature": {
+              "type": "number",
+              "value": 48,
+              "unit": "°C",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            },
+            "vibration": {
+              "type": "number",
+              "value": 1.776938250847161,
+              "unit": "mm/s",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            }
+          }
+        },
+        "PT-101": {
+          "positionId": "PT-101",
+          "instanceId": "PT-101@1",
+          "facts": {
+            "mode": "measuring",
+            "alarm": "none"
+          },
+          "signals": {
+            "value": {
+              "type": "number",
+              "value": 3.706,
+              "unit": "bar",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            }
+          }
+        },
+        "T-101": {
+          "positionId": "T-101",
+          "instanceId": "T-101@1",
+          "facts": {
+            "mode": "available",
+            "alarm": "none"
+          },
+          "signals": {
+            "level": {
+              "type": "number",
+              "value": 63.93825000000001,
+              "unit": "%",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            }
+          }
+        },
+        "TT-101": {
+          "positionId": "TT-101",
+          "instanceId": "TT-101@1",
+          "facts": {
+            "mode": "measuring",
+            "alarm": "none"
+          },
+          "signals": {
+            "value": {
+              "type": "number",
+              "value": 72,
+              "unit": "°C",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            }
+          }
+        },
+        "V-101": {
+          "positionId": "V-101",
+          "instanceId": "V-101@1",
+          "facts": {
+            "mode": "ready",
+            "alarm": "none"
+          },
+          "signals": {
+            "opening": {
+              "type": "number",
+              "value": 76,
+              "unit": "%",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            },
+            "flow": {
+              "type": "number",
+              "value": 6.840000000000001,
+              "unit": "m3/h",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            }
+          }
+        }
+      },
+      "flows": {
+        "F-101.outlet:V-101.inlet": {
+          "type": "number",
+          "value": 6.840000000000001,
+          "unit": "m3/h",
+          "timestamp": 1788905765832,
+          "quality": "good"
+        },
+        "FLT-101.outlet:OUT.inlet": {
+          "type": "number",
+          "value": 6.840000000000001,
+          "unit": "m3/h",
+          "timestamp": 1788905765832,
+          "quality": "good"
+        },
+        "HX-101.outlet:FLT-101.inlet": {
+          "type": "number",
+          "value": 6.840000000000001,
+          "unit": "m3/h",
+          "timestamp": 1788905765832,
+          "quality": "good"
+        },
+        "P-101.outlet:F-101.inlet": {
+          "type": "number",
+          "value": 6.840000000000001,
+          "unit": "m3/h",
+          "timestamp": 1788905765832,
+          "quality": "good"
+        },
+        "T-101.outlet:P-101.inlet": {
+          "type": "number",
+          "value": 6.840000000000001,
+          "unit": "m3/h",
+          "timestamp": 1788905765832,
+          "quality": "good"
+        },
+        "V-101.outlet:HX-101.inlet": {
+          "type": "number",
+          "value": 6.840000000000001,
+          "unit": "m3/h",
+          "timestamp": 1788905765832,
+          "quality": "good"
+        }
+      },
+      "events": []
+    },
+    "three": {
+      "runId": "f1e60d73-9e07-4462-a27e-9f4965532f61",
+      "seq": 38,
+      "triangles": 37394,
+      "calls": 360,
+      "equipment": [
+        {
+          "id": "T-101",
+          "instanceId": "T-101@1",
+          "signals": {
+            "level": {
+              "type": "number",
+              "value": 63.93825000000001,
+              "unit": "%",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            }
+          },
+          "alarm": "none",
+          "metrics": {
+            "level": 63.93825000000001,
+            "liquidTop": 1.6866415000000003
+          },
+          "ports": {
+            "outlet": [
+              1.5,
+              -2.5,
+              0.48
+            ]
+          }
+        },
+        {
+          "id": "P-101",
+          "instanceId": "P-101@1",
+          "signals": {
+            "rpm": {
+              "type": "number",
+              "value": 1500,
+              "unit": "rpm",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            },
+            "flow": {
+              "type": "number",
+              "value": 6.840000000000001,
+              "unit": "m3/h",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            },
+            "temperature": {
+              "type": "number",
+              "value": 48,
+              "unit": "°C",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            },
+            "vibration": {
+              "type": "number",
+              "value": 1.776938250847161,
+              "unit": "mm/s",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            }
+          },
+          "alarm": "none",
+          "metrics": {
+            "phase": 0.28965517241379235,
+            "rpm": 1500,
+            "flow": 6.840000000000001
+          },
+          "ports": {
+            "inlet": [
+              2.3,
+              -3.38,
+              0.65
+            ],
+            "outlet": [
+              3,
+              -3.38,
+              1.35
+            ]
+          }
+        },
+        {
+          "id": "F-101",
+          "instanceId": "F-101@1",
+          "signals": {
+            "flow": {
+              "type": "number",
+              "value": 6.840000000000001,
+              "unit": "m3/h",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            }
+          },
+          "alarm": "none",
+          "metrics": {},
+          "ports": {
+            "inlet": [
+              6.0636363636363635,
+              -2.06,
+              0.75
+            ],
+            "outlet": [
+              6.9363636363636365,
+              -2.06,
+              0.75
+            ]
+          }
+        },
+        {
+          "id": "V-101",
+          "instanceId": "V-101@1",
+          "signals": {
+            "opening": {
+              "type": "number",
+              "value": 76,
+              "unit": "%",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            },
+            "flow": {
+              "type": "number",
+              "value": 6.840000000000001,
+              "unit": "m3/h",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            }
+          },
+          "alarm": "none",
+          "metrics": {
+            "opening": 76
+          },
+          "ports": {
+            "inlet": [
+              7.422727272727273,
+              -1.42,
+              0.75
+            ],
+            "outlet": [
+              8.877272727272727,
+              -1.42,
+              0.75
+            ]
+          }
+        },
+        {
+          "id": "HX-101",
+          "instanceId": "HX-101@1",
+          "signals": {
+            "flow": {
+              "type": "number",
+              "value": 6.840000000000001,
+              "unit": "m3/h",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            },
+            "temperature": {
+              "type": "number",
+              "value": 72,
+              "unit": "°C",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            }
+          },
+          "alarm": "none",
+          "metrics": {},
+          "ports": {
+            "inlet": [
+              9.877272727272727,
+              -1.59,
+              0.75
+            ],
+            "outlet": [
+              11.422727272727274,
+              -1.59,
+              0.75
+            ]
+          }
+        },
+        {
+          "id": "OUT",
+          "instanceId": "OUT@1",
+          "signals": {
+            "flow": {
+              "type": "number",
+              "value": 6.840000000000001,
+              "unit": "m3/h",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            }
+          },
+          "alarm": "none",
+          "metrics": {},
+          "ports": {
+            "inlet": [
+              16.825000000000003,
+              -2.24,
+              0.75
+            ]
+          }
+        },
+        {
+          "id": "FLT-101",
+          "instanceId": "FLT-101@1",
+          "signals": {
+            "flow": {
+              "type": "number",
+              "value": 6.840000000000001,
+              "unit": "m3/h",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            },
+            "differentialPressure": {
+              "type": "number",
+              "value": 0.28500000000000003,
+              "unit": "bar",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            }
+          },
+          "alarm": "none",
+          "metrics": {
+            "differentialPressure": 0.28500000000000003
+          },
+          "ports": {
+            "inlet": [
+              13.75,
+              -1.94,
+              0.73
+            ],
+            "outlet": [
+              15.05,
+              -1.94,
+              0.73
+            ]
+          }
+        },
+        {
+          "id": "PT-101",
+          "instanceId": "PT-101@1",
+          "signals": {
+            "value": {
+              "type": "number",
+              "value": 3.706,
+              "unit": "bar",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            }
+          },
+          "alarm": "none",
+          "metrics": {},
+          "ports": {}
+        },
+        {
+          "id": "TT-101",
+          "instanceId": "TT-101@1",
+          "signals": {
+            "value": {
+              "type": "number",
+              "value": 72,
+              "unit": "°C",
+              "timestamp": 1788905765832,
+              "quality": "good"
+            }
+          },
+          "alarm": "none",
+          "metrics": {},
+          "ports": {}
+        }
+      ],
+      "flows": [
+        {
+          "id": "T-101.outlet:P-101.inlet",
+          "phase": 0.04560000000000031,
+          "value": 6.840000000000001
+        },
+        {
+          "id": "P-101.outlet:F-101.inlet",
+          "phase": 0.04560000000000031,
+          "value": 6.840000000000001
+        },
+        {
+          "id": "F-101.outlet:V-101.inlet",
+          "phase": 0.04560000000000031,
+          "value": 6.840000000000001
+        },
+        {
+          "id": "V-101.outlet:HX-101.inlet",
+          "phase": 0.04560000000000031,
+          "value": 6.840000000000001
+        },
+        {
+          "id": "HX-101.outlet:FLT-101.inlet",
+          "phase": 0.04560000000000031,
+          "value": 6.840000000000001
+        },
+        {
+          "id": "FLT-101.outlet:OUT.inlet",
+          "phase": 0.04560000000000031,
+          "value": 6.840000000000001
+        }
+      ]
+    }
+  },
+  "errors": []
+}

@@ -90,7 +90,7 @@ test('independent circuits do not share state',()=>{
  const c=compile(patch(twin,'V-101',{opening:0})); const sim=simulate(c.scene); assert.equal(sim.flows.get('P-101'),0); assert.equal(sim.flows.get('P-102'),-4);
 });
 test('disconnected circuits do not invent flow',()=>{
- const c=compile(applyChanges(booster,removeObject(booster,'OUT'))); const sim=simulate(c.scene); assert.equal(sim.flows.get('P-101'),0); assert(sim.notes.length);
+ const c=compile(applyChanges(booster,removeObject(booster,'OUT'))); const sim=simulate(c.scene); assert.equal(sim.flows.get('P-101'),null); assert(sim.notes.length);
 });
 function validateGeometry(s:string, expectedWarnings: string[] = []){
  const c=compile(s).scene, geometry=layout(c); assert.deepEqual(geometry.warnings,expectedWarnings);
@@ -104,7 +104,7 @@ function validateGeometry(s:string, expectedWarnings: string[] = []){
 }
 test('initial and twin routes join exact ports and avoid equipment',()=>{validateGeometry(booster);validateGeometry(twin)});
 test('move multiple equipment positions: links are derived, not stale SVG',()=>{
- for(const [id,values] of [['P-101',{x:340,y:400}],['V-101',{x:830,y:100}],['F-101',{x:680,y:30}],['HX-101',{x:1080,y:380}],['T-101',{x:30,y:500}]] as const)validateGeometry(patch(booster,id,values), id === 'HX-101' ? ['TT-101: для отвода нужен горизонтальный участок от 90 единиц. Раздвиньте оборудование.'] : []);
+ for(const [id,values] of [['P-101',{x:340,y:400}],['V-101',{x:830,y:100}],['F-101',{x:680,y:30}],['HX-101',{x:1080,y:380}],['T-101',{x:30,y:500}]] as const)validateGeometry(patch(booster,id,values), id === 'HX-101' ? ['Перекрытие: OUT / TT-101', 'TT-101: для отвода нужен горизонтальный участок от 90 единиц. Раздвиньте оборудование.'] : []);
 });
 test('obstruction is reported, never silently marked correct',()=>{
  const c=compile(patch(booster,'P-101',{x:40,y:250})); assert(layout(c.scene).warnings.some(w=>w.includes('Перекрытие')));

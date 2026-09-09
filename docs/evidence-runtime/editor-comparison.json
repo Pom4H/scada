@@ -1,0 +1,52 @@
+{
+  "beforeRevision": "8435e6651e3377ad5ef5753c7220c538b3bf9d11",
+  "afterRevision": "720e1bfd74288c706db872367e06d76023c22ccb",
+  "workingTreeDirty": true,
+  "methodology": "Native Chromium RAF: 180 samples default 8 nodes and idle adversarial 48-node circuit. Synchronous source edits: warm-up excluded, 5 parameter samples and 3 geometry samples per circuit, seed 42. Shared software-rendering runtime; not device FPS. Identical probe and fixture for before/after.",
+  "rows": [
+    {
+      "equipment": 8,
+      "links": 7,
+      "parameterBeforeMs": 3.899999998509884,
+      "parameterAfterMs": 5.5999999940395355,
+      "positionBeforeMs": 8.899999998509884,
+      "positionAfterMs": 13.199999995529652
+    },
+    {
+      "equipment": 16,
+      "links": 15,
+      "parameterBeforeMs": 6,
+      "parameterAfterMs": 6.800000004470348,
+      "positionBeforeMs": 17.400000005960464,
+      "positionAfterMs": 17.299999997019768
+    },
+    {
+      "equipment": 32,
+      "links": 31,
+      "parameterBeforeMs": 10.699999995529652,
+      "parameterAfterMs": 14,
+      "positionBeforeMs": 166,
+      "positionAfterMs": 39.20000000298023
+    },
+    {
+      "equipment": 48,
+      "links": 47,
+      "parameterBeforeMs": 13.799999997019768,
+      "parameterAfterMs": 14.299999997019768,
+      "positionBeforeMs": 897.1000000014901,
+      "positionAfterMs": 108.09999999403954
+    }
+  ],
+  "raf": {
+    "beforeDefaultP95Ms": 16.700000000000273,
+    "afterDefaultP95Ms": 16.700000000000273,
+    "beforeCrowdedP95Ms": 16.799999999999272,
+    "afterCrowdedP95Ms": 16.700000000000728
+  },
+  "domIdentityRetained": true,
+  "sourceEdit": {
+    "undo": true,
+    "redo": true
+  },
+  "errors": []
+}

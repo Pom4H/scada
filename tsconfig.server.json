@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "server",
+    "src/components/filter/behavior.ts",
+    "src/runtime/protocol.ts",
+    "tests/server-model.test.ts",
+    "tests/runtime-contract.test.ts",
+    "tests/review.test.ts"
+  ]
+}

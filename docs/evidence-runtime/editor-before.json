@@ -1,0 +1,231 @@
+{
+  "measuredAt": "2026-09-08T21:28:50.329Z",
+  "revision": "8435e6651e3377ad5ef5753c7220c538b3bf9d11",
+  "node": "v24.19.0",
+  "browser": "149.0.7827.0",
+  "platform": "linux x64",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "cpus": 8,
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "methodology": "Native Chromium RAF: 180 samples default 8 nodes and idle adversarial 48-node circuit. Synchronous source edits: warm-up excluded, 5 parameter samples and 3 geometry samples per circuit, seed 42. Shared software-rendering runtime; not device FPS. Identical probe and fixture for before/after.",
+  "rows": [
+    {
+      "count": 8,
+      "links": 7,
+      "times": [
+        {
+          "kind": "initial",
+          "ms": 16
+        },
+        {
+          "kind": "parameter",
+          "ms": 6.399999998509884
+        },
+        {
+          "kind": "parameter",
+          "ms": 4.4000000059604645
+        },
+        {
+          "kind": "parameter",
+          "ms": 3.899999998509884
+        },
+        {
+          "kind": "parameter",
+          "ms": 3.899999998509884
+        },
+        {
+          "kind": "parameter",
+          "ms": 3.600000001490116
+        },
+        {
+          "kind": "position",
+          "ms": 8.5
+        },
+        {
+          "kind": "position",
+          "ms": 12.400000005960464
+        },
+        {
+          "kind": "position",
+          "ms": 8.899999998509884
+        }
+      ],
+      "sameRotor": true,
+      "error": null,
+      "warnings": [],
+      "svgNodes": 335
+    },
+    {
+      "count": 16,
+      "links": 15,
+      "times": [
+        {
+          "kind": "initial",
+          "ms": 27
+        },
+        {
+          "kind": "parameter",
+          "ms": 5.600000001490116
+        },
+        {
+          "kind": "parameter",
+          "ms": 6.5
+        },
+        {
+          "kind": "parameter",
+          "ms": 5.100000001490116
+        },
+        {
+          "kind": "parameter",
+          "ms": 6.100000001490116
+        },
+        {
+          "kind": "parameter",
+          "ms": 6
+        },
+        {
+          "kind": "position",
+          "ms": 18.600000001490116
+        },
+        {
+          "kind": "position",
+          "ms": 17.399999998509884
+        },
+        {
+          "kind": "position",
+          "ms": 17.400000005960464
+        }
+      ],
+      "sameRotor": true,
+      "error": null,
+      "warnings": [],
+      "svgNodes": 657
+    },
+    {
+      "count": 32,
+      "links": 31,
+      "times": [
+        {
+          "kind": "initial",
+          "ms": 183.10000000149012
+        },
+        {
+          "kind": "parameter",
+          "ms": 11.5
+        },
+        {
+          "kind": "parameter",
+          "ms": 15.899999998509884
+        },
+        {
+          "kind": "parameter",
+          "ms": 9.300000004470348
+        },
+        {
+          "kind": "parameter",
+          "ms": 10.699999995529652
+        },
+        {
+          "kind": "parameter",
+          "ms": 9.100000001490116
+        },
+        {
+          "kind": "position",
+          "ms": 166
+        },
+        {
+          "kind": "position",
+          "ms": 180
+        },
+        {
+          "kind": "position",
+          "ms": 165.5
+        }
+      ],
+      "sameRotor": true,
+      "error": null,
+      "warnings": [],
+      "svgNodes": 1291
+    },
+    {
+      "count": 48,
+      "links": 47,
+      "times": [
+        {
+          "kind": "initial",
+          "ms": 891
+        },
+        {
+          "kind": "parameter",
+          "ms": 13.899999998509884
+        },
+        {
+          "kind": "parameter",
+          "ms": 11.600000001490116
+        },
+        {
+          "kind": "parameter",
+          "ms": 14.5
+        },
+        {
+          "kind": "parameter",
+          "ms": 13.799999997019768
+        },
+        {
+          "kind": "parameter",
+          "ms": 13.300000004470348
+        },
+        {
+          "kind": "position",
+          "ms": 916.8000000044703
+        },
+        {
+          "kind": "position",
+          "ms": 896.6999999955297
+        },
+        {
+          "kind": "position",
+          "ms": 897.1000000014901
+        }
+      ],
+      "sameRotor": true,
+      "error": null,
+      "warnings": [],
+      "svgNodes": 1933
+    }
+  ],
+  "baselineFrames": {
+    "count": 180,
+    "medianMs": 16.699999999999818,
+    "p95Ms": 16.700000000000273,
+    "maxMs": 16.800000000000182,
+    "meanMs": 16.666111111111086
+  },
+  "crowdedFrames": {
+    "count": 180,
+    "medianMs": 16.69999999999891,
+    "p95Ms": 16.799999999999272,
+    "maxMs": 16.80000000000109,
+    "meanMs": 16.665555555555553
+  },
+  "sourceEdit": {
+    "undo": true,
+    "redo": true
+  },
+  "resources": [
+    {
+      "name": "/scada/app.css",
+      "transferSize": 12991,
+      "decodedBodySize": 12691
+    },
+    {
+      "name": "/scada/app.js",
+      "transferSize": 4155782,
+      "decodedBodySize": 4155482
+    }
+  ],
+  "errors": []
+}

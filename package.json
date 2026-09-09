@@ -4,12 +4,12 @@
   "description": "Source-first SCADA playground. Drag equipment, edit TypeScript, keep one source of truth.",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "dev": "node scripts/build.mjs && node scripts/serve.mjs",
+    "dev": "node scripts/dev.mjs",
     "preview": "node scripts/serve.mjs",
-    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.lab.json",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.lab.json && tsc --noEmit -p tsconfig.server.json",
     "test": "node scripts/test.mjs",
-    "test:e2e": "playwright test",
-    "check": "npm run build && npm run typecheck && npm test && npm run lab:test && npm run lab:build",
+    "test:e2e": "playwright test && npm run test:runtime:e2e",
+    "check": "npm run build && npm run server:build && npm run typecheck && npm test && npm run test:runtime && npm run challenge:core && npm run lab:test && npm run lab:build && npm run test:review && npm run test:consumer",
     "challenge": "node scripts/challenge.mjs",
     "challenge:core": "node scripts/challenge.mjs core",
     "challenge:browser": "node scripts/challenge.mjs browser",
@@ -17,7 +17,17 @@
     "lab:build": "node scripts/lab-build.mjs",
     "lab": "node scripts/lab-build.mjs --serve",
     "lab:test": "node scripts/lab-test.mjs",
-    "lab:capture": "node scripts/lab-capture.mjs"
+    "lab:capture": "node scripts/lab-capture.mjs",
+    "server:build": "node scripts/server-build.mjs",
+    "server": "npm run server:build && node .server/cli.mjs",
+    "demo": "npm run build && npm run server",
+    "test:runtime": "node scripts/server-test.mjs && node scripts/runtime-qa-test.mjs",
+    "test:runtime:e2e": "playwright test -c playwright.runtime.config.ts",
+    "runtime:capture": "node scripts/runtime-qa-capture.mjs",
+    "runtime:bench": "node scripts/runtime-qa-benchmark.mjs",
+    "runtime:animation": "node scripts/runtime-qa-animation.mjs",
+    "test:review": "node scripts/review-test.mjs",
+    "test:consumer": "node scripts/consumer-test.mjs"
   },
   "keywords": [],
   "author": "Roman Popov",
@@ -46,8 +56,13 @@
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
+    "@types/node": "24.13.3",
     "@types/three": "0.185.0",
     "esbuild": "0.28.2",
     "typescript": "7.0.2"
+  },
+  "exports": {
+    "./core": "./src/core.ts",
+    "./sdk": "./src/sdk.ts"
   }
 }

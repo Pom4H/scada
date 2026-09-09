@@ -1,0 +1,17 @@
+{
+  "programs": [],
+  "streams": [
+    {
+      "codec_name": "h264",
+      "width": 1440,
+      "height": 900,
+      "r_frame_rate": "25/1",
+      "nb_frames": "1124"
+    }
+  ],
+  "format": {
+    "duration": "44.960000",
+    "size": "2084938"
+  },
+  "description": "Actual Playwright Chromium viewport recording transcoded from WebM. 25 fps is recorder output cadence, not measured renderer FPS."
+}

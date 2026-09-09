@@ -26,6 +26,7 @@ jobs:
       - run: npm run check
       - run: npx playwright install --with-deps chromium webkit
       - run: npm run test:e2e
+      - run: npm run challenge:browser
       - uses: actions/upload-artifact@v7.0.1
         if: always()
         with:
@@ -33,13 +34,16 @@ jobs:
           path: |
             playwright-report/
             test-results/
+            runtime-playwright-report/
+            runtime-test-results/
+            challenge-results/
           retention-days: 7
       - uses: actions/upload-pages-artifact@v5.0.0
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
         with:
           path: dist
   deploy:
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
     needs: check
     runs-on: ubuntu-24.04
     timeout-minutes: 15

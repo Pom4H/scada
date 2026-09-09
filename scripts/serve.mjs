@@ -5,6 +5,7 @@ const root = resolve('dist'), port = Number(process.env.PORT || 4173);
 const mime = { '.html':'text/html; charset=utf-8', '.js':'text/javascript', '.css':'text/css', '.svg':'image/svg+xml', '.map':'application/json' };
 createServer(async (req, res) => {
   try {
+    if (process.env.SCADA_DEV === '1' && new URL(req.url, 'http://local').pathname.endsWith('/__dev/revision')) { res.writeHead(200, {'Content-Type':'application/json','Cache-Control':'no-store'}); res.end(await readFile(resolve(root, 'revision.json'))); return; }
     const pathname = decodeURIComponent(new URL(req.url, 'http://local').pathname).replace(/^\/scada(?=\/)/, '');
     const path = resolve(root, '.' + (pathname.endsWith('/') ? pathname + 'index.html' : pathname));
     if (!path.startsWith(root + sep)) { res.writeHead(403).end(); return; }
